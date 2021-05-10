@@ -1,0 +1,2 @@
+# Fairdrop
+BrightId Fairdrop
