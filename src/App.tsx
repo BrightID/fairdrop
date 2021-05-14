@@ -43,10 +43,10 @@ const App = () => {
                   <li><CheckIcon/>Address entry</li>
                   <li>Address status, showing:
                       <ul>
-                          <li>currently claimable amount (with network)</li>
+                          <li><CheckIcon/>currently claimable amount (with network)</li>
                           <li>claimable amount in next period (with network info)</li>
                           <li>Option to change payout network</li>
-                          <li>Option to link address with your BrightID / Info if already linked</li>
+                          <li><CheckIcon/>Option to link address with your BrightID / Info if already linked</li>
                       </ul>
                   </li>
                   <li>Claim now button</li>

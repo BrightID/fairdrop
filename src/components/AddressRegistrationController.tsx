@@ -4,7 +4,8 @@ import claimData_1 from '../airdropData/claimData_1.json'
 import claimData_100 from '../airdropData/claimData_100.json'
 import claimData_31337 from '../airdropData/claimData_31337.json'
 import ActiveClaim from './ActiveClaim'
-import ChainSelectorController from './ChainSelectorController'
+import ChainSelector from './ChainSelector'
+import LinkAddressWizard from './LinkAddressWizard'
 
 
 interface BaseClaim {
@@ -33,8 +34,10 @@ const AddressRegistrationController = ({address}:AddressRegistrationControllerPr
     const [claims, setClaims] = useState<Array<Claim>>([])
     const [claimLoading, setClaimLoading] = useState(true)
     const [brightIdLinked, setBrightIdLinked] = useState(false)
+    const [nextAmount, setNextAmount] = useState(BigNumber.from(0))
+    const [payoutChainId, setPayoutChainId] = useState(0)
 
-    // Look for claims of address on all chains
+    // Look for active claims of address on all chains
     useEffect(() => {
         setClaimLoading(true)
         const claims: Array<Claim> = []
@@ -53,6 +56,26 @@ const AddressRegistrationController = ({address}:AddressRegistrationControllerPr
         setClaimLoading(false)
     }, [address])
 
+    // Get claimable amount for next period from backend
+    useEffect(() => {
+        const runEffect = async() => {
+            // TODO: Get amount from real backend
+            const amount = BigNumber.from('1230000000000000000')
+            setNextAmount(amount)
+        }
+        runEffect();
+    }, [address])
+
+    // Get desired payout chainId from backend
+    useEffect(() => {
+        const runEffect = async() => {
+            // TODO: Get chainId from real backend
+            const chainId = 1 // mainnet
+            setPayoutChainId(chainId)
+        }
+        runEffect();
+    }, [address])
+
     // TODO Check if address is linked with a BrightID
 
     if (claimLoading) {
@@ -62,15 +85,17 @@ const AddressRegistrationController = ({address}:AddressRegistrationControllerPr
     const claimItems = claims.map((claim, index) =>
         <>
             <ActiveClaim key={index} amount={claim.amount} chainId={claim.chainId}/>
-            <ChainSelectorController address={address}/>
         </>
     )
     if (claimItems.length === 0) {
+        // dummy entry when nothing is claimable
         claimItems.push(<ActiveClaim key={0} amount={BigNumber.from(0)} chainId={0}/>)
     }
 
     return (<>
         <div>{claimItems}</div>
+        <ChainSelector address={address} currentChainId={payoutChainId}/>
+        <LinkAddressWizard address={address} brightIdLinked={brightIdLinked} setBrightIdLinked={setBrightIdLinked}/>
         </>)
 
 }

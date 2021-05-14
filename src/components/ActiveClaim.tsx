@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {BigNumber, utils} from 'ethers'
+import {Card, CardContent, Typography} from '@material-ui/core'
 
 interface ActiveClaimProps {
     amount: BigNumber,
@@ -23,9 +24,25 @@ const ActiveClaim = ({amount, chainId}:ActiveClaimProps) => {
     }
 
     if (amount.gt(0)) {
-        return (<p>{`${utils.formatUnits(amount, 18)} $Bright claimable on ${chainName}`} now</p>)
+        return (
+            <Card>
+                <CardContent>
+                    <Typography align={'center'} variant={'h6'}>
+                        {`${utils.formatUnits(amount, 18)} $Bright claimable on ${chainName}`} now
+                    </Typography>
+                </CardContent>
+            </Card>
+        )
     } else {
-        return (<p>0 $Bright claimable now</p>)
+        return (
+            <Card>
+                <CardContent>
+                    <Typography align={'center'} variant={'h6'}>
+                        0 $Bright claimable now
+                    </Typography>
+                </CardContent>
+            </Card>
+        )
     }
 }
 

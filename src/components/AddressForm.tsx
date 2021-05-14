@@ -39,8 +39,8 @@ export const AddressForm = ({initialValues, setAddress}: AddressFormProps) => {
                   render={({handleSubmit, submitting, values}) => (<form onSubmit={handleSubmit} noValidate>
                       <Grid container spacing={6}>
                           <Grid item xs={12}>
-                              <Box padding={2}>
-                                  <Card elevation={0}>
+                              <Box>
+                                  <Card>
                                       <Box padding={2}>
                                           <TextField label="Address" name="address" required={true}/>
                                       </Box>
