@@ -66,7 +66,7 @@ const AddressRegistrationController = ({address}:AddressRegistrationControllerPr
         runEffect();
     }, [address])
 
-    // Get desired payout chainId from backend
+    // Get desired payout chainId for current address from backend
     useEffect(() => {
         const runEffect = async() => {
             // TODO: Get chainId from real backend
@@ -94,7 +94,7 @@ const AddressRegistrationController = ({address}:AddressRegistrationControllerPr
 
     return (<>
         <div>{claimItems}</div>
-        <ChainSelector address={address} currentChainId={payoutChainId}/>
+        <ChainSelector address={address} currentChainId={payoutChainId} setChainId={setPayoutChainId}/>
         <LinkAddressWizard address={address} brightIdLinked={brightIdLinked} setBrightIdLinked={setBrightIdLinked}/>
         </>)
 

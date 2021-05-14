@@ -1,17 +1,18 @@
 import React, {useState} from 'react'
-import {Dialog, DialogTitle} from '@material-ui/core'
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from '@material-ui/core'
+import chainName from '../utils/chainName'
 
 interface ChainSelectorWizardProps {
-    onClose: (chainId: number)=>any,
+    onClose: (arg0: number)=>any,
     open: boolean,
     address: string
     currentChainId: number
+    desiredChainId: number
 }
 
-const ChainSelectorWizard = ({address, currentChainId, open, onClose}:ChainSelectorWizardProps) => {
-    const [selectedChainId, setSelectedChainId] = useState(currentChainId)
+const ChainSelectorWizard = ({address, currentChainId, open, onClose, desiredChainId}:ChainSelectorWizardProps) => {
 
-    // make sure web3 connection is available
+    // make sure a wallet is available
 
     // request signature from wallet to proof address ownership
 
@@ -21,15 +22,26 @@ const ChainSelectorWizard = ({address, currentChainId, open, onClose}:ChainSelec
 
     // update desired chainId in parent component (or trigger refresh?)
 
-    const handleClose = () => {
-        onClose(selectedChainId)
+    const handleOk = () => {
+        onClose(desiredChainId)
+    }
+
+    const handleCancel = () => {
+        onClose(currentChainId);
     }
 
     return (
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={open} onClose={handleCancel}>
             <DialogTitle>Set payout chainId</DialogTitle>
-            <p>TODO</p>
-            <p>TODO</p>
+            <DialogContent>Sign message to switch to ${chainName(desiredChainId)} (${desiredChainId})</DialogContent>
+            <DialogActions>
+                <Button autoFocus onClick={handleCancel} color="primary">
+                    Cancel
+                </Button>
+                <Button onClick={handleOk} color="primary">
+                    Ok
+                </Button>
+            </DialogActions>
         </Dialog>
     )
 }

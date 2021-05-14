@@ -6,9 +6,10 @@ import ChainSelectorWizard from './ChainSelectorWizard'
 interface ChainSelectorProps {
     address: string
     currentChainId: number
+    setChainId: (newChainId: number) => any
 }
 
-const ChainSelector = ({address, currentChainId}:ChainSelectorProps) => {
+const ChainSelector = ({address, currentChainId, setChainId}:ChainSelectorProps) => {
     const [showWizard, setShowWizard] = useState(false)
     let otherChainId: number;
 
@@ -18,6 +19,7 @@ const ChainSelector = ({address, currentChainId}:ChainSelectorProps) => {
     const handleCloseWizard = (selectedChainId: number) => {
         console.log(`User selected chain ${chainName(selectedChainId)} (${selectedChainId})`)
         setShowWizard(false)
+        setChainId(selectedChainId)
     }
 
     // user can only chose between MainNet and xDai
@@ -38,7 +40,7 @@ const ChainSelector = ({address, currentChainId}:ChainSelectorProps) => {
             <CardActions>
                 <Button onClick={handleOpenWizard}>Switch to {chainName(otherChainId)}</Button>
             </CardActions>
-            <ChainSelectorWizard onClose={handleCloseWizard} open={showWizard} address={address} currentChainId={currentChainId}/>
+            <ChainSelectorWizard onClose={handleCloseWizard} open={showWizard} address={address} currentChainId={currentChainId} desiredChainId={otherChainId}/>
         </Card>
     )
 }
