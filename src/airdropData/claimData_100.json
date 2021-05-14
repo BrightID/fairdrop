@@ -1,0 +1,73 @@
+{
+  "chainId": 100,
+  "root": "0x916a7a6b7638f1a6b55746a734762a6c7788b8f4b860f0102d7313e2424e11a7",
+  "totalAmount": {
+    "type": "BigNumber",
+    "hex": "0x105c7d65adc895400000"
+  },
+  "data": [
+    {
+      "index": 0,
+      "address": "0x02d9cc72Bc796D2128E58c04B6e50A4E101c0be1",
+      "amount": {
+        "type": "BigNumber",
+        "hex": "0x03118f05eb64398c0000"
+      },
+      "proof": [
+        "0x15da99faa5b8f0bc395f0e0b3531c2549de4f1b566a326130fe46ca4dd443e0c",
+        "0x460c59468cef93c95cb27dca58f926fe532d6ab23a1145494c901e875479e78c",
+        "0x27646092bdde6c6a32443e6713c55ad413d00f044551dc6c352d9f205b0dfcff"
+      ]
+    },
+    {
+      "index": 1,
+      "address": "0x5621dF497E19b3383F91c274907886222C537F5c",
+      "amount": {
+        "type": "BigNumber",
+        "hex": "0x028f6674606f48a80000"
+      },
+      "proof": [
+        "0xe83e86882bef54d0ba14ca6a944614af041cfcd9c2494a9db7bb2a5aa3beb579",
+        "0x460c59468cef93c95cb27dca58f926fe532d6ab23a1145494c901e875479e78c",
+        "0x27646092bdde6c6a32443e6713c55ad413d00f044551dc6c352d9f205b0dfcff"
+      ]
+    },
+    {
+      "index": 2,
+      "address": "0x60a9372862bD752CD02D9AE482F94Cd2fe92A0Bf",
+      "amount": {
+        "type": "BigNumber",
+        "hex": "0x03120bec57b51c100000"
+      },
+      "proof": [
+        "0x080b7aeed40a7507741f8495a9f025101710e44921c6c66c4354b8d42eba7bff",
+        "0x69ca2da2f732165ada9228246f2b42028c67c12ee0dd3cf92fce6b9e005f4d87",
+        "0x27646092bdde6c6a32443e6713c55ad413d00f044551dc6c352d9f205b0dfcff"
+      ]
+    },
+    {
+      "index": 3,
+      "address": "0xc44E4c49Ffa5Db98CA52770dff3e371ECB01f2D9",
+      "amount": {
+        "type": "BigNumber",
+        "hex": "0x03ee4d600502c82c0000"
+      },
+      "proof": [
+        "0x788a7f14b1e48bee502ea19d5bf6e6898e4bd6ebff8fcb090a1962382747554e",
+        "0x69ca2da2f732165ada9228246f2b42028c67c12ee0dd3cf92fce6b9e005f4d87",
+        "0x27646092bdde6c6a32443e6713c55ad413d00f044551dc6c352d9f205b0dfcff"
+      ]
+    },
+    {
+      "index": 4,
+      "address": "0xd9ffaF2e880dF0cc7B7104e9E789d281a81824cf",
+      "amount": {
+        "type": "BigNumber",
+        "hex": "0x03bb2e9f053d2ed00000"
+      },
+      "proof": [
+        "0x5451d1f88788021126b292563fb3b0142eddf3a5bcd7abe2ceef795a811bd040"
+      ]
+    }
+  ]
+}
