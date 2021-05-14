@@ -1,6 +1,7 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Button, Card, CardActionArea, CardActions, CardContent, CardHeader} from '@material-ui/core'
 import chainName from '../utils/chainName'
+import ChainSelectorWizard from './ChainSelectorWizard'
 
 interface ChainSelectorProps {
     address: string
@@ -8,8 +9,18 @@ interface ChainSelectorProps {
 }
 
 const ChainSelector = ({address, currentChainId}:ChainSelectorProps) => {
-
+    const [showWizard, setShowWizard] = useState(false)
     let otherChainId: number;
+
+    const handleOpenWizard = () => {
+        setShowWizard(true);
+    }
+    const handleCloseWizard = (selectedChainId: number) => {
+        console.log(`User selected chain ${chainName(selectedChainId)} (${selectedChainId})`)
+        setShowWizard(false)
+    }
+
+    // user can only chose between MainNet and xDai
     if (currentChainId === 1) {
         otherChainId = 100
     } else {
@@ -25,8 +36,9 @@ const ChainSelector = ({address, currentChainId}:ChainSelectorProps) => {
                 <p>Current chain setting: {chainName(currentChainId)}</p>
             </CardContent>
             <CardActions>
-                <Button>Switch to {chainName(otherChainId)}</Button>
+                <Button onClick={handleOpenWizard}>Switch to {chainName(otherChainId)}</Button>
             </CardActions>
+            <ChainSelectorWizard onClose={handleCloseWizard} open={showWizard} address={address} currentChainId={currentChainId}/>
         </Card>
     )
 }
