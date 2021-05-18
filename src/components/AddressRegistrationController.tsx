@@ -7,6 +7,7 @@ import ActiveClaim from './ActiveClaim'
 import ChainSelector from './ChainSelector'
 import LinkAddressWizard from './LinkAddressWizard'
 import ComingClaim from './ComingClaim'
+import {getAddressInfo} from '../utils/api'
 
 
 interface BaseClaim {
@@ -58,37 +59,14 @@ const AddressRegistrationController = ({address}:AddressRegistrationControllerPr
         setClaimLoading(false)
     }, [address])
 
-    // Get info about address from backend (amount and starttime)
-    useEffect(() => {
-        const runEffect = async() => {
-            // TODO: Get data from real backend
-            const amount = BigNumber.from(0)
-            const startTimestamp = Date.now()+1000*((60*60*28)+(60*23))
-            setNextAmount(amount)
-            setNextStart(startTimestamp)
-        }
-        runEffect();
-    }, [address])
-
-    // Get desired payout chainId for current address from backend
+    // Get info about address from backend (payout address, next Amount and next starttime)
     useEffect(() => {
         const runEffect = async() => {
             try {
-                const url = `http://localhost:8000/address/${address}`
-                const response = await fetch(url)
-                if (response.ok) {
-                    const jsonData = await response.json()
-                    console.log(jsonData)
-                    const {chainId} = jsonData
-                    if (chainId && (typeof chainId === 'number')) {
-                        console.log(`Got chainId ${chainId} for ${address}`)
-                        setPayoutChainId(chainId)
-                    } else {
-                        throw Error(`Invalid chainId ${chainId}`)
-                    }
-                } else {
-                    throw Error(`${response.status} - ${response.statusText}`)
-                }
+                const addressInfo = await getAddressInfo(address)
+                setPayoutChainId(addressInfo.chainId)
+                setNextAmount(addressInfo.nextAmount)
+                setNextStart(addressInfo.startTimestamp)
             } catch(e) {
                 console.log(`failed to get info from backend: ${e}`)
             }
