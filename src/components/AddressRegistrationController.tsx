@@ -6,6 +6,7 @@ import claimData_31337 from '../airdropData/claimData_31337.json'
 import ActiveClaim from './ActiveClaim'
 import ChainSelector from './ChainSelector'
 import LinkAddressWizard from './LinkAddressWizard'
+import ComingClaim from './ComingClaim'
 
 
 interface BaseClaim {
@@ -35,6 +36,7 @@ const AddressRegistrationController = ({address}:AddressRegistrationControllerPr
     const [claimLoading, setClaimLoading] = useState(true)
     const [brightIdLinked, setBrightIdLinked] = useState(false)
     const [nextAmount, setNextAmount] = useState(BigNumber.from(0))
+    const [nextStart, setNextStart] = useState(0)
     const [payoutChainId, setPayoutChainId] = useState(0)
 
     // Look for active claims of address on all chains
@@ -56,12 +58,14 @@ const AddressRegistrationController = ({address}:AddressRegistrationControllerPr
         setClaimLoading(false)
     }, [address])
 
-    // Get claimable amount for next period from backend
+    // Get info about address from backend (amount and starttime)
     useEffect(() => {
         const runEffect = async() => {
-            // TODO: Get amount from real backend
-            const amount = BigNumber.from('1230000000000000000')
+            // TODO: Get data from real backend
+            const amount = BigNumber.from(0)
+            const startTimestamp = Date.now()+1000*((60*60*28)+(60*23))
             setNextAmount(amount)
+            setNextStart(startTimestamp)
         }
         runEffect();
     }, [address])
@@ -69,33 +73,72 @@ const AddressRegistrationController = ({address}:AddressRegistrationControllerPr
     // Get desired payout chainId for current address from backend
     useEffect(() => {
         const runEffect = async() => {
-            // TODO: Get chainId from real backend
-            const chainId = 1 // mainnet
-            setPayoutChainId(chainId)
+            try {
+                const url = `http://localhost:8000/address/${address}`
+                const response = await fetch(url)
+                if (response.ok) {
+                    const jsonData = await response.json()
+                    console.log(jsonData)
+                    const {chainId} = jsonData
+                    if (chainId && (typeof chainId === 'number')) {
+                        console.log(`Got chainId ${chainId} for ${address}`)
+                        setPayoutChainId(chainId)
+                    } else {
+                        throw Error(`Invalid chainId ${chainId}`)
+                    }
+                } else {
+                    throw Error(`${response.status} - ${response.statusText}`)
+                }
+            } catch(e) {
+                console.log(`failed to get info from backend: ${e}`)
+            }
         }
         runEffect();
     }, [address])
 
-    // TODO Check if address is linked with a BrightID
+    // Check if address is linked with a BrightID
+    useEffect(()=>{
+        const runEffect = async () => {
+            // TODO: Get linked info from real brightId node
+            const isLinked = false;
+            setBrightIdLinked(isLinked)
+        }
+        runEffect()
+    }, [address])
+
+    const onLinkedBrightId = (isLinked:boolean) => {
+        if (isLinked) {
+            // user has finished linking process.
+            setNextAmount(BigNumber.from('1230000000000000000'))
+            setBrightIdLinked(true)
+        } else {
+            setBrightIdLinked(false)
+            setNextAmount(BigNumber.from(0))
+        }
+    }
 
     if (claimLoading) {
         return <div>Loading claim</div>
     }
 
     const claimItems = claims.map((claim, index) =>
-        <>
-            <ActiveClaim key={index} amount={claim.amount} chainId={claim.chainId}/>
-        </>
+        <ActiveClaim key={index} amount={claim.amount} chainId={claim.chainId} selectedChainId={payoutChainId}/>
     )
+
     if (claimItems.length === 0) {
         // dummy entry when nothing is claimable
-        claimItems.push(<ActiveClaim key={0} amount={BigNumber.from(0)} chainId={0}/>)
+        claimItems.push(<ActiveClaim key={0} amount={BigNumber.from(0)} chainId={0} selectedChainId={payoutChainId}/>)
+    }
+
+    if (nextAmount.gt(0)) {
+        // We know the address will be able to claim this amount in the next period
+        claimItems.push(<ComingClaim key={claimItems.length} amount={nextAmount} selectedChainId={payoutChainId} startTimestamp={nextStart}/>)
     }
 
     return (<>
         <div>{claimItems}</div>
         <ChainSelector address={address} currentChainId={payoutChainId} setChainId={setPayoutChainId}/>
-        <LinkAddressWizard address={address} brightIdLinked={brightIdLinked} setBrightIdLinked={setBrightIdLinked}/>
+        <LinkAddressWizard address={address} brightIdLinked={brightIdLinked} setBrightIdLinked={onLinkedBrightId}/>
         </>)
 
 }

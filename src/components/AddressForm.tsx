@@ -3,6 +3,7 @@ import {Form} from 'react-final-form'
 import {Box, Button, Card, Grid} from '@material-ui/core'
 import {TextField} from 'mui-rff'
 import {ethers} from 'ethers'
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 
 interface AddressFormData {
     address: string;
@@ -13,7 +14,8 @@ interface AddressFormProps {
     setAddress: (address: string) => any
 }
 
-export const AddressForm = ({initialValues, setAddress}: AddressFormProps) => {
+const AddressForm = ({initialValues, setAddress}: AddressFormProps) => {
+    const classNames = useStyles()
 
     const onSubmit = (values: AddressFormData) => {
         // make sure to have a checksummed address before storing
@@ -40,7 +42,7 @@ export const AddressForm = ({initialValues, setAddress}: AddressFormProps) => {
                       <Grid container spacing={6}>
                           <Grid item xs={12}>
                               <Box>
-                                  <Card>
+                                  <Card className={classNames.card}>
                                       <Box padding={2}>
                                           <TextField label="Address" name="address" required={true}/>
                                       </Box>
@@ -56,3 +58,16 @@ export const AddressForm = ({initialValues, setAddress}: AddressFormProps) => {
                   </form>)}
     />)
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        card: {
+            padding: theme.spacing(2),
+            margin: theme.spacing(1),
+            textAlign: 'center',
+            color: theme.palette.text.primary,
+        },
+    }),
+);
+
+export default AddressForm

@@ -1,6 +1,7 @@
 import React from 'react'
 import CheckIcon from '@material-ui/icons/Check'
 import {Button, Card, CardContent, Typography} from '@material-ui/core'
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 
 interface LinkAddressWizardProps {
     address: string
@@ -10,8 +11,10 @@ interface LinkAddressWizardProps {
 
 const LinkAddressWizard = ({address, brightIdLinked, setBrightIdLinked}: LinkAddressWizardProps) => {
 
+    const classNames = useStyles()
+
     if (brightIdLinked) {
-        return (<Card>
+        return (<Card className={classNames.card}>
             <CardContent>
                 <Typography align={'center'} variant="h5" component="h2"><CheckIcon/>
                     Address {address} is linked with BrightId
@@ -22,20 +25,30 @@ const LinkAddressWizard = ({address, brightIdLinked, setBrightIdLinked}: LinkAdd
             </CardContent>
         </Card>)
     } else {
-        return (<Card>
+        return (<Card className={classNames.card}>
             <CardContent>
                 <Typography align={'center'} variant="h5" component="h2">
                     Link your BrightId to get more $Bright!
                 </Typography>
                 <p>It will take up to 24 hours to update the claimable amount after linking</p>
-                <Button variant={'contained'} size={'large'} onClick={() => setBrightIdLinked(true)}>
+                <Button variant={'contained'} onClick={() => setBrightIdLinked(true)}>
                     Link BrightId
                 </Button>
             </CardContent>
         </Card>)
     }
-
-    return <p>Link address wizard here</p>
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        card: {
+            padding: theme.spacing(2),
+            margin: theme.spacing(1),
+            textAlign: 'center',
+            color: theme.palette.text.primary,
+        },
+    }),
+);
+
 
 export default LinkAddressWizard
