@@ -3,6 +3,7 @@ import {Container, CssBaseline} from '@material-ui/core'
 import AddressForm from './components/AddressForm'
 import {ethers} from 'ethers'
 import AddressRegistrationController from './components/AddressRegistrationController'
+import ProviderContext from './components/ProviderContext'
 
 const App = () => {
 
@@ -34,10 +35,12 @@ const App = () => {
     return (
       <>
           <CssBaseline />
-          <Container maxWidth="md">
-              <AddressForm setAddress={newAddressHandler} initialValues={{address}}/>
-              {address !== '' && <AddressRegistrationController address={address}/>}
-          </Container>
+          <ProviderContext>
+              <Container maxWidth="md">
+                  <AddressForm setAddress={newAddressHandler} initialValues={{address}}/>
+                  {address !== '' && <AddressRegistrationController address={address}/>}
+              </Container>
+          </ProviderContext>
       </>
   );
 }

@@ -1,9 +1,10 @@
-import React, {useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {Button, Card, CardContent, CardHeader, Typography} from '@material-ui/core'
 import chainName from '../utils/chainName'
 import ChainSelectorWizard from './ChainSelectorWizard'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import {Alert, AlertTitle} from '@material-ui/lab'
+import {EthersProviderContext} from './ProviderContext'
 
 interface ChainSelectorProps {
     address: string
@@ -13,25 +14,66 @@ interface ChainSelectorProps {
 
 const ChainSelector = ({address, currentChainId, setChainId}:ChainSelectorProps) => {
     const classes = useStyles()
+    const {wallet, onboardApi, walletAddress} = useContext(EthersProviderContext)
     const [showWizard, setShowWizard] = useState(false)
-    let otherChainId: number;
+    const [cardButton, setCardButton] = useState<any>(undefined)
 
-    const handleOpenWizard = () => {
-        setShowWizard(true);
+    useEffect(() => {
+        // user can only choose between MainNet and xDai
+        const newChainId = (currentChainId === 1) ? 100 : 1
+
+        let elem
+        if (wallet) {
+            if (walletAddress === address) {
+                elem = <Button variant={'contained'} onClick={handleOpenWizard}>
+                    Switch to {chainName(newChainId)}
+                </Button>
+            } else {
+                elem = <Alert>
+                    You need to be connected with address {address} in order to change it. Your current
+                    wallet address is {walletAddress}
+                </Alert>
+            }
+        } else {
+            elem = <Button variant={'contained'} onClick={doOnboard}>
+                Connect wallet to set ChainID
+            </Button>
+        }
+        setCardButton(elem)
+    }, [wallet, address, walletAddress, currentChainId])
+
+
+    const handleOpenWizard = async () => {
+        const ready = await onboardApi?.walletCheck();
+        if (ready) {
+            setShowWizard(true);
+        }
+        else {
+            console.log(`Failed walletcheck!`)
+        }
     }
 
     const handleCloseWizard = (selectedChainId: number) => {
         console.log(`User selected chain ${chainName(selectedChainId)} (${selectedChainId})`)
         setShowWizard(false)
-        setChainId(selectedChainId)
+        if (selectedChainId !== currentChainId) {
+            setChainId(selectedChainId)
+        }
+    }
+
+    const doOnboard = async () => {
+        await onboardApi?.walletSelect()
+        await onboardApi?.walletCheck();
     }
 
     // user can only choose between MainNet and xDai
+    let otherChainId: number;
     if (currentChainId === 1) {
         otherChainId = 100
     } else {
         otherChainId = 1
     }
+
 
     return (
         <Card className={classes.card} variant={'outlined'}>
@@ -49,8 +91,8 @@ const ChainSelector = ({address, currentChainId, setChainId}:ChainSelectorProps)
                     Current chain setting: {chainName(currentChainId)}
                 </Typography>
             </CardContent>
-                <Button variant={'contained'} onClick={handleOpenWizard}>Switch to {chainName(otherChainId)}</Button>
-            <ChainSelectorWizard onClose={handleCloseWizard} open={showWizard} address={address} currentChainId={currentChainId} desiredChainId={otherChainId}/>
+            {cardButton}
+            {showWizard && <ChainSelectorWizard onClose={handleCloseWizard} open={true} address={address} currentChainId={currentChainId} desiredChainId={otherChainId}/>}
         </Card>
     )
 }

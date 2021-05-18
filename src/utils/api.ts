@@ -6,7 +6,7 @@ const port = '8000'
 const rootPath = ''
 const baseUrl = `${protocol}://${host}:${port}${rootPath}`
 
-interface AddressInfo {
+type AddressInfo = {
     chainId: number
     nextAmount: BigNumber
     startTimestamp: number
@@ -42,6 +42,33 @@ const getAddressInfo = async (address: string): Promise<AddressInfo> => {
     }
 }
 
+type PayoutChainParams = {
+    address: string,
+    chainId: number,
+    signature: string
+}
+const setAddressPayoutChainId = async({address, chainId, signature}:PayoutChainParams): Promise<any> => {
+    const url = `${baseUrl}/address/${address}`
+    const postData = {
+        chainId,
+        signature
+    }
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData)
+    })
+    if (response.ok) {
+        const jsonData = await response.json()
+        return jsonData
+    } else {
+        throw Error(`${response.status} - ${response.statusText}`)
+    }
+}
+
 export {
-    getAddressInfo
+    getAddressInfo,
+    setAddressPayoutChainId
 }
