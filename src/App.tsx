@@ -4,6 +4,7 @@ import AddressForm from './components/AddressForm'
 import {ethers} from 'ethers'
 import AddressRegistrationController from './components/AddressRegistrationController'
 import ProviderContext from './components/ProviderContext'
+import Header from './components/Header'
 
 const App = () => {
 
@@ -36,6 +37,7 @@ const App = () => {
       <>
           <CssBaseline />
           <ProviderContext>
+              <Header/>
               <Container maxWidth="md">
                   <AddressForm setAddress={newAddressHandler} initialValues={{address}}/>
                   {address !== '' && <AddressRegistrationController address={address}/>}

@@ -86,8 +86,13 @@ const ProviderContext: React.FC<ProviderContextProps> = ({children}) => {
                         }
                     },
                     address: addr => {
-                        console.log(`Got address from onboard: ${addr}`)
-                        setWalletAddress(ethers.utils.getAddress(addr))
+                        if (addr) {
+                            console.log(`Got address from onboard: ${addr}`)
+                            setWalletAddress(ethers.utils.getAddress(addr))
+                        } else {
+                            console.log(`Clearing wallet address`)
+                            setWalletAddress('')
+                        }
                     }
                 },
                 walletCheck: [

@@ -30,8 +30,7 @@ const ChainSelector = ({address, currentChainId, setChainId}:ChainSelectorProps)
                 </Button>
             } else {
                 elem = <Alert>
-                    You need to be connected with address {address} in order to change it. Your current
-                    wallet address is {walletAddress}
+                    You need to be connected with address {address} in order to change the payout network.
                 </Alert>
             }
         } else {
