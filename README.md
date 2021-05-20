@@ -1,3 +1,30 @@
+# Workflow
+1. Start 1st phase:
+    1. deploy initial airdrop (mainnet only)
+    1. open registration for 2nd phase
+1. end 1st phase:
+    1. close registration
+    1. sweep unclaimed funds from 1st phase
+    1. calculate claim data for 2nd phase on mainnet and xDai
+    1. clear all "nextAmount" entries in database
+1. start 2nd phase:
+    1. deploy airdrops on mainnet and xDai
+    1. open registration for 3rd phase
+1. end 2nd phase:
+    1. close registration
+    1. sweep unclaimed funds from 2nd phase
+    1. calculate claim data for 3rd phase on mainnet and xDai
+    1. clear all "nextAmount" entries in database
+1. start 3rd phase:
+    1. ...
+    
+Frontend needs to know what phase we currently in:
+- Registration enabled (currentPhaseEnd > now()): 
+  - show registration flow
+- Registration disabled (currentPhaseEnd < now()):
+  - Will there be another phase (nextPhaseStart > 0)? Then show info "We are preparing the next airdrop. Registration for next phase will open in 2h30m"
+  - Was this the last phase (nextPhaseStart == 0)? Then show info "Registration is over"
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

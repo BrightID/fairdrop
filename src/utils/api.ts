@@ -6,10 +6,34 @@ const port = '8000'
 const rootPath = ''
 const baseUrl = `${protocol}://${host}:${port}${rootPath}`
 
-type AddressInfo = {
+export type AddressInfo = {
     chainId: number
     nextAmount: BigNumber
-    startTimestamp: number
+}
+
+export type RegistrationInfo = {
+    currentRegistrationEnd: number,
+    nextRegistrationStart: number,
+    nextClaimStart: number
+}
+
+const getRegistrationInfo = async (): Promise<RegistrationInfo> => {
+    const url = `${baseUrl}/registrationInfo`
+    const response = await fetch(url)
+    if (response.ok) {
+        const jsonData = await response.json()
+        console.log(jsonData)
+        if (('currentRegistrationEnd' in jsonData) &&
+            ('nextRegistrationStart' in jsonData) &&
+            ('nextClaimStart' in jsonData)){
+            return jsonData
+        } else {
+            throw Error(`Invalid server response`)
+        }
+    } else {
+        throw Error(`${response.status} - ${response.statusText}`)
+    }
+
 }
 
 const getAddressInfo = async (address: string): Promise<AddressInfo> => {
@@ -30,12 +54,9 @@ const getAddressInfo = async (address: string): Promise<AddressInfo> => {
         } else {
             throw Error(`Missing nextAmount`)
         }
-        // TODO: Get data from backend
-        const startTimestamp = Date.now()+1000*((60*60*28)+(60*23))
         return {
             chainId,
             nextAmount,
-            startTimestamp
         }
     } else {
         throw Error(`${response.status} - ${response.statusText}`)
@@ -69,6 +90,7 @@ const setAddressPayoutChainId = async({address, chainId, signature}:PayoutChainP
 }
 
 export {
+    getRegistrationInfo,
     getAddressInfo,
     setAddressPayoutChainId
 }

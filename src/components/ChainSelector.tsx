@@ -5,14 +5,18 @@ import ChainSelectorWizard from './ChainSelectorWizard'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import {Alert, AlertTitle} from '@material-ui/lab'
 import {EthersProviderContext} from './ProviderContext'
+import {  intervalToDuration } from 'date-fns'
+import formatDuration from 'date-fns/formatDuration'
+import {RegistrationInfo} from '../utils/api'
 
 interface ChainSelectorProps {
     address: string
     currentChainId: number
     setChainId: (newChainId: number) => any
+    registrationInfo: RegistrationInfo
 }
 
-const ChainSelector = ({address, currentChainId, setChainId}:ChainSelectorProps) => {
+const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}:ChainSelectorProps) => {
     const classes = useStyles()
     const {wallet, onboardApi, walletAddress} = useContext(EthersProviderContext)
     const [showWizard, setShowWizard] = useState(false)
@@ -73,7 +77,14 @@ const ChainSelector = ({address, currentChainId, setChainId}:ChainSelectorProps)
         otherChainId = 1
     }
 
-
+    const remainingTicks = registrationInfo.currentRegistrationEnd - Date.now()
+    if (remainingTicks < 0) {
+        console.log(`Current registration phase has ended. Nothing can be changed at the moment`)
+        return null
+    }
+    const duration = intervalToDuration({ start: Date.now(), end: registrationInfo.nextClaimStart })
+    console.log(`Duration: ${formatDuration(duration)}`)
+    const durationString = formatDuration(duration)
     return (
         <Card className={classes.card} variant={'outlined'}>
             <CardHeader title={'Select chain'}/>
@@ -82,8 +93,11 @@ const ChainSelector = ({address, currentChainId, setChainId}:ChainSelectorProps)
                     <AlertTitle>Network Info</AlertTitle>
                     <Typography variant={'body1'}>
                         {`Note that change of payout network will take effect for the next claim period, starting
-                         in [TBD period]. All unclaimed $bright will carry over to the next period and be available on 
-                         the selected chain.`}
+                         in approximately ${durationString}.`}
+                    </Typography>
+                    <Typography variant={'body1'}>
+                        All unclaimed $bright will carry over to the next period and be available on
+                        the selected chain.
                     </Typography>
                 </Alert>
                 <Typography variant={'body1'}>
