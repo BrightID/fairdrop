@@ -5,13 +5,14 @@ import claimData_100 from '../airdropData/claimData_100.json'
 import claimData_31337 from '../airdropData/claimData_31337.json'
 import ActiveClaim from './ActiveClaim'
 import ChainSelector from './ChainSelector'
-import LinkAddressWizard from './LinkAddressWizard'
 import ComingClaim from './ComingClaim'
 import {getAddressInfo, getRegistrationInfo, RegistrationInfo} from '../utils/api'
 import {Alert, AlertTitle} from '@material-ui/lab'
 import {Typography} from '@material-ui/core'
 import {intervalToDuration} from 'date-fns'
 import formatDuration from 'date-fns/formatDuration'
+import {verifyContextId} from 'brightid_sdk'
+import AddressLinkInfo from './AddressLinkInfo'
 
 
 interface BaseClaim {
@@ -34,6 +35,20 @@ export interface Claim extends BaseClaim {
 interface AddressRegistrationControllerProps {
     address: string
 }
+
+interface ContextInfoSuccess {
+    app: string,
+    context: string,
+    contextIds: Array<string>,
+    unique: boolean
+}
+
+interface ContextInfoError {
+    status: number,
+    statusText: string,
+}
+
+export type ContextInfo = ContextInfoSuccess|ContextInfoError
 
 const AddressRegistrationController = ({address}: AddressRegistrationControllerProps) => {
 
@@ -105,9 +120,14 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
     // Check if address is linked with a BrightID
     useEffect(() => {
         const runEffect = async () => {
-            // TODO: Get linked info from real brightId node
-            const isLinked = false
-            setBrightIdLinked(isLinked)
+            setBrightIdLinked(false)
+            // Get linked info from real brightId node
+            const contextInfo:ContextInfo = await verifyContextId('ethereum', address)
+            console.log(contextInfo)
+            if ('contextIds' in contextInfo) {
+                // API response includes eth address in lowercase
+                setBrightIdLinked(contextInfo.contextIds.includes(address.toLowerCase()))
+            }
         }
         runEffect()
     }, [address])
@@ -115,11 +135,9 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
     const onLinkedBrightId = (isLinked: boolean) => {
         if (isLinked) {
             // user has finished linking process.
-            setNextAmount(BigNumber.from('1230000000000000000'))
             setBrightIdLinked(true)
         } else {
             setBrightIdLinked(false)
-            setNextAmount(BigNumber.from(0))
         }
     }
 
@@ -155,13 +173,13 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
     const registrationTimeRemaining = registrationInfo.currentRegistrationEnd - Date.now()
     console.log(`Remaining registration time: ${registrationTimeRemaining}`)
 
-    let chainSelector, linkAddressWizard, phaseInfo
+    let chainSelector, addressLinkInfo, phaseInfo
     if (registrationTimeRemaining > 0) {
         chainSelector = <ChainSelector address={address}
                                        currentChainId={payoutChainId}
                                        setChainId={setPayoutChainId}
                                        registrationInfo={registrationInfo}/>
-        linkAddressWizard = <LinkAddressWizard address={address}
+        addressLinkInfo = <AddressLinkInfo address={address}
                                                brightIdLinked={brightIdLinked}
                                                setBrightIdLinked={onLinkedBrightId}/>
     } else {
@@ -191,7 +209,7 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
     return (<>
         <div>{claimItems}</div>
         {chainSelector}
-        {linkAddressWizard}
+        {addressLinkInfo}
         {phaseInfo}
     </>)
 
