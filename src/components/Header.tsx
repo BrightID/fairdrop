@@ -40,7 +40,7 @@ export default function Header() {
             <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6" className={classes.title}>
-                        Bright Token Airdrop Registration
+                        Bright Token Airdrop
                     </Typography>
                     {walletName && `Wallet: ${walletName}`}
                     <Button
