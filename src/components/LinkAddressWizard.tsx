@@ -35,7 +35,7 @@ const LinkAddressWizard = ({address, onClose, open }: LinkAddressWizardProps) =>
             console.log(`Clearing interval`)
             clearInterval(intervalId)
         })
-    }, [])
+    }, [address])
 
     const handleCancel = () => {
         // user closed dialog manually. Assume app

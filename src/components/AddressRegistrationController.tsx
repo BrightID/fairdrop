@@ -1,18 +1,19 @@
 import React, {useEffect, useState} from 'react'
-import {BigNumber} from 'ethers'
+import {BigNumber, utils} from 'ethers'
 import claimData_1 from '../airdropData/claimData_1.json'
 import claimData_100 from '../airdropData/claimData_100.json'
 import claimData_31337 from '../airdropData/claimData_31337.json'
-import ActiveClaim from './ActiveClaim'
 import ChainSelector from './ChainSelector'
 import ComingClaim from './ComingClaim'
 import {getAddressInfo, getRegistrationInfo, RegistrationInfo} from '../utils/api'
 import {Alert, AlertTitle} from '@material-ui/lab'
-import {Typography} from '@material-ui/core'
+import {Card, CardContent, Typography} from '@material-ui/core'
 import {intervalToDuration} from 'date-fns'
 import formatDuration from 'date-fns/formatDuration'
 import {verifyContextId} from 'brightid_sdk'
 import AddressLinkInfo from './AddressLinkInfo'
+import ActiveClaimController from './ActiveClaimController'
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 
 
 interface BaseClaim {
@@ -51,7 +52,7 @@ interface ContextInfoError {
 export type ContextInfo = ContextInfoSuccess|ContextInfoError
 
 const AddressRegistrationController = ({address}: AddressRegistrationControllerProps) => {
-
+    const classes = useStyles()
     const [claims, setClaims] = useState<Array<Claim>>([])
     const [claimLoading, setClaimLoading] = useState(true)
     const [registrationInfoLoading, setRegistrationInfoLoading] = useState(true)
@@ -103,7 +104,7 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
         runEffect()
     }, [])
 
-    // Get info about address from backend (payout address, next Amount and next starttime)
+    // Get info (payout chain, next Amount) about address from backend
     useEffect(() => {
         const runEffect = async () => {
             try {
@@ -145,21 +146,22 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
         return <div>Loading claim</div>
     }
 
-    const claimItems = claims.map((claim, index) => <ActiveClaim key={index}
-                                                                 amount={claim.amount}
-                                                                 chainId={claim.chainId}
-                                                                 selectedChainId={payoutChainId}
-                                                                 registrationInfo={registrationInfo}
+    const claimItems = claims.map((claim, index) => <ActiveClaimController
+        key={index}
+        claim={claim}
+        payoutChainId={payoutChainId}
+        registrationInfo={registrationInfo}
     />)
 
     if (claimItems.length === 0) {
-        // dummy entry when nothing is claimable
-        claimItems.push(<ActiveClaim key={0}
-                                     amount={BigNumber.from(0)}
-                                     chainId={0}
-                                     selectedChainId={payoutChainId}
-                                     registrationInfo={registrationInfo}
-        />)
+        // when nothing is claimable
+        claimItems.push(<Card className={classes.card} variant={'outlined'}>
+            <CardContent>
+                <Typography align={'center'} variant={'h6'}>
+                    0 $Bright claimable now
+                </Typography>
+            </CardContent>
+        </Card>)
     }
 
     if (nextAmount.gt(0)) {
@@ -214,5 +216,12 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
     </>)
 
 }
+
+const useStyles = makeStyles((theme: Theme) => createStyles({
+    card: {
+        padding: theme.spacing(2), margin: theme.spacing(1), textAlign: 'center', color: theme.palette.text.primary,
+    },
+}),)
+
 
 export default AddressRegistrationController
