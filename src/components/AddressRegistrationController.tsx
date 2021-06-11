@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {BigNumber, utils} from 'ethers'
+import {BigNumber} from 'ethers'
 import claimData_1 from '../airdropData/claimData_1.json'
 import claimData_100 from '../airdropData/claimData_100.json'
 import claimData_31337 from '../airdropData/claimData_31337.json'
@@ -7,13 +7,15 @@ import ChainSelector from './ChainSelector'
 import ComingClaim from './ComingClaim'
 import {getAddressInfo, getRegistrationInfo, RegistrationInfo} from '../utils/api'
 import {Alert, AlertTitle} from '@material-ui/lab'
-import {Card, CardContent, Typography} from '@material-ui/core'
+import {Grid, Typography} from '@material-ui/core'
 import {intervalToDuration} from 'date-fns'
 import formatDuration from 'date-fns/formatDuration'
 import {verifyContextId} from 'brightid_sdk'
 import AddressLinkInfo from './AddressLinkInfo'
 import ActiveClaimController from './ActiveClaimController'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
+import noclaim from '../images/noclaim.svg'
+import SubNavBar from './SubNavBar'
 
 
 interface BaseClaim {
@@ -49,7 +51,7 @@ interface ContextInfoError {
     statusText: string,
 }
 
-export type ContextInfo = ContextInfoSuccess|ContextInfoError
+export type ContextInfo = ContextInfoSuccess | ContextInfoError
 
 const AddressRegistrationController = ({address}: AddressRegistrationControllerProps) => {
     const classes = useStyles()
@@ -60,9 +62,7 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
     const [nextAmount, setNextAmount] = useState(BigNumber.from(0))
     const [payoutChainId, setPayoutChainId] = useState(0)
     const [registrationInfo, setRegistrationInfo] = useState<RegistrationInfo>({
-        currentRegistrationEnd: 0,
-        nextRegistrationStart: 0,
-        nextClaimStart: 0,
+        currentRegistrationEnd: 0, nextRegistrationStart: 0, nextClaimStart: 0,
     })
 
     // Look for active claims of address on all chains
@@ -90,13 +90,12 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
             setRegistrationInfoLoading(true)
             try {
                 const registrationInfo = await getRegistrationInfo()
+                registrationInfo.currentRegistrationEnd = Date.now() + 1000*60*35
                 setRegistrationInfo(registrationInfo)
             } catch (e) {
                 console.log(`getRegistrationInfo failed: ${e}`)
                 setRegistrationInfo({
-                    currentRegistrationEnd: 0,
-                    nextRegistrationStart: 0,
-                    nextClaimStart: 0,
+                    currentRegistrationEnd: 0, nextRegistrationStart: 0, nextClaimStart: 0,
                 })
             }
             setRegistrationInfoLoading(false)
@@ -123,7 +122,7 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
         const runEffect = async () => {
             setBrightIdLinked(false)
             // Get linked info from real brightId node
-            const contextInfo:ContextInfo = await verifyContextId('ethereum', address)
+            const contextInfo: ContextInfo = await verifyContextId('ethereum', address)
             console.log(contextInfo)
             if ('contextIds' in contextInfo) {
                 // API response includes eth address in lowercase
@@ -155,13 +154,16 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
 
     if (claimItems.length === 0) {
         // when nothing is claimable
-        claimItems.push(<Card className={classes.card} variant={'outlined'}>
-            <CardContent>
-                <Typography align={'center'} variant={'h6'}>
-                    0 $Bright claimable now
+        claimItems.push(<Grid container alignItems={'center'}>
+            <Grid item xs={6}>
+                <img src={noclaim} width={'90%'}/>
+            </Grid>
+            <Grid item xs={6}>
+                <Typography align={'left'} variant={'body1'}>
+                    {`There is no $BRIGHT to claim for address ${address}`}
                 </Typography>
-            </CardContent>
-        </Card>)
+            </Grid>
+        </Grid>)
     }
 
     if (nextAmount.gt(0)) {
@@ -176,25 +178,26 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
     console.log(`Remaining registration time: ${registrationTimeRemaining}`)
 
     let chainSelector, addressLinkInfo, phaseInfo
-    if (registrationTimeRemaining > 0) {
-        chainSelector = <ChainSelector address={address}
+    chainSelector = <ChainSelector address={address}
                                        currentChainId={payoutChainId}
                                        setChainId={setPayoutChainId}
                                        registrationInfo={registrationInfo}/>
+    if (true /*registrationTimeRemaining > 0*/) {
         addressLinkInfo = <AddressLinkInfo address={address}
-                                               brightIdLinked={brightIdLinked}
-                                               setBrightIdLinked={onLinkedBrightId}/>
+                                           brightIdLinked={brightIdLinked}
+                                           setBrightIdLinked={onLinkedBrightId}/>
     } else {
         // currently no registration possible. Check if there will be another phase
         const timeToNextPhaseStart = registrationInfo.nextRegistrationStart - Date.now()
         if (timeToNextPhaseStart > 0) {
             // Another phase will start
-            const duration = intervalToDuration({ start: Date.now(), end: registrationInfo.nextRegistrationStart })
+            const duration = intervalToDuration({start: Date.now(), end: registrationInfo.nextRegistrationStart})
             const durationString = formatDuration(duration, {format: ['weeks', 'days', 'hours', 'minutes']})
             phaseInfo = <Alert severity={'info'}>
                 <AlertTitle>Registration suspended</AlertTitle>
                 <Typography variant={'body1'}>
-                    We are preparing the next airdrop. Registration for next phase will open in approximately {durationString}
+                    We are preparing the next airdrop. Registration for next phase will open in
+                    approximately {durationString}
                 </Typography>
             </Alert>
         } else {
@@ -210,11 +213,9 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
 
     return (<>
         <div>{claimItems}</div>
-        {chainSelector}
-        {addressLinkInfo}
+        <SubNavBar chainSelector={chainSelector} addressLinker={addressLinkInfo}/>
         {phaseInfo}
     </>)
-
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({

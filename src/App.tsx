@@ -5,9 +5,16 @@ import {ethers} from 'ethers'
 import AddressRegistrationController from './components/AddressRegistrationController'
 import ProviderContext from './components/ProviderContext'
 import Header from './components/Header'
+import {makeStyles, ThemeProvider} from '@material-ui/core/styles'
+import theme from './theme'
+import AddressEntryComponent from './components/AddressEntryComponent'
+
+
+const useStyles = makeStyles((theme) => ({
+}));
 
 const App = () => {
-
+    const classes = useStyles();
     const [address, setAddress] = useState('')
 
     // Get address from location hash
@@ -34,16 +41,16 @@ const App = () => {
     }
 
     return (
-      <>
+      <ThemeProvider theme={theme}>
           <CssBaseline />
           <ProviderContext>
               <Header/>
               <Container maxWidth="md">
-                  <AddressForm setAddress={newAddressHandler} initialValues={{address}}/>
+                  <AddressEntryComponent setAddress={newAddressHandler} initialValues={{address}}/>
                   {address !== '' && <AddressRegistrationController address={address}/>}
               </Container>
           </ProviderContext>
-      </>
+      </ThemeProvider>
   );
 }
 

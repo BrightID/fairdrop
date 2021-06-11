@@ -1,13 +1,14 @@
 import React from 'react'
 import {BigNumber, utils} from 'ethers'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
-import {Box, Button, Card, CardContent, Typography} from '@material-ui/core'
+import {Box, Button, Card, CardContent, Grid, Typography} from '@material-ui/core'
 import chainName from '../utils/chainName'
 import {Alert, AlertTitle} from '@material-ui/lab'
 import {intervalToDuration} from 'date-fns'
 import formatDuration from 'date-fns/formatDuration'
 import {RegistrationInfo} from '../utils/api'
 import {TxState, TxStates} from './ActiveClaimController'
+import boxes from '../images/boxes.svg'
 
 interface ActiveClaimProps {
     amount: BigNumber,
@@ -161,7 +162,24 @@ const ActiveClaim = ({amount, claimed, claimState, claimChainId, claimHandler, s
             alerts.push(action)
         }
     }
-
+    return (
+        <Grid container>
+            <Grid item xs={6}>
+                <img src={boxes} width={'90%'}/>
+            </Grid>
+            <Grid item xs={6}>
+                <Grid container direction={'column'}>
+                    <Typography align={'left'} variant={'h4'}>
+                        {`${utils.formatUnits(amount, 18)} $Bright`}
+                    </Typography>
+                    <Typography align={'left'} variant={'h5'}>
+                        claimable on {chainName(claimChainId)} now
+                    </Typography>
+                </Grid>
+            </Grid>
+        </Grid>
+    )
+/*
     return (<Card className={classes.card} variant={'outlined'}>
         <CardContent>
             <Typography align={'center'} variant={'h6'}>
@@ -170,6 +188,8 @@ const ActiveClaim = ({amount, claimed, claimState, claimChainId, claimHandler, s
             {alerts}
         </CardContent>
     </Card>)
+
+ */
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({

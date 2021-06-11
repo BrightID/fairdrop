@@ -10,6 +10,12 @@ const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
     },
+    appBar: {
+        // background: 'linear-gradient(88.11deg, #ED7A5D 18.11%, #CE6045 98.9%, #B64B32 127.03%, #FFFFFF 155.88%)'
+        // color: 'ED7A5D',
+        boxShadow: 'none',
+        borderBottom: '1px solid lightgrey'
+    },
     menuButton: {
         marginRight: theme.spacing(2),
     },
@@ -37,10 +43,10 @@ export default function Header() {
 
     return (
         <div className={classes.root}>
-            <AppBar position="static">
+            <AppBar position="sticky" color={'transparent'} className={classes.appBar}>
                 <Toolbar>
-                    <Typography variant="h6" className={classes.title}>
-                        Bright Token Airdrop
+                    <Typography variant="h6" className={classes.title} color={'primary'}>
+                        $BRIGHT
                     </Typography>
                     {walletName && `Wallet: ${walletName}`}
                     <Button

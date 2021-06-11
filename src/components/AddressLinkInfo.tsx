@@ -1,8 +1,9 @@
 import React, {useState} from 'react'
 import CheckIcon from '@material-ui/icons/Check'
-import {Button, Card, CardContent, Typography} from '@material-ui/core'
+import {Button, Card, CardContent, Grid, Typography} from '@material-ui/core'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import LinkAddressWizard from './LinkAddressWizard'
+import linkAddress from '../images/linkAddress.svg'
 
 interface AddressLinkInfoProps {
     address: string
@@ -25,6 +26,25 @@ const AddressLinkInfo = ({address, brightIdLinked, setBrightIdLinked}: AddressLi
     }
 
     if (brightIdLinked) {
+        return (<>
+            <Grid container>
+                <Grid item xs={6}>
+                    <Grid container direction={'column'}>
+                        <Grid item xs={12}>
+                            <Typography align={'left'} variant={'h5'}>
+                                BrightID Linked
+                            </Typography>
+                            <Typography align={'left'} variant={'body1'}>
+                                It will take up to 24 hours to update the claimable amount after linking
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item xs={6}>
+                    <img src={linkAddress} width={'90%'}/>
+                </Grid>
+            </Grid>
+        </>)
         return (<Card className={classNames.card}>
             <CardContent>
                 <Typography align={'center'} variant="h5" component="h2"><CheckIcon/>
@@ -36,31 +56,38 @@ const AddressLinkInfo = ({address, brightIdLinked, setBrightIdLinked}: AddressLi
             </CardContent>
         </Card>)
     } else {
-        return (<Card className={classNames.card}>
-            <CardContent>
-                <Typography align={'center'} variant="h5" component="h2">
-                    Link your BrightId to get more $Bright!
-                </Typography>
-                <p>It will take up to 24 hours to update the claimable amount after linking</p>
-                <Button variant={'contained'} onClick={handleOpenWizard}>
-                    Link BrightId
-                </Button>
-            </CardContent>
+        return (<>
+            <Grid container>
+                <Grid item xs={6}>
+                    <Grid container direction={'column'}>
+                        <Grid item xs={12}>
+                            <Typography align={'left'} variant={'h5'}>
+                                Link your BrightID to get more $BRIGHT at the next claim period
+                            </Typography>
+                            <Typography align={'left'} variant={'body1'}>
+                                It will take up to 24 hours to update the claimable amount after linking
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button variant={'contained'} color={'primary'} onClick={handleOpenWizard}>Link
+                                BrightId</Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item xs={6}>
+                    <img src={linkAddress} width={'90%'}/>
+                </Grid>
+            </Grid>
             {showWizard && <LinkAddressWizard onClose={handleCloseWizard} address={address} open={true}/>}
-        </Card>)
+        </>)
     }
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        card: {
-            padding: theme.spacing(2),
-            margin: theme.spacing(1),
-            textAlign: 'center',
-            color: theme.palette.text.primary,
-        },
-    }),
-);
+const useStyles = makeStyles((theme: Theme) => createStyles({
+    card: {
+        padding: theme.spacing(2), margin: theme.spacing(1), textAlign: 'center', color: theme.palette.text.primary,
+    },
+}),)
 
 
 export default AddressLinkInfo

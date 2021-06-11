@@ -1,9 +1,9 @@
 import React from 'react'
-import {Form} from 'react-final-form'
-import {Box, Button, Card, Grid} from '@material-ui/core'
-import {TextField} from 'mui-rff'
+import {Box, Button, Card, FormControl, Grid, Input, InputAdornment, InputLabel } from '@material-ui/core'
 import {ethers} from 'ethers'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
+import { Form } from 'react-final-form'
+import { TextField} from 'mui-rff'
 
 interface AddressFormData {
     address: string;
@@ -18,11 +18,13 @@ const AddressForm = ({initialValues, setAddress}: AddressFormProps) => {
     const classNames = useStyles()
 
     const onSubmit = (values: AddressFormData) => {
+        console.log(`SUbmitting ${values.address}`)
         // make sure to have a checksummed address before storing
         setAddress(ethers.utils.getAddress(values.address))
     }
 
     const validate = (values: AddressFormData) => {
+        console.log(`Validating...`)
         if (!values.address) {
             return {address: 'Enter an Ethereum address.'}
         }
@@ -38,36 +40,34 @@ const AddressForm = ({initialValues, setAddress}: AddressFormProps) => {
     return (<Form onSubmit={onSubmit}
                   initialValues={initialValues}
                   validate={validate}
-                  render={({handleSubmit, submitting, values}) => (<form onSubmit={handleSubmit} noValidate>
-                      <Grid container spacing={6}>
-                          <Grid item xs={12}>
-                              <Box>
-                                  <Card className={classNames.card}>
-                                      <Box padding={2}>
-                                          <TextField label="Address" name="address" required={true}/>
-                                      </Box>
-                                      <Box padding={2}>
-                                          <Button variant="contained" color="primary" type="submit" disabled={submitting} size={'large'} fullWidth={true}>
-                                              Check address
-                                          </Button>
-                                      </Box>
-                                  </Card>
-                              </Box>
-                          </Grid>
-                      </Grid>
-                  </form>)}
-    />)
+                  render={({handleSubmit, submitting, values}) => (
+                      <form onSubmit={handleSubmit} noValidate>
+                          <TextField
+                              id="address"
+                              type='text'
+                              name='address'
+                              InputProps={{
+                                  endAdornment: <InputAdornment position="end">
+                                      <Button
+                                          type="submit"
+                                          disabled={submitting}
+                                          variant={'contained'}
+                                          color={'primary'}
+                                      >
+                                          Check Address
+                                      </Button>
+                                  </InputAdornment>
+                              }}
+                          />
+                      </form>)}
+            />
+    )
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        card: {
-            padding: theme.spacing(2),
-            margin: theme.spacing(1),
-            textAlign: 'center',
-            color: theme.palette.text.primary,
-        },
-    }),
-);
+const useStyles = makeStyles((theme: Theme) => createStyles({
+    card: {
+        padding: theme.spacing(2), margin: theme.spacing(1), textAlign: 'center', color: theme.palette.text.primary,
+    },
+}),)
 
 export default AddressForm
