@@ -49,6 +49,7 @@ const AddressForm = ({initialValues, setAddress}: AddressFormProps) => {
                               InputProps={{
                                   endAdornment: <InputAdornment position="end">
                                       <Button
+                                          className={classNames.button}
                                           type="submit"
                                           disabled={submitting}
                                           variant={'contained'}
@@ -68,6 +69,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     card: {
         padding: theme.spacing(2), margin: theme.spacing(1), textAlign: 'center', color: theme.palette.text.primary,
     },
+    button: {
+        color: 'white'
+    }
 }),)
 
 export default AddressForm

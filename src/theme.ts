@@ -1,9 +1,9 @@
 import {createMuiTheme} from '@material-ui/core'
 
 export const theme = createMuiTheme({
-    "overrides": {
+    overrides: {
         MuiCssBaseline: {
-            '@global': {
+            "@global": {
                 body: {
                     background: 'linear-gradient(70deg, #FFFFFF 50%, #ED7A5D 200%)',
                     backgroundRepeat: "no-repeat",
@@ -11,10 +11,10 @@ export const theme = createMuiTheme({
             }
         }
     },
-    "palette": {
-        "primary" : {
+    palette: {
+        primary : {
             // light: will be calculated from palette.primary.main,
-            main: '#ff4400',
+            main: '#ED7A5D',
             // dark: will be calculated from palette.primary.main,
             // contrastText: will be calculated to contrast with palette.primary.main
         }

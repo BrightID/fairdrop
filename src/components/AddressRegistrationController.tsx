@@ -36,7 +36,11 @@ export interface Claim extends BaseClaim {
 }
 
 interface AddressRegistrationControllerProps {
-    address: string
+    address: string,
+    registrationInfo: RegistrationInfo,
+    registrationInfoLoading: boolean,
+    payoutChainId: number,
+    nextAmount: BigNumber
 }
 
 interface ContextInfoSuccess {
@@ -53,17 +57,10 @@ interface ContextInfoError {
 
 export type ContextInfo = ContextInfoSuccess | ContextInfoError
 
-const AddressRegistrationController = ({address}: AddressRegistrationControllerProps) => {
+const AddressRegistrationController = ({address, registrationInfo, registrationInfoLoading, payoutChainId, nextAmount }: AddressRegistrationControllerProps) => {
     const classes = useStyles()
     const [claims, setClaims] = useState<Array<Claim>>([])
     const [claimLoading, setClaimLoading] = useState(true)
-    const [registrationInfoLoading, setRegistrationInfoLoading] = useState(true)
-    const [brightIdLinked, setBrightIdLinked] = useState(false)
-    const [nextAmount, setNextAmount] = useState(BigNumber.from(0))
-    const [payoutChainId, setPayoutChainId] = useState(0)
-    const [registrationInfo, setRegistrationInfo] = useState<RegistrationInfo>({
-        currentRegistrationEnd: 0, nextRegistrationStart: 0, nextClaimStart: 0,
-    })
 
     // Look for active claims of address on all chains
     useEffect(() => {
@@ -84,65 +81,6 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
         setClaimLoading(false)
     }, [address])
 
-    // Get info about registration phases from backend
-    useEffect(() => {
-        const runEffect = async () => {
-            setRegistrationInfoLoading(true)
-            try {
-                const registrationInfo = await getRegistrationInfo()
-                // TEST DEBUG
-                registrationInfo.currentRegistrationEnd = Date.now() + 1000*60*35
-                registrationInfo.nextClaimStart = Date.now() + 1000*60*170
-                // END TEST DEBUG
-                setRegistrationInfo(registrationInfo)
-            } catch (e) {
-                console.log(`getRegistrationInfo failed: ${e}`)
-                setRegistrationInfo({
-                    currentRegistrationEnd: 0, nextRegistrationStart: 0, nextClaimStart: 0,
-                })
-            }
-            setRegistrationInfoLoading(false)
-        }
-        runEffect()
-    }, [])
-
-    // Get info (payout chain, next Amount) about address from backend
-    useEffect(() => {
-        const runEffect = async () => {
-            try {
-                const addressInfo = await getAddressInfo(address)
-                setPayoutChainId(addressInfo.chainId)
-                setNextAmount(addressInfo.nextAmount)
-            } catch (e) {
-                console.log(`getAddressInfo failed: ${e}`)
-            }
-        }
-        runEffect()
-    }, [address])
-
-    // Check if address is linked with a BrightID
-    useEffect(() => {
-        const runEffect = async () => {
-            setBrightIdLinked(false)
-            // Get linked info from real brightId node
-            const contextInfo: ContextInfo = await verifyContextId('ethereum', address)
-            console.log(contextInfo)
-            if ('contextIds' in contextInfo) {
-                // API response includes eth address in lowercase
-                setBrightIdLinked(contextInfo.contextIds.includes(address.toLowerCase()))
-            }
-        }
-        runEffect()
-    }, [address])
-
-    const onLinkedBrightId = (isLinked: boolean) => {
-        if (isLinked) {
-            // user has finished linking process.
-            setBrightIdLinked(true)
-        } else {
-            setBrightIdLinked(false)
-        }
-    }
 
     if (claimLoading || registrationInfoLoading) {
         return <div>Loading claim</div>
@@ -170,24 +108,6 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
         </Grid>)
     }
 
-    const registrationTimeRemaining = registrationInfo.currentRegistrationEnd - Date.now()
-    const timeToNextPhaseStart = registrationInfo.nextRegistrationStart - Date.now()
-    console.log(`Remaining registration time: ${registrationTimeRemaining}`)
-    console.log(`Next registration start time: ${registrationTimeRemaining}`)
-
-    // Only enable change of payout chain or linking of address if we have an active or upcoming
-    // registration phase
-    let subNavBar
-    if ((registrationTimeRemaining > 0) || (timeToNextPhaseStart > 0)) {
-        const chainSelector = <ChainSelector address={address}
-                                       currentChainId={payoutChainId}
-                                       setChainId={setPayoutChainId}
-                                       registrationInfo={registrationInfo}/>
-        const addressLinkInfo = <AddressLinkInfo address={address}
-                                           brightIdLinked={brightIdLinked}
-                                           setBrightIdLinked={onLinkedBrightId}/>
-        subNavBar = (<SubNavBar chainSelector={chainSelector} addressLinker={addressLinkInfo}/>)
-    }
     /* else {
         // currently no registration possible. Check if there will be another phase
         if (timeToNextPhaseStart > 0) {
@@ -215,7 +135,6 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
 
     return (<>
         <div>{claimItems}</div>
-        {subNavBar}
     </>)
 }
 

@@ -59,11 +59,17 @@ const ActiveClaim = ({amount, nextAmount, claimed, claimState, claimChainId, cla
                     {`${utils.formatUnits(futureAmount, 18)} $Bright`}
                 </Typography>
                 <Typography align={'left'} variant={'h5'}>
-                    claimable at the next claim period on {chainName(claimChainId)}.
+                    claimable at the next claim period on {chainName(selectedChainId)}.
                 </Typography>
                 <Typography align={'left'} variant={'h6'}>
                     Next claim period starts in {formatDuration(duration, {format: ['weeks', 'days', 'hours', 'minutes']})}.
                 </Typography>
+                {/*
+                <Typography align={'left'} variant={'body2'}>
+                    In a hurry? Claim {utils.formatUnits(amount, 18)} $BRIGHT on {chainName(claimChainId)} now.
+                    The rest will be available in the next claim period on {chainName(selectedChainId)}.
+                </Typography>
+                */}
             </Grid>
         } else {
             mainContent = <Grid item>

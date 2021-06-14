@@ -13,7 +13,8 @@ const useStyles = makeStyles((theme) => ({
     appBar: {
         background: 'white',
         boxShadow: 'none',
-        borderBottom: '1px solid lightgrey'
+        borderBottom: '1px solid lightgrey',
+        marginBottom: theme.spacing(6)
     },
     menuButton: {
         marginRight: theme.spacing(2),
@@ -23,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
     },
     changeWalletBtn: {
         marginLeft: theme.spacing(2),
+        color: 'white'
     }
 }));
 
@@ -36,8 +38,10 @@ export default function Header() {
 
     const switchWallet = async () => {
         console.log(`SwitchWallet`)
-        await onboardApi?.walletSelect()
-        await onboardApi?.walletCheck();
+        const selected = await onboardApi?.walletSelect()
+        if (selected) {
+            await onboardApi?.walletCheck();
+        }
     }
 
     return (
@@ -51,7 +55,7 @@ export default function Header() {
                     <Button
                         className={classes.changeWalletBtn}
                         variant={'contained'}
-                        color={'secondary'}
+                        color={'primary'}
                         onClick={switchWallet}>
                         {buttonLabel}
                     </Button>
