@@ -19,6 +19,7 @@ interface ActiveClaimProps {
     registrationInfo: RegistrationInfo,
     connectWallet?: () => any,
     claimHandler: ()=>any,
+    cancelHandler: ()=>any,
     claimState: {
         txState: TxState
         txHash?: string
@@ -26,16 +27,19 @@ interface ActiveClaimProps {
     }
 }
 
-const ActiveClaim = ({amount, claimed, claimState, claimChainId, claimHandler, selectedChainId, currentChainId, registrationInfo, connectWallet}: ActiveClaimProps) => {
+const ActiveClaim = ({amount, claimed, claimState, claimChainId, claimHandler, cancelHandler, selectedChainId, currentChainId, registrationInfo, connectWallet}: ActiveClaimProps) => {
     const classes = useStyles()
 
     // time remaining till next claim phase startes
     const remainingTicks = registrationInfo.nextClaimStart - Date.now()
+    console.log(`Registration remaining ticks: ${remainingTicks}`)
 
+    let mainContent
     const alerts : Array<JSX.Element> = []
     if (claimed) {
+        console.log('Already claimed!')
         // already claimed. Just show that fact and skip everything else
-        alerts.push(<Alert severity={'info'}>
+        alerts.push(<Alert severity={'success'} className={classes.alert}>
             <AlertTitle>Already claimed</AlertTitle>
             <Typography variant={'body1'}>
                 $Bright are already claimed on {chainName(claimChainId)}
@@ -45,48 +49,64 @@ const ActiveClaim = ({amount, claimed, claimState, claimChainId, claimHandler, s
 
         // display info in case user has changed his payout chain after the current airdrop phase was created
         if ((selectedChainId !== claimChainId) && (remainingTicks > 0)) {
+            console.log('claimable, but chose different payout chain!')
             const duration = intervalToDuration({ start: Date.now(), end: registrationInfo.nextClaimStart })
-            alerts.push(<Alert severity={'info'}>
-                <AlertTitle>Network Info</AlertTitle>
-                <Typography variant={'body1'}>
-                    {`Current claim is available on ${chainName(claimChainId)}. The claim will be moved to
-                 ${chainName(selectedChainId)} in the next period, starting in 
-                 approximately ${formatDuration(duration, {format: ['weeks', 'days', 'hours', 'minutes']})}
-                 , unless you claim it on ${chainName(claimChainId)} before.`}
+            mainContent = <Grid item>
+                <Typography align={'left'} variant={'h4'}>
+                    {`${utils.formatUnits(amount, 18)} $Bright`}
                 </Typography>
-            </Alert>)
+                <Typography align={'left'} variant={'h5'}>
+                    claimable at the next claim period on {chainName(claimChainId)}.
+                </Typography>
+                <Typography align={'left'} variant={'h6'}>
+                    Next claim period starts in {formatDuration(duration, {format: ['weeks', 'days', 'hours', 'minutes']})}.
+                </Typography>
+            </Grid>
+        } else {
+            mainContent = <Grid item>
+                <Typography align={'left'} variant={'h4'}>
+                    {`${utils.formatUnits(amount, 18)} $Bright`}
+                </Typography>
+                <Typography align={'left'} variant={'h5'}>
+                    claimable on {chainName(claimChainId)} now
+                </Typography>
+            </Grid>
         }
 
         // Check connection and current chain
         if (currentChainId === 0) {
+            console.log('Wallet not connected!')
             // Wallet not connected
-            alerts.push(<Alert severity="info">
-                <AlertTitle>Not connected</AlertTitle>
-                <Typography variant={'body1'}>
-                    Connect your wallet to claim!
-                </Typography>
-                <Button variant={'outlined'} onClick={connectWallet}>Connect</Button>
-            </Alert>)
+            alerts.push(<Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+            >
+                <Button
+                    variant="contained"
+                    color="primary"
+                    size={"large"}
+                    fullWidth={true}
+                    onClick={connectWallet}
+                >Connect wallet to claim</Button>
+            </Box>)
         } else if (claimChainId !== currentChainId) {
+            console.log('Wallet connected wrong chain!')
             // wallet connected, but not on the claim chain
             alerts.push(
-                <Alert severity="warning">
-                    <AlertTitle>Wrong network</AlertTitle>
+                <Alert severity="info" className={classes.alert}>
                     <Typography variant={'body1'}>
                         Switch to <strong>{chainName(claimChainId)}</strong> to claim!
                     </Typography>
                 </Alert>
             )
         } else {
+            console.log('Wallet connected, ready to claim!')
             // wallet is connected and on claim chain -> Enable claiming.
             let action
             switch (claimState.txState){
                 case TxStates.Idle:
-                    action = <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                    >
+                    action = <Grid item>
                         <Button
                             variant="contained"
                             color="primary"
@@ -94,7 +114,7 @@ const ActiveClaim = ({amount, claimed, claimState, claimChainId, claimHandler, s
                             fullWidth={true}
                             onClick={claimHandler}
                         >Claim</Button>
-                    </Box>
+                    </Grid>
                     break;
                 case TxStates.WaitingSignature:
                     action =<Box
@@ -102,7 +122,7 @@ const ActiveClaim = ({amount, claimed, claimState, claimChainId, claimHandler, s
                         alignItems="center"
                         justifyContent="center"
                     >
-                        <Alert severity="info" variant="outlined" style={{width: '95%'}}>
+                        <Alert severity="info" className={classes.alert} variant="outlined" style={{width: '95%'}}>
                             Please sign transaction...
                         </Alert>
                     </Box>
@@ -113,7 +133,7 @@ const ActiveClaim = ({amount, claimed, claimState, claimChainId, claimHandler, s
                         alignItems="center"
                         justifyContent="center"
                     >
-                        <Alert severity="info" variant="outlined" style={{width: '95%'}}>
+                        <Alert severity="info" className={classes.alert} variant="outlined" style={{width: '95%'}}>
                             {`Transaction ${claimState.txHash} created, waiting for confirmation...`}
                         </Alert>
                     </Box>
@@ -125,37 +145,34 @@ const ActiveClaim = ({amount, claimed, claimState, claimChainId, claimHandler, s
                         justifyContent="center"
                         marginTop={0}
                     >
-                        <Alert severity="success" variant="outlined" style={{width: '95%'}}>
+                        <Alert severity="success" className={classes.alert} variant="outlined" style={{width: '95%'}}>
                             {`Successfully claimed! (Transaction ${claimState.txHash}`}
                         </Alert>
                     </Box>
                     break;
                 case TxStates.Error:
                     action =<>
-                        <Box
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                        >
-                            <Alert severity="error" variant="outlined" style={{width: '95%'}}>
+                        <Grid item>
+                            <Alert severity="error" className={classes.alert} variant="outlined" style={{width: '95%'}}>
                                 <AlertTitle>Claiming failed</AlertTitle>
                                 {claimState.errorMessage !== '' && <Box>{claimState.errorMessage}</Box>}
                                 {claimState.txHash !== '' && <Box>{claimState.txHash}</Box>}
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size={"large"}
+                                    onClick={claimHandler}
+                                    style={{width: '45%', marginTop: '20px'}}
+                                >Retry</Button>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    size={"large"}
+                                    onClick={cancelHandler}
+                                    style={{width: '45%', marginLeft: '20px', marginTop: '20px'}}
+                                >Cancel</Button>
                             </Alert>
-                        </Box>
-                        <Box
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                        >
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                size={"large"}
-                                onClick={claimHandler}
-                                style={{width: '95%'}}
-                            >Try again</Button>
-                        </Box>
+                        </Grid>
                     </>
                     break;
             }
@@ -169,33 +186,21 @@ const ActiveClaim = ({amount, claimed, claimState, claimChainId, claimHandler, s
             </Grid>
             <Grid item xs={6}>
                 <Grid container direction={'column'}>
-                    <Typography align={'left'} variant={'h4'}>
-                        {`${utils.formatUnits(amount, 18)} $Bright`}
-                    </Typography>
-                    <Typography align={'left'} variant={'h5'}>
-                        claimable on {chainName(claimChainId)} now
-                    </Typography>
+                    {mainContent}
+                    {alerts}
                 </Grid>
             </Grid>
         </Grid>
     )
-/*
-    return (<Card className={classes.card} variant={'outlined'}>
-        <CardContent>
-            <Typography align={'center'} variant={'h6'}>
-                {`${utils.formatUnits(amount, 18)} $Bright claimable on ${chainName(claimChainId)}`} now
-            </Typography>
-            {alerts}
-        </CardContent>
-    </Card>)
-
- */
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     card: {
         padding: theme.spacing(2), margin: theme.spacing(1), textAlign: 'center', color: theme.palette.text.primary,
     },
+    alert: {
+        borderRadius: 5
+    }
 }),)
 
 export default ActiveClaim

@@ -143,7 +143,18 @@ const ActiveClaimController = ({claim, registrationInfo, payoutChainId}: ActiveC
                     txState: TxStates.Error, errorMessage: err.message
                 })
             }
+        } else {
+            console.log(`no merkledistributor`)
+            setClaimState({
+                txState: TxStates.Error, errorMessage: `Merkledistributor contract not found`
+            })
         }
+    }
+
+    const cancelRedeem = ()=> {
+        setClaimState({
+            txState: TxStates.Idle
+        })
     }
 
     const connectWallet = async () => {
@@ -159,6 +170,7 @@ const ActiveClaimController = ({claim, registrationInfo, payoutChainId}: ActiveC
             registrationInfo={registrationInfo}
             connectWallet={connectWallet}
             claimHandler={redeem}
+            cancelHandler={cancelRedeem}
             claimState={claimState}
     />)
 }
