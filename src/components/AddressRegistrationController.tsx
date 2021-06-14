@@ -1,8 +1,5 @@
 import React, {useEffect, useState} from 'react'
 import {BigNumber} from 'ethers'
-import claimData_1 from '../airdropData/claimData_1.json'
-import claimData_100 from '../airdropData/claimData_100.json'
-import claimData_31337 from '../airdropData/claimData_31337.json'
 import { RegistrationInfo} from '../utils/api'
 import {Grid, Typography} from '@material-ui/core'
 import ActiveClaimController from './ActiveClaimController'
@@ -19,6 +16,15 @@ interface JsonClaim extends BaseClaim {
     amount: {
         type: string, hex: string,
     },
+}
+
+interface ClaimFile {
+    chainId: number,
+    root: string,
+    totalAmount: {
+        type: string, hex: string,
+    },
+    data: Array<JsonClaim>
 }
 
 export interface Claim extends BaseClaim {
@@ -51,26 +57,52 @@ export type ContextInfo = ContextInfoSuccess | ContextInfoError
 const AddressRegistrationController = ({address, registrationInfo, registrationInfoLoading, payoutChainId, nextAmount }: AddressRegistrationControllerProps) => {
     const [claims, setClaims] = useState<Array<Claim>>([])
     const [claimLoading, setClaimLoading] = useState(true)
+    const [claimFiles, setClaimFiles] = useState<Array<ClaimFile>>([])
+
+    // Load claimfiles
+    useEffect(() => {
+        const runEffect = async () => {
+            setClaimLoading(true)
+            const _claimFiles: Array<ClaimFile> = []
+            for (const chainId of [1, 100, 31337]) {
+                const url = `airdropData/claimData_${chainId}.json`
+                const response = await fetch(url)
+                if (response.ok) {
+                    const claimFile: ClaimFile = await response.json()
+                    console.log(claimFile)
+                    _claimFiles.push(claimFile)
+                } else {
+                    console.log(`Failed to fetch claimFile at ${url}. Response: ${response.status} - ${response.statusText}`)
+                }
+            }
+            setClaimFiles(_claimFiles)
+            setClaimLoading(false)
+        }
+        runEffect()
+    }, [])
+
 
     // Look for active claims of address on all chains
     useEffect(() => {
-        setClaimLoading(true)
-        const claims: Array<Claim> = []
-        for (const claimData of [claimData_1, claimData_100, claimData_31337]) {
-            const claimEntry: JsonClaim | undefined = claimData.data.find(entry => entry.address === address)
-            if (claimEntry) {
-                // convert json-encoded amount to BN and add chainId
-                const amount = BigNumber.from(claimEntry.amount)
-                const claim = {
-                    ...claimEntry, amount, chainId: claimData.chainId
+        const runEffect = async () => {
+            const claims: Array<Claim> = []
+            for (const claimFile of claimFiles) {
+                const claimEntry: JsonClaim | undefined = claimFile.data.find(entry => entry.address === address)
+                if (claimEntry) {
+                    // convert json-encoded amount to BN and add chainId
+                    const amount = BigNumber.from(claimEntry.amount)
+                    const claim = {
+                        ...claimEntry,
+                        amount,
+                        chainId: claimFile.chainId
+                    }
+                    claims.push(claim)
                 }
-                claims.push(claim)
             }
+            setClaims(claims)
         }
-        setClaims(claims)
-        setClaimLoading(false)
-    }, [address])
-
+        runEffect()
+    }, [address, claimFiles])
 
     if (claimLoading || registrationInfoLoading) {
         return <div>Loading claim</div>
