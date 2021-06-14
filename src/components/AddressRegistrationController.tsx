@@ -153,6 +153,7 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
         claim={claim}
         payoutChainId={payoutChainId}
         registrationInfo={registrationInfo}
+        nextAmount={nextAmount}
     />)
 
     if (claimItems.length === 0) {
@@ -169,29 +170,26 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
         </Grid>)
     }
 
-    if (nextAmount.gt(0)) {
-        // We know the address will be able to claim this amount in the next claim period
-        claimItems.push(<ComingClaim key={claimItems.length}
-                                     amount={nextAmount}
-                                     selectedChainId={payoutChainId}
-                                     startTimestamp={registrationInfo.nextClaimStart}/>)
-    }
-
     const registrationTimeRemaining = registrationInfo.currentRegistrationEnd - Date.now()
+    const timeToNextPhaseStart = registrationInfo.nextRegistrationStart - Date.now()
     console.log(`Remaining registration time: ${registrationTimeRemaining}`)
+    console.log(`Next registration start time: ${registrationTimeRemaining}`)
 
-    let chainSelector, addressLinkInfo, phaseInfo
-    chainSelector = <ChainSelector address={address}
+    // Only enable change of payout chain or linking of address if we have an active or upcoming
+    // registration phase
+    let subNavBar
+    if ((registrationTimeRemaining > 0) || (timeToNextPhaseStart > 0)) {
+        const chainSelector = <ChainSelector address={address}
                                        currentChainId={payoutChainId}
                                        setChainId={setPayoutChainId}
                                        registrationInfo={registrationInfo}/>
-    if (true /*registrationTimeRemaining > 0*/) {
-        addressLinkInfo = <AddressLinkInfo address={address}
+        const addressLinkInfo = <AddressLinkInfo address={address}
                                            brightIdLinked={brightIdLinked}
                                            setBrightIdLinked={onLinkedBrightId}/>
-    } else {
+        subNavBar = (<SubNavBar chainSelector={chainSelector} addressLinker={addressLinkInfo}/>)
+    }
+    /* else {
         // currently no registration possible. Check if there will be another phase
-        const timeToNextPhaseStart = registrationInfo.nextRegistrationStart - Date.now()
         if (timeToNextPhaseStart > 0) {
             // Another phase will start
             const duration = intervalToDuration({start: Date.now(), end: registrationInfo.nextRegistrationStart})
@@ -213,11 +211,11 @@ const AddressRegistrationController = ({address}: AddressRegistrationControllerP
             </Alert>
         }
     }
+    */
 
     return (<>
         <div>{claimItems}</div>
-        <SubNavBar chainSelector={chainSelector} addressLinker={addressLinkInfo}/>
-        {phaseInfo}
+        {subNavBar}
     </>)
 }
 

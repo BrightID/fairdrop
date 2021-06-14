@@ -3,7 +3,6 @@ import {Button, ButtonGroup, Card, CardContent, CardHeader, Grid, Typography} fr
 import chainName from '../utils/chainName'
 import ChainSelectorWizard from './ChainSelectorWizard'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
-import {Alert, AlertTitle} from '@material-ui/lab'
 import {EthersProviderContext} from './ProviderContext'
 import {intervalToDuration} from 'date-fns'
 import formatDuration from 'date-fns/formatDuration'
@@ -21,7 +20,6 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
     const classes = useStyles()
     const {wallet, onboardApi, walletAddress} = useContext(EthersProviderContext)
     const [showWizard, setShowWizard] = useState(false)
-    const [cardButton, setCardButton] = useState<any>(undefined)
 
     const handleOpenWizard = async () => {
         // wallet connected?
@@ -85,7 +83,7 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
                         </Grid>
                         <Grid item xs={12}>
                                 <Typography variant={'body1'}>
-                                    {`Note that change of payout network will take effect for the next claim period, starting
+                                    {`Note that change of payout chain will take effect for the next claim period, starting
                          in approximately ${durationString}.`}
                                 </Typography>
                                 <Typography variant={'body1'}>
