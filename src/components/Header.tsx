@@ -11,8 +11,7 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
     },
     appBar: {
-        // background: 'linear-gradient(88.11deg, #ED7A5D 18.11%, #CE6045 98.9%, #B64B32 127.03%, #FFFFFF 155.88%)'
-        // color: 'ED7A5D',
+        background: 'white',
         boxShadow: 'none',
         borderBottom: '1px solid lightgrey'
     },
