@@ -92,6 +92,7 @@ const ActiveClaim = ({amount, nextAmount, claimed, claimState, claimChainId, cla
                     <Button
                         variant="contained"
                         color="primary"
+                        className={classes.button}
                         size={"large"}
                         fullWidth={true}
                         onClick={connectWallet}
@@ -118,6 +119,7 @@ const ActiveClaim = ({amount, nextAmount, claimed, claimState, claimChainId, cla
                                 size={"large"}
                                 fullWidth={true}
                                 onClick={claimHandler}
+                                className={classes.button}
                             >Claim</Button>
                         </Grid>
                         break;
@@ -190,7 +192,7 @@ const ActiveClaim = ({amount, nextAmount, claimed, claimState, claimChainId, cla
             <Grid item xs={6}>
                 <img src={boxes} width={'90%'} alt={'boxes'}/>
             </Grid>
-            <Grid container item xs={6} alignItems={'center'} >
+            <Grid container item xs={6} alignContent={'center'} justify={'center'} direction={'column'}>
                 {mainContent}
                 {alerts}
             </Grid>
@@ -204,6 +206,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     alert: {
         borderRadius: 5
+    },
+    button: {
+        color: 'white'
     }
 }),)
 

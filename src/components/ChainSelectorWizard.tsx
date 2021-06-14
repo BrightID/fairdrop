@@ -1,7 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react'
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from '@material-ui/core'
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography} from '@material-ui/core'
 import {setAddressPayoutChainId} from '../utils/api'
 import {EthersProviderContext} from './ProviderContext'
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 
 interface ChainSelectorWizardProps {
     onClose: (arg0: number) => any,
@@ -17,6 +18,7 @@ const WizardSteps = {
 type WizardStep = typeof WizardSteps[keyof typeof WizardSteps]
 
 const ChainSelectorWizard = ({address, currentChainId, open, onClose, desiredChainId}: ChainSelectorWizardProps) => {
+    const classNames = useStyles()
     const [step, setStep] = useState<WizardStep>(WizardSteps.SigningMessage)
     const {provider} = useContext(EthersProviderContext)
     const [stepInfo, setStepInfo] = useState({message: '', description: ''})
@@ -98,19 +100,43 @@ const ChainSelectorWizard = ({address, currentChainId, open, onClose, desiredCha
 
     // console.log(`Dialog is ${open?'open':'closed'}. Current step: ${step}`)
 
-    return (<Dialog open={open} onClose={handleCancel} disableBackdropClick={true}>
+    return (<Dialog className={classNames.dialog}
+                    open={open}
+                    onClose={handleCancel}
+                    disableBackdropClick={true}
+                    PaperProps={{square: true}}>
             <DialogTitle>{stepInfo.message}</DialogTitle>
-            <DialogContent>{stepInfo.description}</DialogContent>
-            <DialogActions>
-                {step === WizardSteps.Error && <Button onClick={handleCancel} color="primary">
+            <DialogContent>
+                <Typography>{stepInfo.description}</Typography>
+                {step === WizardSteps.Error && <Button onClick={handleCancel}
+                                                       className={classNames.button}
+                                                       color="primary"
+                                                       variant={'contained'}>
                   Close
                 </Button>}
-                {step === WizardSteps.Success && <Button onClick={handleSuccess} color="primary">
-                    Ok
+                {step === WizardSteps.Success && <Button onClick={handleSuccess}
+                                                         className={classNames.button}
+                                                         color="primary"
+                                                         variant={'contained'}>
+                  Ok
                 </Button>}
+            </DialogContent>
+            <DialogActions>
             </DialogActions>
         </Dialog>)
 
 }
+
+const useStyles = makeStyles((theme: Theme) => createStyles({
+    dialog: {
+        padding: theme.spacing(2),
+        textAlign: 'center',
+        color: theme.palette.text.primary,
+    },
+    button: {
+        color: 'white'
+    },
+
+}),)
 
 export default ChainSelectorWizard
