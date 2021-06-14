@@ -10,7 +10,8 @@ import {RegistrationInfo} from '../utils/api'
 interface ActiveClaimControllerProps {
     claim: Claim,
     registrationInfo: RegistrationInfo,
-    payoutChainId: number
+    payoutChainId: number,
+    nextAmount: BigNumber
 }
 
 export const TxStates = {
@@ -28,7 +29,7 @@ interface ClaimState {
     errorMessage?: string
 }
 
-const ActiveClaimController = ({claim, registrationInfo, payoutChainId}: ActiveClaimControllerProps) => {
+const ActiveClaimController = ({claim, registrationInfo, payoutChainId, nextAmount}: ActiveClaimControllerProps) => {
     const [merkleDistributor, setMerkleDistributor] = useState<MerkleDistributor | undefined>(undefined)
     const [isClaimed, setIsClaimed] = useState(false)
     const [claimState, setClaimState] = useState<ClaimState>({txState: TxStates.Idle})
@@ -143,7 +144,18 @@ const ActiveClaimController = ({claim, registrationInfo, payoutChainId}: ActiveC
                     txState: TxStates.Error, errorMessage: err.message
                 })
             }
+        } else {
+            console.log(`no merkledistributor`)
+            setClaimState({
+                txState: TxStates.Error, errorMessage: `Merkledistributor contract not found`
+            })
         }
+    }
+
+    const cancelRedeem = ()=> {
+        setClaimState({
+            txState: TxStates.Idle
+        })
     }
 
     const connectWallet = async () => {
@@ -152,6 +164,7 @@ const ActiveClaimController = ({claim, registrationInfo, payoutChainId}: ActiveC
 
     return (<ActiveClaim
             amount={claim.amount}
+            nextAmount={nextAmount}
             claimed={isClaimed}
             claimChainId={claim.chainId}
             selectedChainId={payoutChainId}
@@ -159,6 +172,7 @@ const ActiveClaimController = ({claim, registrationInfo, payoutChainId}: ActiveC
             registrationInfo={registrationInfo}
             connectWallet={connectWallet}
             claimHandler={redeem}
+            cancelHandler={cancelRedeem}
             claimState={claimState}
     />)
 }
