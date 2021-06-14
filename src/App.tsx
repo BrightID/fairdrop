@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react'
 import {Container, CssBaseline} from '@material-ui/core'
-import AddressForm from './components/AddressForm'
 import {BigNumber, ethers} from 'ethers'
 import AddressRegistrationController, {ContextInfo} from './components/AddressRegistrationController'
 import ProviderContext from './components/ProviderContext'
 import Header from './components/Header'
-import {makeStyles, ThemeProvider} from '@material-ui/core/styles'
+import { ThemeProvider} from '@material-ui/core/styles'
 import theme from './theme'
 import AddressEntryComponent from './components/AddressEntryComponent'
 import {getAddressInfo, getRegistrationInfo, RegistrationInfo} from './utils/api'
@@ -15,11 +14,7 @@ import SubNavBar from './components/SubNavBar'
 import {verifyContextId} from 'brightid_sdk'
 
 
-const useStyles = makeStyles((theme) => ({
-}));
-
 const App = () => {
-    const classes = useStyles();
     const [address, setAddress] = useState('')
     const [registrationInfoLoading, setRegistrationInfoLoading] = useState(true)
     const [registrationInfo, setRegistrationInfo] = useState<RegistrationInfo>({
@@ -119,7 +114,7 @@ const App = () => {
     console.log(`Remaining registration time: ${registrationTimeRemaining}`)
     console.log(`Next registration start time: ${registrationTimeRemaining}`)
     let subNavBar
-    if ( (address !== '') && (registrationTimeRemaining > 0) || (timeToNextPhaseStart > 0)) {
+    if ( ((address !== '') && (registrationTimeRemaining > 0)) || (timeToNextPhaseStart > 0)) {
         const chainSelector = <ChainSelector address={address}
                                              currentChainId={payoutChainId}
                                              setChainId={setPayoutChainId}

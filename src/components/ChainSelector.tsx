@@ -1,5 +1,10 @@
 import React, {useContext, useState} from 'react'
-import {Button, ButtonGroup, Card, CardContent, CardHeader, Grid, Typography} from '@material-ui/core'
+import {
+    Button,
+    ButtonGroup,
+    Grid,
+    Typography
+} from '@material-ui/core'
 import chainName from '../utils/chainName'
 import ChainSelectorWizard from './ChainSelectorWizard'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
@@ -76,8 +81,8 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
                     <Grid item>
                         <Typography align={'left'} variant={'h5'}>
                             <ButtonGroup disableElevation variant="contained" color="primary">
-                                <Button disabled={currentChainId === 100} onClick={handleOpenWizard}>xDai</Button>
-                                <Button disabled={currentChainId === 1} onClick={handleOpenWizard}>Eth Mainnet</Button>
+                                <Button className={classes.button} disabled={currentChainId === 100} onClick={handleOpenWizard}>xDai</Button>
+                                <Button className={classes.button} disabled={currentChainId === 1} onClick={handleOpenWizard}>Eth Mainnet</Button>
                             </ButtonGroup>
                         </Typography>
                     </Grid>
@@ -96,7 +101,7 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
                     </Grid>
                 </Grid>
                 <Grid item xs={6}>
-                    <img src={boxes} width={'90%'}/>
+                    <img src={boxes} width={'90%'} alt={'boxes'}/>
                 </Grid>
             </Grid>
             {showWizard && <ChainSelectorWizard onClose={handleCloseWizard} open={true} address={address}
@@ -110,6 +115,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     alert: {
         borderRadius: 5
+    },
+    button: {
+        color: 'white'
     }
 }),)
 

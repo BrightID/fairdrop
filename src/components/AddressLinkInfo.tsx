@@ -1,6 +1,5 @@
 import React, {useState} from 'react'
-import CheckIcon from '@material-ui/icons/Check'
-import {Button, Card, CardContent, Grid, Typography} from '@material-ui/core'
+import {Button, Grid, Typography} from '@material-ui/core'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import LinkAddressWizard from './LinkAddressWizard'
 import linkAddress from '../images/linkAddress.svg'
@@ -39,7 +38,7 @@ const AddressLinkInfo = ({address, brightIdLinked, setBrightIdLinked}: AddressLi
                     </Grid>
                 </Grid>
                 <Grid item xs={6}>
-                    <img src={linkAddress} width={'90%'}/>
+                    <img src={linkAddress} width={'90%'} alt={'link address'}/>
                 </Grid>
             </Grid>
         )
@@ -53,11 +52,11 @@ const AddressLinkInfo = ({address, brightIdLinked, setBrightIdLinked}: AddressLi
                     <Typography align={'left'} variant={'body1'}>
                         It will take up to 24 hours to update the claimable amount after linking
                     </Typography>
-                    <Button variant={'contained'} color={'primary'} onClick={handleOpenWizard}>Link
+                    <Button className={classNames.button} variant={'contained'} color={'primary'} onClick={handleOpenWizard}>Link
                         BrightId</Button>
                 </Grid>
                 <Grid item xs={6}>
-                    <img src={linkAddress} width={'90%'}/>
+                    <img src={linkAddress} width={'90%'} alt={'link address'}/>
                 </Grid>
             </Grid>
             {showWizard && <LinkAddressWizard onClose={handleCloseWizard} address={address} open={true}/>}
@@ -68,6 +67,9 @@ const AddressLinkInfo = ({address, brightIdLinked, setBrightIdLinked}: AddressLi
 const useStyles = makeStyles((theme: Theme) => createStyles({
     card: {
         padding: theme.spacing(2), margin: theme.spacing(1), textAlign: 'center', color: theme.palette.text.primary,
+    },
+    button: {
+        color: 'white'
     },
 }),)
 

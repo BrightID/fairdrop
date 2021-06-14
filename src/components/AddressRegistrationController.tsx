@@ -3,19 +3,10 @@ import {BigNumber} from 'ethers'
 import claimData_1 from '../airdropData/claimData_1.json'
 import claimData_100 from '../airdropData/claimData_100.json'
 import claimData_31337 from '../airdropData/claimData_31337.json'
-import ChainSelector from './ChainSelector'
-import ComingClaim from './ComingClaim'
-import {getAddressInfo, getRegistrationInfo, RegistrationInfo} from '../utils/api'
-import {Alert, AlertTitle} from '@material-ui/lab'
+import { RegistrationInfo} from '../utils/api'
 import {Grid, Typography} from '@material-ui/core'
-import {intervalToDuration} from 'date-fns'
-import formatDuration from 'date-fns/formatDuration'
-import {verifyContextId} from 'brightid_sdk'
-import AddressLinkInfo from './AddressLinkInfo'
 import ActiveClaimController from './ActiveClaimController'
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import noclaim from '../images/noclaim.svg'
-import SubNavBar from './SubNavBar'
 
 
 interface BaseClaim {
@@ -58,7 +49,6 @@ interface ContextInfoError {
 export type ContextInfo = ContextInfoSuccess | ContextInfoError
 
 const AddressRegistrationController = ({address, registrationInfo, registrationInfoLoading, payoutChainId, nextAmount }: AddressRegistrationControllerProps) => {
-    const classes = useStyles()
     const [claims, setClaims] = useState<Array<Claim>>([])
     const [claimLoading, setClaimLoading] = useState(true)
 
@@ -98,7 +88,7 @@ const AddressRegistrationController = ({address, registrationInfo, registrationI
         // when nothing is claimable
         claimItems.push(<Grid container alignItems={'center'}>
             <Grid item xs={5}>
-                <img src={noclaim} width={'90%'}/>
+                <img src={noclaim} width={'90%'} alt={'no claim'}/>
             </Grid>
             <Grid item xs={7}>
                 <Typography align={'left'} variant={'h5'}>
@@ -137,12 +127,5 @@ const AddressRegistrationController = ({address, registrationInfo, registrationI
         <div>{claimItems}</div>
     </>)
 }
-
-const useStyles = makeStyles((theme: Theme) => createStyles({
-    card: {
-        padding: theme.spacing(2), margin: theme.spacing(1), textAlign: 'center', color: theme.palette.text.primary,
-    },
-}),)
-
 
 export default AddressRegistrationController

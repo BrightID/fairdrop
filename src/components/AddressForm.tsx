@@ -1,5 +1,5 @@
 import React from 'react'
-import {Box, Button, Card, FormControl, Grid, Input, InputAdornment, InputLabel } from '@material-ui/core'
+import {Button, InputAdornment } from '@material-ui/core'
 import {ethers} from 'ethers'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import { Form } from 'react-final-form'
@@ -76,7 +76,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         color: 'white'
     },
     addressInput: {
-        fontSize: 24
+        fontSize: 24,
+        background: 'white'
     }
 }),)
 

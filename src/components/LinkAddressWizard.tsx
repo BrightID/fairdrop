@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react'
 import {Dialog, DialogTitle, DialogContent, Typography, DialogActions, Button} from '@material-ui/core'
-import { createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import {generateDeeplink, verifyContextId} from 'brightid_sdk'
 import QRCode from 'qrcode.react'
 import {ContextInfo} from './AddressRegistrationController'
@@ -13,7 +12,6 @@ interface LinkAddressWizardProps {
 
 const LinkAddressWizard = ({address, onClose, open }: LinkAddressWizardProps) => {
     const [deepLink, setDeepLink] = useState('')
-    const classNames = useStyles()
     const context = 'ethereum'
 
     useEffect(() => {
@@ -35,7 +33,7 @@ const LinkAddressWizard = ({address, onClose, open }: LinkAddressWizardProps) =>
             console.log(`Clearing interval`)
             clearInterval(intervalId)
         })
-    }, [address])
+    }, [address, onClose])
 
     const handleCancel = () => {
         // user closed dialog manually. Assume app
@@ -57,17 +55,5 @@ const LinkAddressWizard = ({address, onClose, open }: LinkAddressWizardProps) =>
     )
 
 }
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        card: {
-            padding: theme.spacing(2),
-            margin: theme.spacing(1),
-            textAlign: 'center',
-            color: theme.palette.text.primary,
-        },
-    }),
-);
-
 
 export default LinkAddressWizard

@@ -1,7 +1,7 @@
 import React from 'react'
 import {BigNumber, utils} from 'ethers'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
-import {Box, Button, Card, CardContent, Grid, Typography} from '@material-ui/core'
+import {Box, Button, Grid, Typography} from '@material-ui/core'
 import chainName from '../utils/chainName'
 import {Alert, AlertTitle} from '@material-ui/lab'
 import {intervalToDuration} from 'date-fns'
@@ -188,7 +188,7 @@ const ActiveClaim = ({amount, nextAmount, claimed, claimState, claimChainId, cla
     return (
         <Grid container>
             <Grid item xs={6}>
-                <img src={boxes} width={'90%'}/>
+                <img src={boxes} width={'90%'} alt={'boxes'}/>
             </Grid>
             <Grid container item xs={6} alignItems={'center'} >
                 {mainContent}

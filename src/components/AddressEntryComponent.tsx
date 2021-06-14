@@ -1,9 +1,7 @@
-import React, {useContext} from 'react'
-import {Button, FormControl, Grid, IconButton, Input, InputAdornment, InputLabel, Typography} from '@material-ui/core'
+import React from 'react'
+import { Grid, Typography} from '@material-ui/core'
 import airdropLogo from '../images/airdrop.svg'
 import AddressForm from './AddressForm'
-import theme from '../theme'
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 
 interface AddressFormData {
     address: string;

@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {AppBar, Container, Tab, Tabs, Typography} from '@material-ui/core'
+import {AppBar, Container, Tab, Tabs } from '@material-ui/core'
 import {makeStyles} from '@material-ui/core/styles'
 
 interface TabPanelProps {
