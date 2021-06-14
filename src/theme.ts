@@ -5,12 +5,9 @@ export const theme = createMuiTheme({
         MuiCssBaseline: {
             '@global': {
                 body: {
-                    // TODO Set global background gradient
-                    // background: 'linear-gradient(90deg, #ED7A5D 18.11%, #CE6045 98.9%, #B64B32 127.03%, #FFFFFF 155.88%)',
-                    background: 'white',
+                    background: 'linear-gradient(70deg, #FFFFFF 50%, #ED7A5D 200%)',
                     backgroundRepeat: "no-repeat",
-                    backgroundAttachment: "fixed"
-                }
+                    backgroundAttachment: "fixed",                }
             }
         }
     },
