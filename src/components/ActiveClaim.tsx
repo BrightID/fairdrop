@@ -184,11 +184,9 @@ const ActiveClaim = ({amount, nextAmount, claimed, claimState, claimChainId, cla
             <Grid item xs={6}>
                 <img src={boxes} width={'90%'}/>
             </Grid>
-            <Grid item xs={6}>
-                <Grid container direction={'column'}>
-                    {mainContent}
-                    {alerts}
-                </Grid>
+            <Grid container item xs={6} alignItems={'center'} >
+                {mainContent}
+                {alerts}
             </Grid>
         </Grid>
     )

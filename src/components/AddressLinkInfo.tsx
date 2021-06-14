@@ -26,35 +26,23 @@ const AddressLinkInfo = ({address, brightIdLinked, setBrightIdLinked}: AddressLi
     }
 
     if (brightIdLinked) {
-        return (<>
+        return (
             <Grid container>
-                <Grid item xs={6}>
-                    <Grid container direction={'column'}>
-                        <Grid item xs={12}>
-                            <Typography align={'left'} variant={'h5'}>
-                                BrightID Linked
-                            </Typography>
-                            <Typography align={'left'} variant={'body1'}>
-                                It will take up to 24 hours to update the claimable amount after linking
-                            </Typography>
-                        </Grid>
+                <Grid container item xs={6} alignItems={'center'}>
+                    <Grid item>
+                        <Typography align={'left'} variant={'h5'}>
+                            BrightID Linked
+                        </Typography>
+                        <Typography align={'left'} variant={'body1'}>
+                            It will take up to 24 hours to update the claimable amount after linking
+                        </Typography>
                     </Grid>
                 </Grid>
                 <Grid item xs={6}>
                     <img src={linkAddress} width={'90%'}/>
                 </Grid>
             </Grid>
-        </>)
-        return (<Card className={classNames.card}>
-            <CardContent>
-                <Typography align={'center'} variant="h5" component="h2"><CheckIcon/>
-                    Address {address} is linked with BrightId
-                </Typography>
-                <Button variant={'contained'} size={'large'} onClick={() => setBrightIdLinked(false)}>
-                    Unlink
-                </Button>
-            </CardContent>
-        </Card>)
+        )
     } else {
         return (<>
             <Grid container>

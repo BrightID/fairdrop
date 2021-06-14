@@ -66,31 +66,29 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
     const durationString = formatDuration(duration)
     return (<>
             <Grid container>
-                <Grid item xs={6}>
-                    <Grid container direction={'column'}>
-                        <Grid item xs={12}>
-                            <Typography align={'left'} variant={'h5'}>
-                                Select your preferred chain to receive $BRIGHT
+                <Grid container item xs={6} alignItems={'center'}>
+                    <Grid item>
+                        <Typography align={'left'} variant={'h5'}>
+                            Select your preferred chain to receive $BRIGHT
+                        </Typography>
+                    </Grid>
+                    <Grid item>
+                        <Typography align={'left'} variant={'h5'}>
+                            <ButtonGroup disableElevation variant="contained" color="primary">
+                                <Button disabled={currentChainId === 100} onClick={handleOpenWizard}>xDai</Button>
+                                <Button disabled={currentChainId === 1} onClick={handleOpenWizard}>Eth Mainnet</Button>
+                            </ButtonGroup>
+                        </Typography>
+                    </Grid>
+                    <Grid item>
+                            <Typography variant={'body1'}>
+                                {`Note that change of payout chain will take effect for the next claim period, starting
+                     in approximately ${durationString}.`}
                             </Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Typography align={'left'} variant={'h5'}>
-                                <ButtonGroup disableElevation variant="contained" color="primary">
-                                    <Button disabled={currentChainId === 100} onClick={handleOpenWizard}>xDai</Button>
-                                    <Button disabled={currentChainId === 1} onClick={handleOpenWizard}>Eth Mainnet</Button>
-                                </ButtonGroup>
+                            <Typography variant={'body1'}>
+                                All unclaimed $bright will carry over to the next period and be available on
+                                the selected chain.
                             </Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                                <Typography variant={'body1'}>
-                                    {`Note that change of payout chain will take effect for the next claim period, starting
-                         in approximately ${durationString}.`}
-                                </Typography>
-                                <Typography variant={'body1'}>
-                                    All unclaimed $bright will carry over to the next period and be available on
-                                    the selected chain.
-                                </Typography>
-                        </Grid>
                     </Grid>
                 </Grid>
                 <Grid item xs={6}>
