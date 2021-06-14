@@ -47,6 +47,9 @@ const AddressForm = ({initialValues, setAddress}: AddressFormProps) => {
                               type='text'
                               name='address'
                               InputProps={{
+                                  classes: {
+                                      input: classNames.addressInput,
+                                  },
                                   endAdornment: <InputAdornment position="end">
                                       <Button
                                           className={classNames.button}
@@ -57,7 +60,7 @@ const AddressForm = ({initialValues, setAddress}: AddressFormProps) => {
                                       >
                                           Check Address
                                       </Button>
-                                  </InputAdornment>
+                                  </InputAdornment>,
                               }}
                           />
                       </form>)}
@@ -71,6 +74,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     button: {
         color: 'white'
+    },
+    addressInput: {
+        fontSize: 24
     }
 }),)
 

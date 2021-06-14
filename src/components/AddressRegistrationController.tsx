@@ -97,11 +97,11 @@ const AddressRegistrationController = ({address, registrationInfo, registrationI
     if (claimItems.length === 0) {
         // when nothing is claimable
         claimItems.push(<Grid container alignItems={'center'}>
-            <Grid item xs={6}>
+            <Grid item xs={5}>
                 <img src={noclaim} width={'90%'}/>
             </Grid>
-            <Grid item xs={6}>
-                <Typography align={'left'} variant={'body1'}>
+            <Grid item xs={7}>
+                <Typography align={'left'} variant={'h5'}>
                     {`There is no $BRIGHT to claim for address ${address}`}
                 </Typography>
             </Grid>

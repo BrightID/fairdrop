@@ -135,7 +135,7 @@ const App = () => {
           <CssBaseline />
           <ProviderContext>
               <Header/>
-              <Container maxWidth="md">
+              <Container maxWidth="lg">
                   <AddressEntryComponent setAddress={newAddressHandler} initialValues={{address}}/>
                   {address !== '' && <AddressRegistrationController
                     registrationInfo={registrationInfo}

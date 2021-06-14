@@ -54,7 +54,7 @@ const SubNavBar = ({chainSelector, addressLinker}:SubNavBarProps) => {
                     <Tab label="Link your BrightID to get more $BRIGHT"></Tab>
                 </Tabs>
             </AppBar>
-        <Container maxWidth="md">
+        <Container maxWidth="lg">
             <TabPanel index={0} value={value}>
                 {chainSelector}
             </TabPanel>
