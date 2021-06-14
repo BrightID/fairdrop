@@ -93,9 +93,14 @@ const App = () => {
         }
     }
 
-    const newAddressHandler = (address: string) => {
-        setAddress(address)
-        window.location.hash=address
+    const newAddressHandler = (address?: string) => {
+        if (address) {
+            setAddress(address)
+            window.location.hash=address
+        } else {
+            window.location.hash=''
+            setAddress('')
+        }
     }
 
     const onLinkedBrightId = (isLinked: boolean) => {
@@ -129,9 +134,9 @@ const App = () => {
       <ThemeProvider theme={theme}>
           <CssBaseline />
           <ProviderContext>
-              <Header/>
+              <Header address={address} changeAddress={()=>newAddressHandler(undefined)}/>
               <Container maxWidth="lg">
-                  <AddressEntryComponent setAddress={newAddressHandler} initialValues={{address}}/>
+                  {address === '' && <AddressEntryComponent setAddress={newAddressHandler} initialValues={{address}}/>}
                   {address !== '' && <AddressRegistrationController
                     registrationInfo={registrationInfo}
                     registrationInfoLoading={registrationInfoLoading}

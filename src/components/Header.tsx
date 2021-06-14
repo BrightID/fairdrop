@@ -25,16 +25,25 @@ const useStyles = makeStyles((theme) => ({
     changeWalletBtn: {
         marginLeft: theme.spacing(2),
         color: 'white'
+    },
+    changeAddressBtn: {
+        marginLeft: theme.spacing(2),
+        color: 'white'
     }
 }));
 
-export default function Header() {
+interface HeaderProps {
+    address?: string
+    changeAddress: ()=>any
+}
+
+const Header = ({address, changeAddress}:HeaderProps) => {
     const classes = useStyles();
     const {onboardApi} = useContext(EthersProviderContext)
 
     const state = onboardApi?.getState()
     const walletName = state?.wallet?.name || undefined
-    const buttonLabel = walletName ? 'Change' : 'Connect wallet'
+    const buttonLabel = walletName || 'Connect wallet'
 
     const switchWallet = async () => {
         console.log(`SwitchWallet`)
@@ -51,7 +60,13 @@ export default function Header() {
                     <Typography variant="h6" className={classes.title} color={'primary'}>
                         $BRIGHT
                     </Typography>
-                    {walletName && `Wallet: ${walletName}`}
+                    {address && <Button
+                        className={classes.changeAddressBtn}
+                        variant={'contained'}
+                        color={'primary'}
+                        onClick={changeAddress}>
+                        {address}
+                    </Button>}
                     <Button
                         className={classes.changeWalletBtn}
                         variant={'contained'}
@@ -64,3 +79,5 @@ export default function Header() {
         </div>
     );
 }
+
+export default Header
