@@ -22,6 +22,9 @@ export const theme = createMuiTheme({
             // contrastText: will be calculated to contrast with palette.primary.main
         }
     },
+    typography: {
+        fontFamily: "DM Sans"
+    },
     shape: {
         borderRadius: 50
     }
