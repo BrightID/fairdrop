@@ -45,22 +45,16 @@ const AddressLinkInfo = ({address, brightIdLinked, setBrightIdLinked}: AddressLi
         )
     } else {
         return (<>
-            <Grid container>
+            <Grid container alignItems={'center'}>
                 <Grid item xs={6}>
-                    <Grid container direction={'column'}>
-                        <Grid item xs={12}>
-                            <Typography align={'left'} variant={'h5'}>
-                                Link your BrightID to get more $BRIGHT at the next claim period
-                            </Typography>
-                            <Typography align={'left'} variant={'body1'}>
-                                It will take up to 24 hours to update the claimable amount after linking
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Button variant={'contained'} color={'primary'} onClick={handleOpenWizard}>Link
-                                BrightId</Button>
-                        </Grid>
-                    </Grid>
+                    <Typography align={'left'} variant={'h5'}>
+                        Link your BrightID to get more $BRIGHT at the next claim period
+                    </Typography>
+                    <Typography align={'left'} variant={'body1'}>
+                        It will take up to 24 hours to update the claimable amount after linking
+                    </Typography>
+                    <Button variant={'contained'} color={'primary'} onClick={handleOpenWizard}>Link
+                        BrightId</Button>
                 </Grid>
                 <Grid item xs={6}>
                     <img src={linkAddress} width={'90%'}/>

@@ -8,6 +8,7 @@ import {intervalToDuration} from 'date-fns'
 import formatDuration from 'date-fns/formatDuration'
 import {RegistrationInfo} from '../utils/api'
 import boxes from '../images/boxes.svg'
+import {Alert} from '@material-ui/lab'
 
 interface ChainSelectorProps {
     address: string
@@ -80,6 +81,9 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
                             </ButtonGroup>
                         </Typography>
                     </Grid>
+                    {((walletAddress !== address) && wallet) && <Alert severity={'warning'} className={classes.alert}>
+                      You need to connect with address {address} in order to change the payout chain.
+                    </Alert> }
                     <Grid item>
                             <Typography variant={'body1'}>
                                 {`Note that change of payout chain will take effect for the next claim period, starting
@@ -104,6 +108,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     card: {
         padding: theme.spacing(2), margin: theme.spacing(1), textAlign: 'center', color: theme.palette.text.primary,
     },
+    alert: {
+        borderRadius: 5
+    }
 }),)
 
 export default ChainSelector
