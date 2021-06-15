@@ -1,10 +1,7 @@
 import {BigNumber} from "ethers"
+const { REACT_APP_API_URL } = process.env;
 
-const protocol = 'http'
-const host = 'localhost'
-const port = '8000'
-const rootPath = ''
-const baseUrl = `${protocol}://${host}:${port}${rootPath}`
+const baseUrl = REACT_APP_API_URL || 'https://fairdrop.brightid.org/api'
 
 export type AddressInfo = {
     chainId: number
