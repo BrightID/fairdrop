@@ -64,7 +64,7 @@ const AddressRegistrationController = ({address, registrationInfo, registrationI
         const runEffect = async () => {
             setClaimLoading(true)
             const _claimFiles: Array<ClaimFile> = []
-            for (const chainId of [1, 100, 31337]) {
+            for (const chainId of [1, 4, 100, 31337]) {
                 const url = `airdropData/claimData_${chainId}.json`
                 const response = await fetch(url)
                 if (response.ok) {

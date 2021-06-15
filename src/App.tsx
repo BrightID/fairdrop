@@ -31,8 +31,8 @@ const App = () => {
             try {
                 const registrationInfo = await getRegistrationInfo()
                 // TEST DEBUG
-                registrationInfo.currentRegistrationEnd = Date.now() + 1000*60*35
-                registrationInfo.nextClaimStart = Date.now() + 1000*60*170
+                // registrationInfo.currentRegistrationEnd = Date.now() + 1000*60*35
+                // registrationInfo.nextClaimStart = Date.now() + 1000*60*170
                 // END TEST DEBUG
                 setRegistrationInfo(registrationInfo)
             } catch (e) {
