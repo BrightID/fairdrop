@@ -119,7 +119,7 @@ const App = () => {
     console.log(`Remaining registration time: ${registrationTimeRemaining}`)
     console.log(`Next registration start time: ${registrationTimeRemaining}`)
     let subNavBar
-    if ( ((address !== '') && (registrationTimeRemaining > 0)) || (timeToNextPhaseStart > 0)) {
+    if ( (address !== '') && ((registrationTimeRemaining > 0) || (timeToNextPhaseStart > 0)) ) {
         const chainSelector = <ChainSelector address={address}
                                              currentChainId={payoutChainId}
                                              setChainId={setPayoutChainId}
