@@ -68,9 +68,12 @@ const AddressRegistrationController = ({address, registrationInfo, registrationI
                 const url = `airdropData/claimData_${chainId}.json`
                 const response = await fetch(url)
                 if (response.ok) {
-                    const claimFile: ClaimFile = await response.json()
-                    console.log(claimFile)
-                    _claimFiles.push(claimFile)
+                    try {
+                        const claimFile: ClaimFile = await response.json()
+                        _claimFiles.push(claimFile)
+                    } catch(e) {
+                        console.log(`Claimfile at ${url} is not json. Error: ${e}`)
+                    }
                 } else {
                     console.log(`Failed to fetch claimFile at ${url}. Response: ${response.status} - ${response.statusText}`)
                 }

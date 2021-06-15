@@ -57,7 +57,9 @@ const App = () => {
                 console.log(`getAddressInfo failed: ${e}`)
             }
         }
-        runEffect()
+        if (address!=='') {
+            runEffect()
+        }
     }, [address])
 
     // Check if address is linked with a BrightID
