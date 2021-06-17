@@ -1,9 +1,6 @@
 import React, {useContext, useState} from 'react'
 import {
-    Button,
-    ButtonGroup,
-    Grid,
-    Typography
+    Box, Button, ButtonGroup, Grid, Typography
 } from '@material-ui/core'
 import chainName from '../utils/chainName'
 import ChainSelectorWizard from './ChainSelectorWizard'
@@ -23,7 +20,7 @@ interface ChainSelectorProps {
 }
 
 const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: ChainSelectorProps) => {
-    const classes = useStyles()
+    const classNames = useStyles()
     const {wallet, onboardApi, walletAddress} = useContext(EthersProviderContext)
     const [showWizard, setShowWizard] = useState(false)
 
@@ -72,37 +69,34 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
     console.log(`Duration: ${formatDuration(duration)}`)
     const durationString = formatDuration(duration)
     return (<>
-            <Grid container>
-                <Grid container item xs={6} alignItems={'center'}>
-                    <Grid item>
-                        <Typography align={'left'} variant={'h5'}>
-                            Select your preferred chain to receive $BRIGHT
-                        </Typography>
-                    </Grid>
-                    <Grid item>
-                        <Typography align={'left'} variant={'h5'}>
-                            <ButtonGroup disableElevation variant="contained" color="primary">
-                                <Button className={classes.button} disabled={currentChainId === 100} onClick={handleOpenWizard}>{chainName(100)}</Button>
-                                <Button className={classes.button} disabled={currentChainId === mainnetChainId} onClick={handleOpenWizard}>{chainName(mainnetChainId)}</Button>
-                            </ButtonGroup>
-                        </Typography>
-                    </Grid>
-                    {((walletAddress !== address) && wallet) && <Alert severity={'warning'} className={classes.alert}>
+            <Grid container alignItems={'center'} spacing={10}>
+                <Grid item container direction={'column'} xs={6}>
+                    <Typography className={classNames.paragraph} align={'left'} variant={'h4'}>
+                        Select your preferred chain to receive $BRIGHT
+                    </Typography>
+                    <Typography className={classNames.paragraph} align={'left'}>
+                        <ButtonGroup disableElevation variant="contained" color="primary">
+                            <Button className={classNames.button} disabled={currentChainId === 100} onClick={handleOpenWizard}>{chainName(100)}</Button>
+                            <Button className={classNames.button} disabled={currentChainId === mainnetChainId} onClick={handleOpenWizard}>{chainName(mainnetChainId)}</Button>
+                        </ButtonGroup>
+                    </Typography>
+                    {((walletAddress !== address) && wallet) && <Alert severity={'warning'} className={classNames.alert}>
                       You need to connect with address {address} in order to change the payout chain.
                     </Alert> }
-                    <Grid item>
-                            <Typography variant={'body1'}>
-                                {`Note that change of payout chain will take effect for the next claim period, starting
-                     in approximately ${durationString}.`}
-                            </Typography>
-                            <Typography variant={'body1'}>
-                                All unclaimed $bright will carry over to the next period and be available on
-                                the selected chain.
-                            </Typography>
-                    </Grid>
+                    <Box className={classNames.infoBox}>
+                        <Typography variant={'h6'}>Payout Chain Info</Typography>
+                        <Typography variant={'body1'}>
+                            {`Note that change of payout chain will take effect for the next claim period, starting
+                 in approximately ${durationString}.`}
+                        </Typography>
+                        <Typography variant={'body1'}>
+                            All unclaimed $BRIGHT will carry over to the next period and be available on
+                            the selected chain.
+                        </Typography>
+                    </Box>
                 </Grid>
                 <Grid item xs={6}>
-                    <img src={boxes} width={'90%'} alt={'boxes'}/>
+                    <img src={boxes} width={'100%'} alt={'boxes'}/>
                 </Grid>
             </Grid>
             {showWizard && <ChainSelectorWizard onClose={handleCloseWizard} open={true} address={address}
@@ -111,14 +105,21 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-    card: {
-        padding: theme.spacing(2), margin: theme.spacing(1), textAlign: 'center', color: theme.palette.text.primary,
+    paragraph: {
+        padding: theme.spacing(2),
+        margin: theme.spacing(1)
     },
     alert: {
         borderRadius: 5
     },
     button: {
         color: 'white'
+    },
+    infoBox: {
+        background: 'rgba(196, 196, 196, 0.25)', //'#C4C4C4',
+        padding: theme.spacing(4),
+        marginLeft: theme.spacing(3),
+        marginTop: theme.spacing(4)
     }
 }),)
 

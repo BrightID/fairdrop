@@ -27,7 +27,8 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: 'none',
         borderTop: '1px solid lightgrey',
         borderBottom: '1px solid lightgrey',
-        marginBottom: theme.spacing(6)
+        marginBottom: theme.spacing(6),
+        marginTop: theme.spacing(3)
     },
     rightAlign: {
        marginLeft: 'auto',

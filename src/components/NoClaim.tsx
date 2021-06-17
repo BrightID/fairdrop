@@ -16,15 +16,15 @@ const NoClaim = ({address}:NoClaimProps)=>{
                 <img src={noclaim} width={'90%'} alt={'no claim'}/>
             </Grid>
             <Grid item container direction={'column'} justify={'center'} xs={7}>
-                    <Typography align={'left'} variant={'h5'} className={classNames.noClaimText}>
-                        {`There is no $BRIGHT to claim for address ${address}`}
-                    </Typography>
-                    <Box className={classNames.infoBox}>
-                        <Box className={classNames.infoBoxHeader}>Did you link your BrightId?</Box>
+                <Typography align={'left'} variant={'h5'} className={classNames.noClaimText}>
+                    {`There is no $BRIGHT to claim for address ${address}`}
+                </Typography>
+                <Typography className={classNames.infoBox}>
+                    <Typography variant={'h6'}>Did you link your BrightId?</Typography>
 
-                        <Typography variant={'body1'}>Link your address with your BrightID to proof you are not
-                            a sybil and get more $BRIGHT in the next claim phase!</Typography>
-                    </Box>
+                    <Typography variant={'body1'}>Link your address with your BrightID to proof you are not
+                        a sybil and get more $BRIGHT in the next claim phase!</Typography>
+                </Typography>
             </Grid>
         </Grid>
     )

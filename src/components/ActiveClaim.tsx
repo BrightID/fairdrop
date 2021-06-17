@@ -8,7 +8,7 @@ import {intervalToDuration} from 'date-fns'
 import formatDuration from 'date-fns/formatDuration'
 import {RegistrationInfo} from '../utils/api'
 import {TxState, TxStates} from './ActiveClaimController'
-import boxes from '../images/boxes.svg'
+import rocket from '../images/rocket.svg'
 
 interface ActiveClaimProps {
     amount: BigNumber,
@@ -188,9 +188,9 @@ const ActiveClaim = ({amount, nextAmount, claimed, claimState, claimChainId, cla
         }
     }
     return (
-        <Grid container>
+        <Grid container spacing={10}>
             <Grid item xs={6}>
-                <img src={boxes} width={'90%'} alt={'boxes'}/>
+                <img src={rocket} width={'90%'} alt={'rocket'}/>
             </Grid>
             <Grid container item xs={6} alignContent={'center'} justify={'center'} direction={'column'}>
                 {mainContent}

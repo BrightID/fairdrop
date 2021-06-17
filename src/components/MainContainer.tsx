@@ -129,7 +129,8 @@ const MainContainer = () => {
                                              registrationInfo={registrationInfo}/>
         const addressLinkInfo = <AddressLinkInfo address={address}
                                                  brightIdLinked={brightIdLinked}
-                                                 setBrightIdLinked={onLinkedBrightId}/>
+                                                 setBrightIdLinked={onLinkedBrightId}
+                                                 registrationInfo={registrationInfo}/>
         subNavBar = (<SubNavBar chainSelector={chainSelector} addressLinker={addressLinkInfo}/>)
     }
 
