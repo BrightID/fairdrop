@@ -1,9 +1,9 @@
 {
-  "name": "localhost",
-  "chainId": "31337",
+  "name": "rinkeby",
+  "chainId": "4",
   "contracts": {
     "BrightToken": {
-      "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      "address": "0x567841A6c8281BfB45e6AEEc5791948A7dDe90E4",
       "abi": [
         {
           "inputs": [],
@@ -136,19 +136,6 @@
             }
           ],
           "name": "balanceOf",
-          "outputs": [
-            {
-              "internalType": "uint256",
-              "name": "",
-              "type": "uint256"
-            }
-          ],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "inputs": [],
-          "name": "cap",
           "outputs": [
             {
               "internalType": "uint256",
@@ -366,7 +353,7 @@
       ]
     },
     "MerkleDistributor": {
-      "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      "address": "0x12564e87587203e6665Bb0e3f38CF622B906e6E8",
       "abi": [
         {
           "inputs": [

@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react'
 import {BigNumber} from 'ethers'
 import { RegistrationInfo} from '../utils/api'
-import {Grid, Typography} from '@material-ui/core'
+import {Box, Grid, Typography} from '@material-ui/core'
 import ActiveClaimController from './ActiveClaimController'
 import noclaim from '../images/noclaim.svg'
+import {makeStyles} from '@material-ui/core/styles'
 
 
 interface BaseClaim {
@@ -37,7 +38,7 @@ interface AddressRegistrationControllerProps {
     registrationInfo: RegistrationInfo,
     registrationInfoLoading: boolean,
     payoutChainId: number,
-    nextAmount: BigNumber
+    nextAmount: BigNumber,
 }
 
 interface ContextInfoSuccess {
@@ -58,19 +59,23 @@ const AddressRegistrationController = ({address, registrationInfo, registrationI
     const [claims, setClaims] = useState<Array<Claim>>([])
     const [claimLoading, setClaimLoading] = useState(true)
     const [claimFiles, setClaimFiles] = useState<Array<ClaimFile>>([])
+    const classNames = useStyles()
 
     // Load claimfiles
     useEffect(() => {
         const runEffect = async () => {
             setClaimLoading(true)
             const _claimFiles: Array<ClaimFile> = []
-            for (const chainId of [1, 100, 31337]) {
+            for (const chainId of [1, 4, 100, 31337]) {
                 const url = `airdropData/claimData_${chainId}.json`
                 const response = await fetch(url)
                 if (response.ok) {
-                    const claimFile: ClaimFile = await response.json()
-                    console.log(claimFile)
-                    _claimFiles.push(claimFile)
+                    try {
+                        const claimFile: ClaimFile = await response.json()
+                        _claimFiles.push(claimFile)
+                    } catch(e) {
+                        console.log(`Claimfile at ${url} is not json. Error: ${e}`)
+                    }
                 } else {
                     console.log(`Failed to fetch claimFile at ${url}. Response: ${response.status} - ${response.statusText}`)
                 }
@@ -122,10 +127,20 @@ const AddressRegistrationController = ({address, registrationInfo, registrationI
             <Grid item xs={5}>
                 <img src={noclaim} width={'90%'} alt={'no claim'}/>
             </Grid>
-            <Grid item xs={7}>
-                <Typography align={'left'} variant={'h5'}>
-                    {`There is no $BRIGHT to claim for address ${address}`}
-                </Typography>
+            <Grid container item xs={7}>
+                <Grid item xs={12}>
+                    <Typography align={'left'} variant={'h5'}>
+                        {`There is no $BRIGHT to claim for address ${address}`}
+                    </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Box className={classNames.infoBox}>
+                        <Typography variant={'h6'}>Did you link your BrightId?</Typography>
+
+                        <Typography variant={'body1'}>Link your address with your BrightID to proof you are not
+                            a sybil and get more $BRIGHT in the next claim phase!</Typography>
+                    </Box>
+                </Grid>
             </Grid>
         </Grid>)
     }
@@ -159,5 +174,13 @@ const AddressRegistrationController = ({address, registrationInfo, registrationI
         <div>{claimItems}</div>
     </>)
 }
+
+const useStyles = makeStyles((theme) => ({
+    infoBox: {
+        background: 'rgba(196, 196, 196, 0.25)', //'#C4C4C4',
+        padding: theme.spacing(3),
+        margin: theme.spacing(3)
+    }
+}))
 
 export default AddressRegistrationController

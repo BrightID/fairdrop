@@ -56,10 +56,11 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
 
     // user can only choose between MainNet and xDai
     let otherChainId: number
-    if (currentChainId === 1) {
+    const mainnetChainId = 4 // we are testing on Rinkeby, set to 1 for mainnet
+    if (currentChainId === mainnetChainId) {
         otherChainId = 100
     } else {
-        otherChainId = 1
+        otherChainId = mainnetChainId
     }
 
     const remainingTicks = registrationInfo.currentRegistrationEnd - Date.now()
@@ -81,8 +82,8 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
                     <Grid item>
                         <Typography align={'left'} variant={'h5'}>
                             <ButtonGroup disableElevation variant="contained" color="primary">
-                                <Button className={classes.button} disabled={currentChainId === 100} onClick={handleOpenWizard}>xDai</Button>
-                                <Button className={classes.button} disabled={currentChainId === 1} onClick={handleOpenWizard}>Eth Mainnet</Button>
+                                <Button className={classes.button} disabled={currentChainId === 100} onClick={handleOpenWizard}>{chainName(100)}</Button>
+                                <Button className={classes.button} disabled={currentChainId === mainnetChainId} onClick={handleOpenWizard}>{chainName(mainnetChainId)}</Button>
                             </ButtonGroup>
                         </Typography>
                     </Grid>

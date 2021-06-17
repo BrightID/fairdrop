@@ -22,7 +22,7 @@ const LinkAddressWizard = ({address, onClose, open }: LinkAddressWizardProps) =>
     useEffect(()=>{
         const intervalId = setInterval(async ()=>{
             // Get linked info from real brightId node
-            const contextInfo:ContextInfo = await verifyContextId('ethereum', address)
+            const contextInfo:ContextInfo = await verifyContextId(context, address)
             console.log(contextInfo)
             if ('contextIds' in contextInfo) {
                 // API response includes eth address in lowercase
