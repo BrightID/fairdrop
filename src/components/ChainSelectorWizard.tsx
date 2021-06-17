@@ -1,8 +1,9 @@
 import React, {useContext, useEffect, useState} from 'react'
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography} from '@material-ui/core'
+import {Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography} from '@material-ui/core'
 import {setAddressPayoutChainId} from '../utils/api'
 import {EthersProviderContext} from './ProviderContext'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
+import chainName from '../utils/chainName'
 
 interface ChainSelectorWizardProps {
     onClose: (arg0: number) => any,
@@ -36,8 +37,9 @@ const ChainSelectorWizard = ({address, currentChainId, open, onClose, desiredCha
                 switch (step) {
                     case WizardSteps.SigningMessage:
                         setStepInfo({
-                            message: 'Signing',
-                            description: 'Please proof ownership of address by accepting the signature request'
+                            message: 'Setting Payout Chain',
+                            description: 'Please proof ownership of address by accepting the signature ' +
+                                'request in your wallet.'
                         })
                         // get signer for address
                         const signer = provider.getSigner(address)
@@ -67,7 +69,7 @@ const ChainSelectorWizard = ({address, currentChainId, open, onClose, desiredCha
                     case WizardSteps.Success:
                         setStepInfo({
                             message: 'Success',
-                            description: 'The payout chainID has been changed'
+                            description: `The payout chain has been changed to ${chainName(desiredChainId)}.`
                         })
                         break
                     case WizardSteps.Error:
@@ -100,41 +102,43 @@ const ChainSelectorWizard = ({address, currentChainId, open, onClose, desiredCha
 
     // console.log(`Dialog is ${open?'open':'closed'}. Current step: ${step}`)
 
-    return (<Dialog className={classNames.dialog}
-                    open={open}
-                    onClose={handleCancel}
-                    disableBackdropClick={true}
-                    PaperProps={{square: true}}>
-            <DialogTitle>{stepInfo.message}</DialogTitle>
-            <DialogContent>
-                <Typography>{stepInfo.description}</Typography>
-                {step === WizardSteps.Error && <Button onClick={handleCancel}
-                                                       className={classNames.button}
-                                                       color="primary"
-                                                       variant={'contained'}>
-                  Close
-                </Button>}
-                {step === WizardSteps.Success && <Button onClick={handleSuccess}
-                                                         className={classNames.button}
-                                                         color="primary"
-                                                         variant={'contained'}>
-                  Ok
-                </Button>}
-            </DialogContent>
-            <DialogActions>
-            </DialogActions>
-        </Dialog>)
+    return (<Dialog open={open} onClose={handleCancel} disableBackdropClick={true} maxWidth={'sm'}>
+            <Box className={classNames.dialog}>
+                <DialogTitle>
+                    <Typography variant={'h4'} align={'center'}>{stepInfo.message}</Typography>
+                </DialogTitle>
+                <DialogContent>
+                    <Grid item container direction={'column'} justify={'center'} alignItems={'center'} xs={12}>
+                        <Typography variant={'h6'}>{stepInfo.description}</Typography>
+                        {step === WizardSteps.Error && <Button onClick={handleCancel}
+                                                               className={classNames.button}
+                                                               color="primary"
+                                                               variant={'contained'}>
+                          Close
+                        </Button>}
+                        {step === WizardSteps.Success && <Button onClick={handleSuccess}
+                                                                 className={classNames.button}
+                                                                 color="primary"
+                                                                 variant={'contained'}>
+                          Ok
+                        </Button>}
+                    </Grid>
+                </DialogContent>
+            </Box>
+        </Dialog>
+    )
 
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     dialog: {
-        padding: theme.spacing(2),
-        textAlign: 'center',
-        color: theme.palette.text.primary,
+        padding: theme.spacing(5),
     },
     button: {
-        color: 'white'
+        padding: theme.spacing(2),
+        margin: theme.spacing(2),
+        marginTop: theme.spacing(4),
+        width: '80%'
     },
 
 }),)

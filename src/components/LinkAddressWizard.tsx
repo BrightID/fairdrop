@@ -71,7 +71,12 @@ const LinkAddressWizard = ({address, onClose, open }: LinkAddressWizardProps) =>
                             <QRCode includeMargin={false} size={400} value={deepLink} />
                         </Box>
                         <Typography variant={'h6'}>Waiting for link confirmation...</Typography>
-                        <Button className={classNames.cancelButton} onClick={handleCancel} color={"primary"} variant={"contained"}>Cancel</Button>
+                        <Button className={classNames.cancelButton}
+                                onClick={handleCancel}
+                                color={"primary"}
+                                variant={"contained"}>
+                            Cancel
+                        </Button>
                     </Grid>
             </DialogContent>
             </Box>

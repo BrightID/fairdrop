@@ -33,7 +33,8 @@ export const theme = createMuiTheme({
         },
         MuiButton: {
             containedPrimary: {
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                color: 'white'
             }
         }
     },
