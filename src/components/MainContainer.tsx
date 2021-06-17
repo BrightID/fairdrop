@@ -64,7 +64,7 @@ const MainContainer = () => {
         const runEffect = async () => {
             setBrightIdLinked(false)
             // Get linked info from real brightId node
-            const contextInfo: ContextInfo = await verifyContextId('ethereum', address)
+            const contextInfo: ContextInfo = await verifyContextId('Bright', address)
             console.log(contextInfo)
             if ('contextIds' in contextInfo) {
                 // API response includes eth address in lowercase

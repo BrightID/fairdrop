@@ -1,18 +1,36 @@
 import React, {useEffect, useState} from 'react'
-import {Dialog, DialogTitle, DialogContent, Typography, DialogActions, Button} from '@material-ui/core'
+import {Dialog, DialogTitle, DialogContent, Typography, DialogActions, Button, Link, Box, Grid} from '@material-ui/core'
 import {generateDeeplink, verifyContextId} from 'brightid_sdk'
 import QRCode from 'qrcode.react'
 import {ContextInfo} from './AddressRegistrationController'
+import {makeStyles} from '@material-ui/core/styles'
 
 interface LinkAddressWizardProps {
     onClose: (isLinked: boolean) => any,
     open: boolean,
     address: string,
 }
+const useStyles = makeStyles((theme) => ({
+    dialog: {
+        padding: theme.spacing(5),
+    },
+    qrcode: {
+        padding: theme.spacing(2),
+        margin: theme.spacing(2)
+    },
+    cancelButton: {
+        padding: theme.spacing(2),
+        margin: theme.spacing(2),
+        marginTop: theme.spacing(4),
+        width: '80%'
+    },
+    mobileInfo : {}
+}))
 
 const LinkAddressWizard = ({address, onClose, open }: LinkAddressWizardProps) => {
     const [deepLink, setDeepLink] = useState('')
-    const context = 'ethereum'
+    const classNames = useStyles()
+    const context = 'Bright'
 
     useEffect(() => {
         setDeepLink(generateDeeplink(context, address))
@@ -42,15 +60,21 @@ const LinkAddressWizard = ({address, onClose, open }: LinkAddressWizardProps) =>
     }
 
     return (
-        <Dialog open={open} onClose = {handleCancel} disableBackdropClick={true}>
-            <DialogTitle>Link your BrightId</DialogTitle>
+        <Dialog open={open} onClose = {handleCancel} disableBackdropClick={true} maxWidth={'md'}>
+            <Box className={classNames.dialog}>
+            <DialogTitle><Typography variant={'h4'} align={'center'}>Link your BrightID</Typography></DialogTitle>
             <DialogContent>
-                <QRCode value={deepLink} />
-                <Typography>Waiting for link confirmation...</Typography>
+                    <Grid item container direction={'column'} justify={'center'} alignItems={'center'} xs={12}>
+                        <Typography gutterBottom={true} variant={'h6'} >Scan this QRCode with the BrightID app</Typography>
+                        <Typography variant={'h6'}>or <Link href={deepLink}>click this link</Link>.</Typography>
+                        <Box className={classNames.qrcode}>
+                            <QRCode includeMargin={false} size={400} value={deepLink} />
+                        </Box>
+                        <Typography variant={'h6'}>Waiting for link confirmation...</Typography>
+                        <Button className={classNames.cancelButton} onClick={handleCancel} color={"primary"} variant={"contained"}>Cancel</Button>
+                    </Grid>
             </DialogContent>
-            <DialogActions>
-                <Button onClick={handleCancel} color={"primary"}>Cancel</Button>
-            </DialogActions>
+            </Box>
         </Dialog>
     )
 
