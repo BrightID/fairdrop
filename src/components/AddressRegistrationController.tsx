@@ -1,10 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import {BigNumber} from 'ethers'
 import { RegistrationInfo} from '../utils/api'
-import {Box, Grid, Typography} from '@material-ui/core'
 import ActiveClaimController from './ActiveClaimController'
-import noclaim from '../images/noclaim.svg'
-import {makeStyles} from '@material-ui/core/styles'
+import NoClaim from './NoClaim'
 
 
 interface BaseClaim {
@@ -59,7 +57,6 @@ const AddressRegistrationController = ({address, registrationInfo, registrationI
     const [claims, setClaims] = useState<Array<Claim>>([])
     const [claimLoading, setClaimLoading] = useState(true)
     const [claimFiles, setClaimFiles] = useState<Array<ClaimFile>>([])
-    const classNames = useStyles()
 
     // Load claimfiles
     useEffect(() => {
@@ -123,26 +120,7 @@ const AddressRegistrationController = ({address, registrationInfo, registrationI
 
     if (claimItems.length === 0) {
         // when nothing is claimable
-        claimItems.push(<Grid container alignItems={'center'}>
-            <Grid item xs={5}>
-                <img src={noclaim} width={'90%'} alt={'no claim'}/>
-            </Grid>
-            <Grid container item xs={7}>
-                <Grid item xs={12}>
-                    <Typography align={'left'} variant={'h5'}>
-                        {`There is no $BRIGHT to claim for address ${address}`}
-                    </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                    <Box className={classNames.infoBox}>
-                        <Typography variant={'h6'}>Did you link your BrightId?</Typography>
-
-                        <Typography variant={'body1'}>Link your address with your BrightID to proof you are not
-                            a sybil and get more $BRIGHT in the next claim phase!</Typography>
-                    </Box>
-                </Grid>
-            </Grid>
-        </Grid>)
+        claimItems.push(<NoClaim address={address}/>)
     }
 
     /* else {
@@ -175,12 +153,5 @@ const AddressRegistrationController = ({address, registrationInfo, registrationI
     </>)
 }
 
-const useStyles = makeStyles((theme) => ({
-    infoBox: {
-        background: 'rgba(196, 196, 196, 0.25)', //'#C4C4C4',
-        padding: theme.spacing(3),
-        margin: theme.spacing(3)
-    }
-}))
 
 export default AddressRegistrationController
