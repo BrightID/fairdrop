@@ -11,6 +11,7 @@ import formatDuration from 'date-fns/formatDuration'
 import {RegistrationInfo} from '../utils/api'
 import boxes from '../images/boxes.svg'
 import {Alert} from '@material-ui/lab'
+import BinarySlider from './BinarySlider'
 
 interface ChainSelectorProps {
     address: string
@@ -19,10 +20,13 @@ interface ChainSelectorProps {
     registrationInfo: RegistrationInfo
 }
 
+const mainnetChainId = 4 // we are testing on Rinkeby, set to 1 for mainnet
+
 const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: ChainSelectorProps) => {
     const classNames = useStyles()
     const {wallet, onboardApi, walletAddress} = useContext(EthersProviderContext)
     const [showWizard, setShowWizard] = useState(false)
+    const [sliderValue, setSliderValue] = useState<0|1>((currentChainId === mainnetChainId) ? 0 : 1)
 
     const handleOpenWizard = async () => {
         // wallet connected?
@@ -49,11 +53,19 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
         if (selectedChainId !== currentChainId) {
             setChainId(selectedChainId)
         }
+        // set slider
+        setSliderValue((selectedChainId === mainnetChainId) ? 0 : 1)
+    }
+
+    const handleBinarySliderChange = (newValue:0|1) => {
+        console.log(`Slider changed to ${newValue}`)
+        // set slider
+        setSliderValue(newValue)
+        handleOpenWizard()
     }
 
     // user can only choose between MainNet and xDai
     let otherChainId: number
-    const mainnetChainId = 4 // we are testing on Rinkeby, set to 1 for mainnet
     if (currentChainId === mainnetChainId) {
         otherChainId = 100
     } else {
@@ -74,12 +86,7 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
                     <Typography className={classNames.paragraph} align={'left'} variant={'h4'}>
                         Select your preferred chain to receive $BRIGHT
                     </Typography>
-                    <Typography className={classNames.paragraph} align={'left'}>
-                        <ButtonGroup disableElevation variant="contained" color="primary">
-                            <Button className={classNames.button} disabled={currentChainId === 100} onClick={handleOpenWizard}>{chainName(100)}</Button>
-                            <Button className={classNames.button} disabled={currentChainId === mainnetChainId} onClick={handleOpenWizard}>{chainName(mainnetChainId)}</Button>
-                        </ButtonGroup>
-                    </Typography>
+                    <BinarySlider value={sliderValue} setValue={handleBinarySliderChange} label0={chainName(mainnetChainId)} label1={chainName(100)}/>
                     {((walletAddress !== address) && wallet) && <Alert severity={'warning'} className={classNames.alert}>
                       You need to connect with address {address} in order to change the payout chain.
                     </Alert> }
