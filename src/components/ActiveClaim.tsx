@@ -83,7 +83,7 @@ const ActiveClaim = ({amount, nextAmount, claimed, claimState, claimChainId, cla
     if (claimed) {
         // already claimed. Just show that fact and skip everything else
         return (
-            <Grid container alignItems={'center'} spacing={10} direction={'column'}>
+            <Grid container alignItems={'center'} direction={'column'}>
                 <Box>
                     <img src={claimSuccess} alt={'claimed'}/>
                 </Box>
