@@ -1,9 +1,9 @@
 {
   "chainId": 4,
-  "root": "0xf1512c23f0134c1cc7dfa38363b36b3153f38674ba8a52444eef21ed1c91be14",
+  "root": "0x30afc407bf3046cfaf4d3bf0d81b16ab272b7969ae486fafffd04742df1095e9",
   "totalAmount": {
     "type": "BigNumber",
-    "hex": "0x0821ab0d441498000000"
+    "hex": "0x0bd65856a51b4ff00000"
   },
   "data": [
     {
@@ -11,13 +11,13 @@
       "address": "0x107D1198854fbbcB2E1014c3FFAb166b2595586a",
       "amount": {
         "type": "BigNumber",
-        "hex": "0x3635c9adc5dea00000"
+        "hex": "0xe91a7cd19fa3b00000"
       },
       "proof": [
-        "0x17995c1a8a5b4bf5dadd2a7d8a5e227947c9753d2fa6ece77b74b0df7ff7ce96",
-        "0x340bd1c52b40755664e7fc796561ebb1704af151d323e1ad5392fd5d30c2f5d3",
-        "0xed036b9dd35013dd1210be40b7714bba5b85f349b057ce8d63cd1ecbd04e5744",
-        "0x37754be427c0cb46b26b430ce7f2e516a3cb6513f2f7ad637cb98823562e966c"
+        "0x2f9f7c38292f1225434f3997a71bf792d09f6d8ddf8e7d999e1ed06a1131d7e1",
+        "0xe7226ab75194ec5d59c88bea0b119eef9602cdba6751944076d3fcceb4fd8fd1",
+        "0xd352978a87a93a8c60ae9b2fbb092dcdb709a8a83d4c9267347deeb1dc459d46",
+        "0x0aaeacaad59bdd4028a97315da2815ceb9b6359abdd746555ad884134dd5a731"
       ]
     },
     {
@@ -25,13 +25,13 @@
       "address": "0x5dDFDaf4832aeaD922A69CADf0A0aa1b9124Eac6",
       "amount": {
         "type": "BigNumber",
-        "hex": "0x0124bc0ddd92e5600000"
+        "hex": "0x30ca024f987b900000"
       },
       "proof": [
-        "0x2ee75231665f535b1d3680e7c35e3e29f610237ba784acac951664e42f202209",
-        "0x340bd1c52b40755664e7fc796561ebb1704af151d323e1ad5392fd5d30c2f5d3",
-        "0xed036b9dd35013dd1210be40b7714bba5b85f349b057ce8d63cd1ecbd04e5744",
-        "0x37754be427c0cb46b26b430ce7f2e516a3cb6513f2f7ad637cb98823562e966c"
+        "0xe60964abeb12ac8f442baee271bbe246c989c199545314c7f7be29e542d00c42",
+        "0xe7226ab75194ec5d59c88bea0b119eef9602cdba6751944076d3fcceb4fd8fd1",
+        "0xd352978a87a93a8c60ae9b2fbb092dcdb709a8a83d4c9267347deeb1dc459d46",
+        "0x0aaeacaad59bdd4028a97315da2815ceb9b6359abdd746555ad884134dd5a731"
       ]
     },
     {
@@ -39,13 +39,13 @@
       "address": "0x8651Cf790fc894512a726A402C9CAAA3687628f0",
       "amount": {
         "type": "BigNumber",
-        "hex": "0x021342520d5fec200000"
+        "hex": "0x019bff2ff57968c00000"
       },
       "proof": [
-        "0x66fbe8ea604d44f2b4d757ef4795f8ea67b60b2a40d1aeb1a6125085d881971d",
-        "0xdb31aeeb02064df1b2695fe7530c75672cd8798b862104f5e63784d47f0bf5a8",
-        "0xed036b9dd35013dd1210be40b7714bba5b85f349b057ce8d63cd1ecbd04e5744",
-        "0x37754be427c0cb46b26b430ce7f2e516a3cb6513f2f7ad637cb98823562e966c"
+        "0xb7a612e7eb2b0bc08faa92bd67e30e3f40ef1719a88656288b7fcda4cb192095",
+        "0x93838b7bd52efbbf18dbce7116aa685150845348e4225ba00ec359603ebaa6d3",
+        "0xd352978a87a93a8c60ae9b2fbb092dcdb709a8a83d4c9267347deeb1dc459d46",
+        "0x0aaeacaad59bdd4028a97315da2815ceb9b6359abdd746555ad884134dd5a731"
       ]
     },
     {
@@ -53,93 +53,121 @@
       "address": "0x8926B75642C2650aE3c5b227bAD2F7158ceaCCD1",
       "amount": {
         "type": "BigNumber",
-        "hex": "0x014aae8170d09ad00000"
+        "hex": "0xe91a7cd19fa3b00000"
       },
       "proof": [
-        "0x3f7c3c1bf39ac8adc751fa83cccfa61b0ef5140cd78ea9fd057205a51c48c064",
-        "0xdb31aeeb02064df1b2695fe7530c75672cd8798b862104f5e63784d47f0bf5a8",
-        "0xed036b9dd35013dd1210be40b7714bba5b85f349b057ce8d63cd1ecbd04e5744",
-        "0x37754be427c0cb46b26b430ce7f2e516a3cb6513f2f7ad637cb98823562e966c"
+        "0xa7ee8ef275d35258f55b2b8c723a16add121265c93d22f89aa6b24fdf1308b00",
+        "0x93838b7bd52efbbf18dbce7116aa685150845348e4225ba00ec359603ebaa6d3",
+        "0xd352978a87a93a8c60ae9b2fbb092dcdb709a8a83d4c9267347deeb1dc459d46",
+        "0x0aaeacaad59bdd4028a97315da2815ceb9b6359abdd746555ad884134dd5a731"
       ]
     },
     {
       "index": 4,
-      "address": "0x96E1c87d027918B574ee581a42D0acCa866E82eD",
+      "address": "0x8ba6Cd4F47E0AD7240287a292cdFE22A4D50e075",
       "amount": {
         "type": "BigNumber",
-        "hex": "0x0170a0f5040e50400000"
+        "hex": "0x0218ae196b8d4f300000"
       },
       "proof": [
-        "0xef902353ea76dadea34fc54e799768837afa991dc4c5cfd4eefc48b69f734ce4",
-        "0x96b396d412836c176b0a9bf6c41975992ad3fd1b958280ce57683c90174e5714",
-        "0xe268e7a8ce572605aba92c8cfd8363693de4300eb078d47c5bb938f2d1264ba9",
-        "0x37754be427c0cb46b26b430ce7f2e516a3cb6513f2f7ad637cb98823562e966c"
+        "0x5e4fde1767cc703729c778e20b8fe76efff6464f0abdc3ffdef65fc196f1592c",
+        "0xabcd0c0a0b1aab65063b252bb66e3d7be147532624760697551693703185ae89",
+        "0x7f33f30a9d12a4a500a620ef711d891d94ca0ec0706198c339e04a09ae4d041d",
+        "0x0aaeacaad59bdd4028a97315da2815ceb9b6359abdd746555ad884134dd5a731"
       ]
     },
     {
       "index": 5,
-      "address": "0xBaCC12d6FC38c8Edc957A9200aCcf6F06bA84B93",
+      "address": "0x96E1c87d027918B574ee581a42D0acCa866E82eD",
       "amount": {
         "type": "BigNumber",
-        "hex": "0x30ca024f987b900000"
+        "hex": "0x01760cbc623bb3500000"
       },
       "proof": [
-        "0x9d2da77b536fafed46af239a22aa965d113f0ea626567c98eb5f5633bb8b8fc0",
-        "0x96b396d412836c176b0a9bf6c41975992ad3fd1b958280ce57683c90174e5714",
-        "0xe268e7a8ce572605aba92c8cfd8363693de4300eb078d47c5bb938f2d1264ba9",
-        "0x37754be427c0cb46b26b430ce7f2e516a3cb6513f2f7ad637cb98823562e966c"
+        "0x9f089d6c97d3bfc615925a9a9554921710b633513003c54568e49c09696716c0",
+        "0xabcd0c0a0b1aab65063b252bb66e3d7be147532624760697551693703185ae89",
+        "0x7f33f30a9d12a4a500a620ef711d891d94ca0ec0706198c339e04a09ae4d041d",
+        "0x0aaeacaad59bdd4028a97315da2815ceb9b6359abdd746555ad884134dd5a731"
       ]
     },
     {
       "index": 6,
-      "address": "0xa081451De8056aD4A5664A8975CFA8e5A29214c9",
+      "address": "0x9885a84930E3C8c865A1D3dEBDC204F990BaB7C3",
       "amount": {
         "type": "BigNumber",
-        "hex": "0x2b5e3af16b18800000"
+        "hex": "0x011f50467f6582500000"
       },
       "proof": [
-        "0x1a0f68bdff001125beec85319aebe04d796ccc978255017791f2955b78b5b0ff",
-        "0xbae4004a1caac04eff4c41c08560c547de500154efe17e89c435bbb709f2128e",
-        "0xe268e7a8ce572605aba92c8cfd8363693de4300eb078d47c5bb938f2d1264ba9",
-        "0x37754be427c0cb46b26b430ce7f2e516a3cb6513f2f7ad637cb98823562e966c"
+        "0x54f05554d5d32a7a9378b13b16b6e23f291af9627fa0f8e5a6c400bfd10f5ff6",
+        "0xc3b40b6b4b1a90195238fde7d50f921fff30693889ea06d97b57146aa605a336",
+        "0x7f33f30a9d12a4a500a620ef711d891d94ca0ec0706198c339e04a09ae4d041d",
+        "0x0aaeacaad59bdd4028a97315da2815ceb9b6359abdd746555ad884134dd5a731"
       ]
     },
     {
       "index": 7,
-      "address": "0xc44E4c49Ffa5Db98CA52770dff3e371ECB01f2D9",
+      "address": "0xBaCC12d6FC38c8Edc957A9200aCcf6F06bA84B93",
       "amount": {
         "type": "BigNumber",
-        "hex": "0x2086ac351052600000"
+        "hex": "0x0ad78ebc5ac6200000"
       },
       "proof": [
-        "0x853a5cb4d9538097ce8d8cab32e38a6c26c0b0dc224059c504725ef810b35f8e",
-        "0xbae4004a1caac04eff4c41c08560c547de500154efe17e89c435bbb709f2128e",
-        "0xe268e7a8ce572605aba92c8cfd8363693de4300eb078d47c5bb938f2d1264ba9",
-        "0x37754be427c0cb46b26b430ce7f2e516a3cb6513f2f7ad637cb98823562e966c"
+        "0x88c32342ce7720473af446e9032dcf8bf34942fdd2eb1c5b1f2a882dca2d559b",
+        "0xc3b40b6b4b1a90195238fde7d50f921fff30693889ea06d97b57146aa605a336",
+        "0x7f33f30a9d12a4a500a620ef711d891d94ca0ec0706198c339e04a09ae4d041d",
+        "0x0aaeacaad59bdd4028a97315da2815ceb9b6359abdd746555ad884134dd5a731"
       ]
     },
     {
       "index": 8,
-      "address": "0xd9ffaF2e880dF0cc7B7104e9E789d281a81824cf",
+      "address": "0xa081451De8056aD4A5664A8975CFA8e5A29214c9",
       "amount": {
         "type": "BigNumber",
-        "hex": "0x9d3595ab2438d00000"
+        "hex": "0x7caee97613e6700000"
       },
       "proof": [
-        "0xa9df059dde1182525ec61b7887e90bd5c92b56bbb488075bd4eda6496eea652d",
-        "0x6d4be1b20e7236c04700a270464dace08c8ed503e674d072c2677d2e9dc1dd6a"
+        "0x8e327e0254028eccfab1960c133ef3e6822a1b1d771ca6bc5eeefdb8f5ad7336",
+        "0xa66698438a80883d36d79d2304293a9f3a866fe9b8ed46fb329ca5d77117f12d",
+        "0xdae8d3c00e16f41035d1a001e1e6e85b03eeaa36685d77db416efbdb53df225e"
       ]
     },
     {
       "index": 9,
+      "address": "0xc44E4c49Ffa5Db98CA52770dff3e371ECB01f2D9",
+      "amount": {
+        "type": "BigNumber",
+        "hex": "0x0165c96647b38a200000"
+      },
+      "proof": [
+        "0x0f081cc12e88768ad698447488ffe26ae3b82b3a36a214ca18a7013e32399286",
+        "0xa66698438a80883d36d79d2304293a9f3a866fe9b8ed46fb329ca5d77117f12d",
+        "0xdae8d3c00e16f41035d1a001e1e6e85b03eeaa36685d77db416efbdb53df225e"
+      ]
+    },
+    {
+      "index": 10,
+      "address": "0xd9ffaF2e880dF0cc7B7104e9E789d281a81824cf",
+      "amount": {
+        "type": "BigNumber",
+        "hex": "0x0ad78ebc5ac6200000"
+      },
+      "proof": [
+        "0x91a984c623211c8a5a9f7ba6392c768c23a2586d72d442933ab6d92fdc3f8c67",
+        "0x2ce518edb4bb584a0b345d145d34ed59b9b38ae3372253dd03cc04323c8ae1ba",
+        "0xdae8d3c00e16f41035d1a001e1e6e85b03eeaa36685d77db416efbdb53df225e"
+      ]
+    },
+    {
+      "index": 11,
       "address": "0xdC0046B52e2E38AEe2271B6171ebb65cCD337518",
       "amount": {
         "type": "BigNumber",
-        "hex": "0xde42ee1544dd900000"
+        "hex": "0x019127a1391ea2a00000"
       },
       "proof": [
-        "0x96d8cb59fa03bffa2c66e0a71d758bdbb1a036da814013429b63be784d5a291c",
-        "0x6d4be1b20e7236c04700a270464dace08c8ed503e674d072c2677d2e9dc1dd6a"
+        "0xa837d534c5bf6b049a6b0837b23a8d9ab54ec521949dd3f141f4304bd8e46d86",
+        "0x2ce518edb4bb584a0b345d145d34ed59b9b38ae3372253dd03cc04323c8ae1ba",
+        "0xdae8d3c00e16f41035d1a001e1e6e85b03eeaa36685d77db416efbdb53df225e"
       ]
     }
   ]
