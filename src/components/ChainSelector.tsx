@@ -86,10 +86,11 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
                     <Typography className={classNames.paragraph} align={'left'} variant={'h4'}>
                         Select your preferred chain to receive $BRIGHT
                     </Typography>
-                    <Box className={classNames.sliderContainer}>
+                    {(walletAddress === address) &&
+                        <Box className={classNames.sliderContainer}>
                         <BinarySlider value={sliderValue} setValue={handleBinarySliderChange} label0={chainName(mainnetChainId)} label1={chainName(100)}/>
-                    </Box>
-                    {((walletAddress !== address) && wallet) && <Alert severity={'warning'} className={classNames.alert}>
+                    </Box>}
+                    {(walletAddress !== address) && <Alert severity={'warning'} className={classNames.alert}>
                       You need to connect with address {address} in order to change the payout chain.
                     </Alert> }
                     <Box className={classNames.infoBox}>
