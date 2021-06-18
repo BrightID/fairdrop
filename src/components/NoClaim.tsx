@@ -21,9 +21,7 @@ const NoClaim = ({address}:NoClaimProps)=>{
                 </Typography>
                 <Typography className={classNames.infoBox}>
                     <Typography variant={'h6'}>Did you link your BrightId?</Typography>
-
-                    <Typography variant={'body1'}>Link your address with your BrightID to proof you are not
-                        a sybil and get more $BRIGHT in the next claim phase!</Typography>
+                    <Typography variant={'body1'}>Link your address with your BrightID to get more $BRIGHT in the next claim phase!</Typography>
                 </Typography>
             </Grid>
         </Grid>
