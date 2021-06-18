@@ -86,7 +86,9 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
                     <Typography className={classNames.paragraph} align={'left'} variant={'h4'}>
                         Select your preferred chain to receive $BRIGHT
                     </Typography>
-                    <BinarySlider value={sliderValue} setValue={handleBinarySliderChange} label0={chainName(mainnetChainId)} label1={chainName(100)}/>
+                    <Box className={classNames.sliderContainer}>
+                        <BinarySlider value={sliderValue} setValue={handleBinarySliderChange} label0={chainName(mainnetChainId)} label1={chainName(100)}/>
+                    </Box>
                     {((walletAddress !== address) && wallet) && <Alert severity={'warning'} className={classNames.alert}>
                       You need to connect with address {address} in order to change the payout chain.
                     </Alert> }
@@ -127,6 +129,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         padding: theme.spacing(4),
         marginLeft: theme.spacing(3),
         marginTop: theme.spacing(4)
+    },
+    sliderContainer: {
+        marginLeft: theme.spacing(3),
     }
 }),)
 

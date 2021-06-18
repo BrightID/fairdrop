@@ -1,14 +1,25 @@
 import React, {useEffect, useState} from 'react'
 import {makeStyles} from '@material-ui/core/styles'
-import {Grid, Slider, Typography} from '@material-ui/core'
+import {Button, Grid, Slider, Typography} from '@material-ui/core'
 
 const useStyles = makeStyles({
-    root    : {
-        width: 200,
-    }, rail : {
+    root : {
+        width: 280,
+    },
+    rail : {
         color: 'rgba(0, 0, 0, 0.8)', height: '40%', borderRadius: 20, marginTop: -4, marginLeft: -10, paddingRight: 20,
-    }, thumb: {
+    },
+    thumb: {
         color: 'rgba(93, 236, 154, 1)', width: 24, height: 24, marginLeft: -12, marginTop: -10,
+    },
+    active: {
+        color: 'rgba(182, 75, 50, 1)',
+    },
+    inactive: {
+        color: 'rgba(0, 0, 0, 0.7)'
+    },
+    noTextTransform: {
+        textTransform: 'none'
     }
 })
 
@@ -39,7 +50,10 @@ const BinarySlider = ({value, setValue, label0, label1}: BinarySliderProps) => {
         // Binary slider will never have an array of numbers, but the interface requires
         // handling of arrays...
         const newNumber = ((typeof (newValue) === 'number') ? newValue : newValue[0])
+        updateSlider(newNumber)
+    }
 
+    const updateSlider = (newNumber: number) => {
         if (newNumber > 50) {
             setSliderValue(100)
             // did it flip? Then report new value
@@ -58,7 +72,11 @@ const BinarySlider = ({value, setValue, label0, label1}: BinarySliderProps) => {
     return (<div className={classes.root}>
             <Grid container spacing={2} alignItems="center">
                 <Grid item>
-                    <Typography>{label0}</Typography>
+                    <Button variant={'text'} classes={{label: classes.noTextTransform}} onClick={()=>updateSlider(0)}>
+                        <Typography className={(sliderValue<=50) ? classes.active : classes.inactive} variant={'h6'}>
+                            {label0}
+                        </Typography>
+                    </Button>
                 </Grid>
                 <Grid item xs>
                     <Slider
@@ -73,9 +91,11 @@ const BinarySlider = ({value, setValue, label0, label1}: BinarySliderProps) => {
                     />
                 </Grid>
                 <Grid item>
-                    <Typography>
-                        {label1}
-                    </Typography>
+                    <Button variant={'text'} classes={{label: classes.noTextTransform}} onClick={()=>updateSlider(100)}>
+                        <Typography className={(sliderValue > 50) ? classes.active : classes.inactive} variant={'h6'}>
+                            {label1}
+                        </Typography>
+                    </Button>
                 </Grid>
             </Grid>
         </div>)
