@@ -20,9 +20,7 @@ const AddressEntryComponent = ({initialValues, setAddress}: AddressEntryProps) =
                         <Typography variant={'h4'}>$BRIGHT airdrop is here!</Typography>
                         <Typography variant={'h5'}>Enter your ETH address to claim it</Typography>
                     </Grid>
-                    <Grid item xs={12}>
-                        <AddressForm initialValues={initialValues} setAddress={setAddress}></AddressForm>
-                    </Grid>
+                    <AddressForm initialValues={initialValues} setAddress={setAddress}/>
                 </Grid>
                 <Grid item xs={4}>
                     <img src={airdropLogo} width={'90%'} alt="airdrop Logo" />

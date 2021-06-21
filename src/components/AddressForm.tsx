@@ -1,9 +1,10 @@
-import React from 'react'
-import {Button, InputAdornment } from '@material-ui/core'
+import React, {useContext} from 'react'
+import {Button, Grid} from '@material-ui/core'
 import {ethers} from 'ethers'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import { Form } from 'react-final-form'
 import { TextField} from 'mui-rff'
+import {EthersProviderContext} from './ProviderContext'
 
 interface AddressFormData {
     address: string;
@@ -16,9 +17,10 @@ interface AddressFormProps {
 
 const AddressForm = ({initialValues, setAddress}: AddressFormProps) => {
     const classNames = useStyles()
+    const {onboardApi, walletAddress} = useContext(EthersProviderContext)
 
     const onSubmit = (values: AddressFormData) => {
-        console.log(`SUbmitting ${values.address}`)
+        console.log(`Submitting ${values.address}`)
         // make sure to have a checksummed address before storing
         setAddress(ethers.utils.getAddress(values.address))
     }
@@ -37,34 +39,62 @@ const AddressForm = ({initialValues, setAddress}: AddressFormProps) => {
         return {}
     }
 
-    return (<Form onSubmit={onSubmit}
-                  initialValues={initialValues}
-                  validate={validate}
-                  render={({handleSubmit, submitting, values}) => (
-                      <form onSubmit={handleSubmit} noValidate>
-                          <TextField
-                              id="address"
-                              type='text'
-                              name='address'
-                              InputProps={{
-                                  classes: {
-                                      input: classNames.addressInput,
-                                  },
-                                  endAdornment: <InputAdornment position="end">
-                                      <Button
-                                          className={classNames.button}
-                                          type="submit"
-                                          disabled={submitting}
-                                          variant={'contained'}
-                                          color={'primary'}
-                                      >
-                                          Check Address
-                                      </Button>
-                                  </InputAdornment>,
-                              }}
-                          />
-                      </form>)}
-            />
+    return (
+        <Form mutators={{
+            importWalletAddress: async (args, state, utils) => {
+                console.log(`Mutator called, wallet address is ${walletAddress}`)
+                if (walletAddress && walletAddress !== '') {
+                    utils.changeValue(state, 'address', () => walletAddress)
+                } else {
+                    console.log(`Connecting wallet...`)
+                    const selected = await onboardApi?.walletSelect()
+                    if (selected) {
+                        await onboardApi?.walletCheck();
+                    }
+                }
+            }
+        }}
+              onSubmit={onSubmit}
+              initialValues={initialValues}
+              validate={validate}
+              render={({form, handleSubmit, submitting, values}) => (
+                      <form
+                          onSubmit={handleSubmit}
+                          noValidate
+                      >
+                          <Grid container justify={'space-between'}>
+                              <Grid item xs={12}>
+                                  <TextField
+                                      id="address"
+                                      type='text'
+                                      name='address'
+                                      className={classNames.addressTextField}
+                                      InputProps={{
+                                          classes: {
+                                              input: classNames.addressInput,
+                                          }
+                                      }}
+                                  />
+                              </Grid>
+                              <Grid item xs={6}>
+                                  <Button onClick={form.mutators.importWalletAddress} variant={'outlined'}>
+                                      Use Wallet Address
+                                  </Button>
+                              </Grid>
+                              <Grid item xs={4} className={classNames.rightAlignItem}>
+                                  <Button
+                                      type="submit"
+                                      variant={'contained'}
+                                      color={'primary'}
+                                      disabled={submitting}
+                                  >
+                                      check address
+                                  </Button>
+                              </Grid>
+                          </Grid>
+                      </form>
+              )}
+        />
     )
 }
 
@@ -75,9 +105,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     button: {
         color: 'white'
     },
+    addressTextField: {
+        marginBottom: theme.spacing(2)
+    },
     addressInput: {
-        fontSize: 24,
-        background: 'white'
+        fontSize: 20,
+        background: 'white',
+    },
+    rightAlignItem: {
+        display: 'flex',
+        justifyContent: 'flex-end'
     }
 }),)
 
