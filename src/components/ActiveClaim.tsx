@@ -68,10 +68,10 @@ const ActiveClaim = ({amount, nextAmount, claimed, claimState, claimChainId, cla
                     <img src={rocket} width={'100%'} alt={'rocket'}/>
                 </Grid>
                 <Grid item container direction={'column'} xs={6} alignContent={'flex-start'}>
-                    <Typography align={'left'} variant={'h4'}>
+                    <Typography align={'left'} variant={'h4'} className={classNames.paragraph}>
                         {`${utils.formatUnits(amount, 18)} $Bright`}
                     </Typography>
-                    <Typography align={'left'} variant={'h5'}>
+                    <Typography align={'left'} variant={'h5'} className={classNames.paragraph}>
                         claimable on {chainName(claimChainId)}.
                     </Typography>
                     {action}
