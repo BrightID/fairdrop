@@ -31,7 +31,13 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(3)
     },
     tabRoot: {
+        textTransform: 'none',
+        maxWidth: 'unset'
+    },
+    tabRootRightAligned: {
         marginLeft: 'auto',
+        textTransform: 'none',
+        maxWidth: 'unset'
     },
     selectedTab: {
         color: 'rgba(182, 75, 50, 1)',
@@ -55,11 +61,16 @@ const SubNavBar = ({chainSelector, addressLinker}:SubNavBarProps) => {
     return (<>
             <AppBar color={'transparent'} position={'static'} className={classes.appBar}>
                 <Tabs value={value} onChange={handleTabChange}>
-                    <Tab label="Claim on XDai" classes={{
+                    <Tab label="Claim on XDai"
+                         classes={{
                         selected: classes.selectedTab,
-                        root: classes.tabRoot
+                        root: classes.tabRootRightAligned
                     }}/>
-                    <Tab label="Link your BrightID to get more $BRIGHT" classes={{selected: classes.selectedTab}}/>
+                    <Tab label="Link your BrightID to get more $BRIGHT"
+                         classes={{
+                             selected: classes.selectedTab,
+                             root: classes.tabRoot
+                    }}/>
                 </Tabs>
             </AppBar>
         <Container maxWidth="lg">
