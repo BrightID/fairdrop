@@ -6,6 +6,7 @@ import {EthersProviderContext} from './ProviderContext'
 import {Claim} from './AddressRegistrationController'
 import ActiveClaim from './ActiveClaim'
 import {RegistrationInfo} from '../utils/api'
+import ClaimWizard from './ClaimWizard'
 
 interface ActiveClaimControllerProps {
     claim: Claim,
@@ -34,6 +35,7 @@ const ActiveClaimController = ({claim, registrationInfo, payoutChainId, nextAmou
     const [isClaimed, setIsClaimed] = useState(false)
     const [claimState, setClaimState] = useState<ClaimState>({txState: TxStates.Idle})
     const {wallet, network, onboardApi} = useContext(EthersProviderContext)
+    const [showWizard, setShowWizard] = useState(false)
 
     // initialize contract instance
     useEffect(() => {
@@ -119,6 +121,7 @@ const ActiveClaimController = ({claim, registrationInfo, payoutChainId, nextAmou
         }
         if (merkleDistributor) {
             try {
+                setShowWizard(true)
                 setClaimState({txState: TxStates.WaitingSignature})
                 const txResult = await merkleDistributor.claim(claim.index, claim.address, claim.amount, claim.proof)
                 console.log(`Result: ${txResult.hash}`)
@@ -153,6 +156,7 @@ const ActiveClaimController = ({claim, registrationInfo, payoutChainId, nextAmou
     }
 
     const cancelRedeem = ()=> {
+        setShowWizard(false)
         setClaimState({
             txState: TxStates.Idle
         })
@@ -162,19 +166,26 @@ const ActiveClaimController = ({claim, registrationInfo, payoutChainId, nextAmou
         await onboardApi?.walletSelect()
     }
 
-    return (<ActiveClaim
-            amount={claim.amount}
-            nextAmount={nextAmount}
-            claimed={isClaimed}
-            claimChainId={claim.chainId}
-            selectedChainId={payoutChainId}
-            currentChainId={network || 0}
-            registrationInfo={registrationInfo}
-            connectWallet={connectWallet}
-            claimHandler={redeem}
-            cancelHandler={cancelRedeem}
-            claimState={claimState}
-    />)
+    return (<>
+            <ActiveClaim
+                amount={claim.amount}
+                nextAmount={nextAmount}
+                claimed={isClaimed}
+                claimChainId={claim.chainId}
+                selectedChainId={payoutChainId}
+                currentChainId={network || 0}
+                registrationInfo={registrationInfo}
+                connectWallet={connectWallet}
+                claimHandler={redeem}
+            />
+            <ClaimWizard
+                amount={claim.amount}
+                open={showWizard}
+                claimState={claimState}
+                claimHandler={redeem}
+                cancelHandler={cancelRedeem}
+            />
+        </>)
 }
 
 export default ActiveClaimController

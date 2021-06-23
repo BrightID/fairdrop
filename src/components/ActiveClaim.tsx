@@ -22,15 +22,9 @@ interface ActiveClaimProps {
     registrationInfo: RegistrationInfo,
     connectWallet?: () => any,
     claimHandler: ()=>any,
-    cancelHandler: ()=>any,
-    claimState: {
-        txState: TxState
-        txHash?: string
-        errorMessage?: string
-    }
 }
 
-const ActiveClaim = ({amount, nextAmount, claimed, claimState, claimChainId, claimHandler, cancelHandler, selectedChainId, currentChainId, registrationInfo, connectWallet}: ActiveClaimProps) => {
+const ActiveClaim = ({amount, nextAmount, claimed, claimChainId, claimHandler, selectedChainId, currentChainId, registrationInfo, connectWallet}: ActiveClaimProps) => {
     const classNames = useStyles()
 
     // time remaining till next claim phase startes
@@ -122,6 +116,7 @@ const ActiveClaim = ({amount, nextAmount, claimed, claimState, claimChainId, cla
                 */}
             </Grid>
         } else {
+            // wallet is connected and on claim chain -> Enable claiming.
             imageSrc = highfive
             mainContent = <>
                 <Typography className={classNames.paragraph} variant={'h4'}>
@@ -130,82 +125,14 @@ const ActiveClaim = ({amount, nextAmount, claimed, claimState, claimChainId, cla
                 <Typography className={classNames.paragraph} variant={'h5'}>
                     claimable on {chainName(claimChainId)} now
                 </Typography>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    size={"large"}
+                    onClick={claimHandler}
+                    className={classNames.button}
+                >Claim</Button>
             </>
-
-            // wallet is connected and on claim chain -> Enable claiming.
-            let action
-            switch (claimState.txState){
-                case TxStates.Idle:
-                    action =
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            size={"large"}
-                            onClick={claimHandler}
-                            className={classNames.button}
-                        >Claim</Button>
-                    break;
-                case TxStates.WaitingSignature:
-                    action =<Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                    >
-                        <Alert severity="info" className={classNames.alert} variant="outlined" style={{width: '95%'}}>
-                            Please sign transaction...
-                        </Alert>
-                    </Box>
-                    break;
-                case TxStates.WaitingConfirmation:
-                    action =<Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                    >
-                        <Alert severity="info" className={classNames.alert} variant="outlined" style={{width: '95%'}}>
-                            {`Transaction ${claimState.txHash} created, waiting for confirmation...`}
-                        </Alert>
-                    </Box>
-                    break;
-                case TxStates.Confirmed:
-                    action =<Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        marginTop={0}
-                    >
-                        <Alert severity="success" className={classNames.alert} variant="outlined" style={{width: '95%'}}>
-                            {`Successfully claimed! (Transaction ${claimState.txHash}`}
-                        </Alert>
-                    </Box>
-                    break;
-                case TxStates.Error:
-                    action =<>
-                            <Alert severity="error"
-                                   className={classNames.alert}
-                                   variant="outlined">
-                                <AlertTitle><Typography variant={'h6'}>Claiming failed</Typography></AlertTitle>
-                                {claimState.errorMessage !== '' && <Box>{claimState.errorMessage}</Box>}
-                                {claimState.txHash !== '' && <Box>{claimState.txHash}</Box>}
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    size={"large"}
-                                    onClick={claimHandler}
-                                    style={{width: '45%', marginTop: '20px'}}
-                                >Retry</Button>
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    size={"large"}
-                                    onClick={cancelHandler}
-                                    style={{width: '45%', marginLeft: '20px', marginTop: '20px'}}
-                                >Cancel</Button>
-                            </Alert>
-                    </>
-                    break;
-            }
-            alerts.push(action)
         }
     }
     return (

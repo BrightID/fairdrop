@@ -1,7 +1,7 @@
 const chainName = (chainId: number) => {
     switch (chainId) {
         case 31337:
-            return 'Hardhat network'
+            return 'Hardhat'
         case 1:
             return 'Mainnet'
         case 4:

@@ -3,6 +3,7 @@ import {BigNumber} from 'ethers'
 import { RegistrationInfo} from '../utils/api'
 import ActiveClaimController from './ActiveClaimController'
 import NoClaim from './NoClaim'
+import {mainnetChainId, xDaiChainId} from '../utils/chainIds'
 
 
 interface BaseClaim {
@@ -53,6 +54,7 @@ interface ContextInfoError {
 
 export type ContextInfo = ContextInfoSuccess | ContextInfoError
 
+
 const AddressRegistrationController = ({address, registrationInfo, registrationInfoLoading, payoutChainId, nextAmount }: AddressRegistrationControllerProps) => {
     const [claims, setClaims] = useState<Array<Claim>>([])
     const [claimLoading, setClaimLoading] = useState(true)
@@ -63,7 +65,7 @@ const AddressRegistrationController = ({address, registrationInfo, registrationI
         const runEffect = async () => {
             setClaimLoading(true)
             const _claimFiles: Array<ClaimFile> = []
-            for (const chainId of [1, 4, 100, 31337]) {
+            for (const chainId of [mainnetChainId, xDaiChainId]) {
                 const url = `airdropData/claimData_${chainId}.json`
                 const response = await fetch(url)
                 if (response.ok) {

@@ -12,6 +12,7 @@ import {RegistrationInfo} from '../utils/api'
 import boxes from '../images/boxes.svg'
 import {Alert} from '@material-ui/lab'
 import BinarySlider from './BinarySlider'
+import {mainnetChainId, xDaiChainId} from '../utils/chainIds'
 
 interface ChainSelectorProps {
     address: string
@@ -19,8 +20,6 @@ interface ChainSelectorProps {
     setChainId: (newChainId: number) => any
     registrationInfo: RegistrationInfo
 }
-
-const mainnetChainId = 4 // we are testing on Rinkeby, set to 1 for mainnet
 
 const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: ChainSelectorProps) => {
     const classNames = useStyles()
@@ -67,7 +66,7 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
     // user can only choose between MainNet and xDai
     let otherChainId: number
     if (currentChainId === mainnetChainId) {
-        otherChainId = 100
+        otherChainId = xDaiChainId
     } else {
         otherChainId = mainnetChainId
     }
@@ -88,7 +87,7 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
                     </Typography>
                     {(walletAddress === address) &&
                         <Box className={classNames.sliderContainer}>
-                        <BinarySlider value={sliderValue} setValue={handleBinarySliderChange} label0={chainName(mainnetChainId)} label1={chainName(100)}/>
+                        <BinarySlider value={sliderValue} setValue={handleBinarySliderChange} label0={chainName(mainnetChainId)} label1={chainName(xDaiChainId)}/>
                     </Box>}
                     {(walletAddress !== address) && <Alert severity={'warning'} className={classNames.alert}>
                       You need to connect with address {address} in order to change the payout chain.
@@ -120,7 +119,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         margin: theme.spacing(1)
     },
     alert: {
-        borderRadius: 5
+        borderRadius: 5,
+        marginLeft: theme.spacing(3)
     },
     button: {
         color: 'white'
