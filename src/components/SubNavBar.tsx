@@ -52,14 +52,16 @@ interface SubNavBarProps {
 
 const SubNavBar = ({chainSelector, addressLinker}:SubNavBarProps) => {
     const classes = useStyles()
-    const [value, setValue] = useState(0)
+    const [value, setValue] = useState<number|false>(false)
 
     const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         setValue(newValue)
+        console.log(`Tab changed to ${newValue}`)
     }
 
     useEffect(() => {
         // Make sure selected Tab is visible on screen
+        console.log(`Scrolling to tab ${value}`)
         document.querySelector(`#tabpanel-${value}`)?.scrollIntoView({behavior: 'smooth'});
     }, [value])
 
