@@ -10,7 +10,12 @@ const useStyles = makeStyles({
         color: 'rgba(0, 0, 0, 0.8)', height: '40%', borderRadius: 20, marginTop: -4, marginLeft: -10, paddingRight: 20,
     },
     thumb: {
-        color: 'rgba(93, 236, 154, 1)', width: 24, height: 24, marginLeft: -12, marginTop: -10,
+        // color: 'rgba(93, 236, 154, 1)',
+        color: 'rgba(182, 75, 50, 1)',
+        width: 24,
+        height: 24,
+        marginLeft: -12,
+        marginTop: -10,
     },
     active: {
         color: 'rgba(182, 75, 50, 1)',
