@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {AppBar, Container, Tab, Tabs } from '@material-ui/core'
 import {makeStyles} from '@material-ui/core/styles'
 
@@ -57,6 +57,11 @@ const SubNavBar = ({chainSelector, addressLinker}:SubNavBarProps) => {
     const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         setValue(newValue)
     }
+
+    useEffect(() => {
+        // Make sure selected Tab is visible on screen
+        document.querySelector(`#tabpanel-${value}`)?.scrollIntoView({behavior: 'smooth'});
+    }, [value])
 
     return (<>
             <AppBar color={'transparent'} position={'static'} className={classes.appBar}>
