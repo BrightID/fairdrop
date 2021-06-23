@@ -3,14 +3,12 @@ import {BigNumber, utils} from 'ethers'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import {Box, Button, Grid, Typography} from '@material-ui/core'
 import chainName from '../utils/chainName'
-import {Alert, AlertTitle} from '@material-ui/lab'
 import {intervalToDuration} from 'date-fns'
-import formatDuration from 'date-fns/formatDuration'
 import {RegistrationInfo} from '../utils/api'
-import {TxState, TxStates} from './ActiveClaimController'
 import rocket from '../images/rocket.svg'
 import highfive from '../images/highfive.svg'
 import claimSuccess from '../images/claimSuccess.svg'
+import CountDown from './CountDown'
 
 interface ActiveClaimProps {
     amount: BigNumber,
@@ -105,9 +103,7 @@ const ActiveClaim = ({amount, nextAmount, claimed, claimChainId, claimHandler, s
                 <Typography align={'left'} variant={'h5'}>
                     claimable at the next claim period on {chainName(selectedChainId)}.
                 </Typography>
-                <Typography align={'left'} variant={'h6'}>
-                    Next claim period starts in {formatDuration(duration, {format: ['weeks', 'days', 'hours', 'minutes']})}.
-                </Typography>
+                <CountDown title={'Next claim period in'} timestamp={registrationInfo.nextClaimStart}/>
                 {/*
                 <Typography align={'left'} variant={'body2'}>
                     In a hurry? Claim {utils.formatUnits(amount, 18)} $BRIGHT on {chainName(claimChainId)} now.

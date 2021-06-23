@@ -30,7 +30,7 @@ const AddressLinkInfo = ({address, brightIdLinked, setBrightIdLinked, registrati
 
     const duration = intervalToDuration({start: Date.now(), end: registrationInfo.nextClaimStart})
     console.log(`Duration: ${formatDuration(duration)}`)
-    const durationString = formatDuration(duration)
+    const durationString = formatDuration(duration, {format: ['days', 'hours', 'minutes']})
 
     if (brightIdLinked) {
         return (
@@ -41,7 +41,8 @@ const AddressLinkInfo = ({address, brightIdLinked, setBrightIdLinked, registrati
                             BrightID Linked
                         </Typography>
                         <Typography align={'left'} variant={'body1'}>
-                            It will take up to 24 hours to update the claimable amount after linking
+                            The resulting $BRIGHT will be included in the next claim period, starting
+                            in approximately <strong>{durationString}</strong>.
                         </Typography>
                     </Grid>
                 </Grid>
@@ -64,8 +65,8 @@ const AddressLinkInfo = ({address, brightIdLinked, setBrightIdLinked, registrati
                     <Box className={classNames.infoBox}>
                         <Typography variant={'h6'}>Address Link Info</Typography>
                         <Typography variant={'body1'}>
-                            {`The resulting $BRIGHT will be included in the next claim period, starting
-                 in approximately ${durationString}.`}
+                            The resulting $BRIGHT will be included in the next claim period, starting
+                            in approximately <strong>{durationString}</strong>.
                         </Typography>
                         <Typography variant={'body1'}>
                             You only get the Link Bonus once. You only need to link one address. Linking additional

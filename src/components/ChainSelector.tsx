@@ -78,7 +78,7 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
     }
     const duration = intervalToDuration({start: Date.now(), end: registrationInfo.nextClaimStart})
     console.log(`Duration: ${formatDuration(duration)}`)
-    const durationString = formatDuration(duration)
+    const durationString = formatDuration(duration, {format: ['days', 'hours', 'minutes']})
     return (<>
             <Grid container alignItems={'center'} spacing={10}>
                 <Grid item container direction={'column'} xs={6}>
@@ -95,8 +95,8 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
                     <Box className={classNames.infoBox}>
                         <Typography variant={'h6'}>Payout Chain Info</Typography>
                         <Typography variant={'body1'}>
-                            {`Note that change of payout chain will take effect for the next claim period, starting
-                 in approximately ${durationString}.`}
+                            Note that change of payout chain will take effect for the next claim period, starting
+                 in approximately <strong>{durationString}</strong>.
                         </Typography>
                         <Typography variant={'body1'}>
                             All unclaimed $BRIGHT will carry over to the next period and be available on
