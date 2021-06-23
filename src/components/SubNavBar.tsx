@@ -31,17 +31,24 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(3)
     },
     tabRoot: {
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2),
         textTransform: 'none',
-        maxWidth: 'unset'
+        maxWidth: 'unset',
+        fontWeight: 'bold',
+        color: 'black'
     },
     tabRootRightAligned: {
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2),
         marginLeft: 'auto',
         textTransform: 'none',
-        maxWidth: 'unset'
+        maxWidth: 'unset',
+        fontWeight: 'bold',
+        color: 'black'
     },
     selectedTab: {
         color: 'rgba(182, 75, 50, 1)',
-        fontWeight: 'bold'
     }
 }));
 
