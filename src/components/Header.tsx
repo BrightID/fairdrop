@@ -5,6 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import {EthersProviderContext} from './ProviderContext'
+import HashDisplay from './hashDisplay'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -65,7 +66,7 @@ const Header = ({address, changeAddress}:HeaderProps) => {
                         variant={'contained'}
                         color={'primary'}
                         onClick={changeAddress}>
-                        {address}
+                        <HashDisplay hash={address}/>
                     </Button>}
                     <Button
                         className={classes.changeWalletBtn}
