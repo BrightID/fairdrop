@@ -1,6 +1,6 @@
-import {createMuiTheme} from '@material-ui/core'
+import {createMuiTheme, responsiveFontSizes} from '@material-ui/core'
 
-export const theme = createMuiTheme({
+let theme = createMuiTheme({
     overrides: {
         MuiCssBaseline: {
             "@global": {
@@ -54,5 +54,7 @@ export const theme = createMuiTheme({
         borderRadius: 50
     }
 })
+
+theme = responsiveFontSizes(theme);
 
 export default theme
