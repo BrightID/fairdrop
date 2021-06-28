@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {makeStyles} from '@material-ui/core/styles'
 import {Box, Grid, Hidden, Typography} from '@material-ui/core'
 import noclaim from '../images/noclaim.svg'
-import HashDisplay from './hashDisplay'
+import HashDisplay from './HashDisplay'
 
 interface NoClaimProps {
     address: string
@@ -20,7 +20,7 @@ const NoClaim = ({address}:NoClaimProps)=>{
             </Hidden>
             <Grid item container direction={'column'} justify={'center'} xs={12} sm={9} md={7}>
                 <Typography align={'left'} variant={'h5'} className={classNames.noClaimText}>
-                    There is no $BRIGHT to claim for address <HashDisplay hash={address}></HashDisplay>
+                    There is no $BRIGHT to claim for address <HashDisplay hash={address} type={'address'}></HashDisplay>
                 </Typography>
                 <Typography className={classNames.infoBox}>
                     <Typography variant={'h6'}>Did you link your BrightId?</Typography>

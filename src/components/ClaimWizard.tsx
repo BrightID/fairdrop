@@ -5,7 +5,7 @@ import {TxState, TxStates} from './ActiveClaimController'
 import {Alert, AlertTitle} from '@material-ui/lab'
 import {BigNumber, utils} from 'ethers'
 import CheckIcon from '@material-ui/icons/Check';
-import HashDisplay from './hashDisplay'
+import HashDisplay from './HashDisplay'
 
 interface ClaimState {
     txState: TxState
@@ -14,6 +14,7 @@ interface ClaimState {
 }
 
 interface ClaimWizardProps {
+    chainId: number
     amount: BigNumber
     open: boolean
     claimState: ClaimState,
@@ -21,7 +22,7 @@ interface ClaimWizardProps {
     cancelHandler: ()=>any,
 }
 
-const ClaimWizard = ({amount, open, claimState, claimHandler, cancelHandler}:ClaimWizardProps) => {
+const ClaimWizard = ({amount, chainId, open, claimState, claimHandler, cancelHandler}:ClaimWizardProps) => {
     const classNames = useStyles()
 
     const getStepIcon = (stepState: TxState, txState:TxState) => {
@@ -67,7 +68,13 @@ const ClaimWizard = ({amount, open, claimState, claimHandler, cancelHandler}:Cla
                 } else if (claimState.txState === stepState) {
                     return <>
                         <Typography className={classNames.stepContentContainer} variant={'h5'}>Waiting for confirmation</Typography>
-                        <Typography className={classNames.stepContentContainer} variant={'body1'}>Tx: <HashDisplay hash={claimState.txHash}/></Typography>
+                        <Typography className={classNames.stepContentContainer} variant={'body1'}>
+                            Tx: <HashDisplay
+                            hash={claimState.txHash}
+                            type={'tx'}
+                            withEtherscanLink={true}
+                            chainId={chainId}/>
+                        </Typography>
                     </>
                 } else {
                     return <Typography className={classNames.stepContentContainer} variant={'h5'}>Transaction confirmed!</Typography>
@@ -98,7 +105,11 @@ const ClaimWizard = ({amount, open, claimState, claimHandler, cancelHandler}:Cla
             <Typography variant={'body1'}>
                 <strong>{utils.formatUnits(amount, 18)} $Bright</strong> claimed.
             </Typography>
-            <Typography variant={'body1'} noWrap>Tx: <HashDisplay hash={claimState.txHash}/></Typography>
+            <Typography variant={'body1'} noWrap>Tx: <HashDisplay
+                hash={claimState.txHash}
+                type={'tx'}
+                chainId={chainId}
+                withEtherscanLink={true}/></Typography>
             <Button variant={'contained'}
                     color={'primary'}
                     onClick={cancelHandler}
@@ -119,7 +130,12 @@ const ClaimWizard = ({amount, open, claimState, claimHandler, cancelHandler}:Cla
                 </Typography>
             </AlertTitle>
             {claimState.errorMessage !== '' && <Box>{claimState.errorMessage}</Box>}
-            {claimState.txHash !== '' && <Box>Tx: <HashDisplay hash={claimState.txHash}/></Box>}
+            {claimState.txHash !== '' && <Box>Tx: <HashDisplay
+              hash={claimState.txHash}
+              type={'tx'}
+              chainId={chainId}
+              withEtherscanLink={true}/>
+            </Box>}
             <Box display={'flex'} justifyContent={'space-around'}>
                 <Button
                     fullWidth={true}

@@ -13,7 +13,7 @@ import boxes from '../images/boxes.svg'
 import {Alert} from '@material-ui/lab'
 import BinarySlider from './BinarySlider'
 import {mainnetChainId, xDaiChainId} from '../utils/chainIds'
-import HashDisplay from './hashDisplay'
+import HashDisplay from './HashDisplay'
 
 interface ChainSelectorProps {
     address: string
@@ -91,7 +91,7 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
                         <BinarySlider value={sliderValue} setValue={handleBinarySliderChange} label0={chainName(mainnetChainId)} label1={chainName(xDaiChainId)}/>
                     </Box>}
                     {(walletAddress !== address) && <Alert severity={'warning'} className={classNames.alert}>
-                      You need to connect with address <strong><HashDisplay hash={address}/></strong> in order to change the payout chain.
+                      You need to connect with address <strong><HashDisplay hash={address} type={'address'}/></strong> in order to change the payout chain.
                     </Alert> }
                     <Box className={classNames.infoBox}>
                         <Typography variant={'h6'}>Payout Chain Info</Typography>

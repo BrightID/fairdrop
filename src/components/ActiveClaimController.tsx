@@ -180,6 +180,7 @@ const ActiveClaimController = ({claim, registrationInfo, payoutChainId, nextAmou
                 claimHandler={redeem}
             />
             <ClaimWizard
+                chainId={payoutChainId}
                 amount={claim.amount}
                 open={showWizard}
                 claimState={claimState}

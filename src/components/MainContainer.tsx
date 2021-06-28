@@ -87,7 +87,7 @@ const MainContainer = () => {
                 console.log(`Error setting address: ${e}`)
             }
         }
-    }, [address, walletAddress])
+    }, [walletAddress])
 
     // Get address from location hash
     const hash = window.location.hash

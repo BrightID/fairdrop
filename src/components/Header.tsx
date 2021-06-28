@@ -5,7 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import {EthersProviderContext} from './ProviderContext'
-import HashDisplay from './hashDisplay'
+import HashDisplay from './HashDisplay'
 import MenuIcon from '@material-ui/icons/Menu';
 import {IconButton, Menu, MenuItem, useMediaQuery, useTheme} from '@material-ui/core'
 
@@ -103,7 +103,7 @@ const Header = ({address, changeAddress}:HeaderProps) => {
                 onClose={handleCloseMenu}
             >
                 <MenuItem onClick={switchWallet}>{buttonLabel}</MenuItem>
-                {address && <MenuItem onClick={changeAddressFromMenu}><HashDisplay hash={address}/></MenuItem>}
+                {address && <MenuItem onClick={changeAddressFromMenu}><HashDisplay hash={address} type={'address'}/></MenuItem>}
             </Menu>
             </>)
         } else {
@@ -114,7 +114,7 @@ const Header = ({address, changeAddress}:HeaderProps) => {
               variant={'contained'}
               color={'primary'}
               onClick={changeAddress}>
-              <HashDisplay hash={address}/>
+              <HashDisplay hash={address} type={'address'}/>
             </Button>}
             <Button
                 className={classes.changeWalletBtn}
