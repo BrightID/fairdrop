@@ -80,7 +80,7 @@ const ActiveClaim = ({amount, nextAmount, claimed, claimChainId, claimHandler, s
         return (
             <Grid container alignItems={'center'} direction={'column'}>
                 <Box>
-                    <img src={claimSuccess} alt={'claimed'}/>
+                    <img width={'100%'} src={claimSuccess} alt={'claimed'}/>
                 </Box>
                 <Typography align={'center'} variant={'h4'}>
                     {`${utils.formatUnits(amount, 18)} $Bright`}
