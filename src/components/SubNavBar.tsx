@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {AppBar, Container, Tab, Tabs } from '@material-ui/core'
+import {AppBar, Container, Tab, Tabs} from '@material-ui/core'
 import {makeStyles} from '@material-ui/core/styles'
 
 interface TabPanelProps {
@@ -31,21 +31,26 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(3)
     },
     tabRoot: {
-        marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(2),
         textTransform: 'none',
-        maxWidth: 'unset',
         fontWeight: 'bold',
-        color: 'black'
+        color: 'black',
+        [theme.breakpoints.up('sm')]:
+        {
+            marginTop: theme.spacing(2),
+            marginBottom: theme.spacing(2),
+            maxWidth: 'unset',
+        }
     },
     tabRootRightAligned: {
-        marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(2),
         marginLeft: 'auto',
         textTransform: 'none',
-        maxWidth: 'unset',
         fontWeight: 'bold',
-        color: 'black'
+        color: 'black',
+        [theme.breakpoints.up('sm')]: {
+            marginTop: theme.spacing(2),
+            marginBottom: theme.spacing(2),
+            maxWidth: 'unset',
+        }
     },
     selectedTab: {
         color: 'rgba(182, 75, 50, 1)',
@@ -87,14 +92,14 @@ const SubNavBar = ({chainSelector, addressLinker}:SubNavBarProps) => {
                     }}/>
                 </Tabs>
             </AppBar>
-        <Container maxWidth="lg">
-            <TabPanel index={0} value={value}>
-                {chainSelector}
-            </TabPanel>
-            <TabPanel index={1} value={value}>
-                {addressLinker}
-            </TabPanel>
-        </Container>
+            <Container maxWidth="lg">
+                <TabPanel index={0} value={value}>
+                    {chainSelector}
+                </TabPanel>
+                <TabPanel index={1} value={value}>
+                    {addressLinker}
+                </TabPanel>
+            </Container>
         </>)
 }
 

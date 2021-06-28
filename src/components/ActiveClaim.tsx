@@ -1,7 +1,7 @@
 import React from 'react'
 import {BigNumber, utils} from 'ethers'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
-import {Box, Button, Grid, Typography} from '@material-ui/core'
+import {Box, Button, Fab, Grid, Hidden, Typography} from '@material-ui/core'
 import chainName from '../utils/chainName'
 import {intervalToDuration} from 'date-fns'
 import {RegistrationInfo} from '../utils/api'
@@ -9,6 +9,7 @@ import rocket from '../images/rocket.svg'
 import highfive from '../images/highfive.svg'
 import claimSuccess from '../images/claimSuccess.svg'
 import CountDown from './CountDown'
+
 
 interface ActiveClaimProps {
     amount: BigNumber,
@@ -56,10 +57,12 @@ const ActiveClaim = ({amount, nextAmount, claimed, claimChainId, claimHandler, s
         }
         return (
             <Grid container alignItems={'center'} spacing={10}>
-                <Grid item xs={6}>
-                    <img src={rocket} width={'100%'} alt={'rocket'}/>
-                </Grid>
-                <Grid item container direction={'column'} xs={6} alignContent={'flex-start'}>
+                <Hidden xsDown>
+                    <Grid item sm={3} md={6}>
+                        <img src={rocket} width={'100%'} alt={'rocket'}/>
+                    </Grid>
+                </Hidden>
+                <Grid item container direction={'column'} xs={12} sm={9} md={6} alignContent={'flex-start'}>
                     <Typography align={'left'} variant={'h4'} className={classNames.paragraph}>
                         {`${utils.formatUnits(amount, 18)} $Bright`}
                     </Typography>
@@ -133,10 +136,12 @@ const ActiveClaim = ({amount, nextAmount, claimed, claimChainId, claimHandler, s
     }
     return (
         <Grid container alignItems={'center'} spacing={10}>
-            <Grid item xs={6}>
-                <img src={imageSrc} width={'100%'} alt={'rocket'}/>
-            </Grid>
-            <Grid item container direction={'column'} xs={6} alignContent={'flex-start'}>
+            <Hidden xsDown>
+                <Grid item sm={6}>
+                    <img src={imageSrc} width={'100%'} alt={'rocket'}/>
+                </Grid>
+            </Hidden>
+            <Grid item container direction={'column'} xs={12} sm={6} alignContent={'flex-start'}>
                 {mainContent}
                 {alerts}
             </Grid>

@@ -25,11 +25,14 @@ const useStyles = makeStyles((theme) => ({
     },
     changeWalletBtn: {
         marginLeft: theme.spacing(2),
-        color: 'white'
     },
     changeAddressBtn: {
         marginLeft: theme.spacing(2),
-        color: 'white'
+        [theme.breakpoints.down('xs')]: {
+            fontSize: 'smaller',
+            paddingLeft: theme.spacing(3),
+            paddingRight: theme.spacing(3)
+        },
     }
 }));
 
@@ -44,7 +47,7 @@ const Header = ({address, changeAddress}:HeaderProps) => {
 
     const state = onboardApi?.getState()
     const walletName = state?.wallet?.name || undefined
-    const buttonLabel = walletName || 'Connect wallet'
+    const buttonLabel = walletName || 'Connect'
 
     const switchWallet = async () => {
         console.log(`SwitchWallet`)

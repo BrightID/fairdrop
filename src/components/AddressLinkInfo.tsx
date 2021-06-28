@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Box, Button, Grid, Typography} from '@material-ui/core'
+import {Box, Button, Grid, Hidden, Typography} from '@material-ui/core'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import LinkAddressWizard from './LinkAddressWizard'
 import linkAddress from '../images/linkAddress.svg'
@@ -34,8 +34,8 @@ const AddressLinkInfo = ({address, brightIdLinked, setBrightIdLinked, registrati
 
     if (brightIdLinked) {
         return (
-            <Grid container>
-                <Grid container item xs={6} alignItems={'center'}>
+            <Grid container spacing={10} alignItems={'center'}>
+                <Grid container item xs={12} sm={9} md={6} alignItems={'center'}>
                     <Grid item>
                         <Typography align={'left'} variant={'h5'}>
                             BrightID Linked
@@ -46,37 +46,43 @@ const AddressLinkInfo = ({address, brightIdLinked, setBrightIdLinked, registrati
                         </Typography>
                     </Grid>
                 </Grid>
-                <Grid item xs={6}>
-                    <img src={linkAddress} width={'90%'} alt={'link address'}/>
-                </Grid>
+                <Hidden xsDown>
+                    <Grid item sm={3} md={6}>
+                        <img src={linkAddress} width={'90%'} alt={'link address'}/>
+                    </Grid>
+                </Hidden>
             </Grid>
         )
     } else {
         return (<>
             <Grid container spacing={10} alignItems={'center'}>
-                <Grid item container direction={'column'} xs={6}>
+                <Grid item container direction={'column'} xs={12} sm={9} md={6}>
                     <Typography className={classNames.paragraph} align={'left'} variant={'h4'} >
                         Link your BrightID to get more $BRIGHT at the next claim period
                     </Typography>
-                    <Typography className={classNames.paragraph} align={'left'} variant={'body1'}>
-                        <Button className={classNames.button} variant={'contained'} color={'primary'} onClick={handleOpenWizard}>Link
-                            BrightId</Button>
-                    </Typography>
+                        <Button className={classNames.button}
+                                variant={'contained'}
+                                color={'primary'}
+                                onClick={handleOpenWizard}>
+                            Link BrightId
+                        </Button>
                     <Box className={classNames.infoBox}>
                         <Typography variant={'h6'}>Address Link Info</Typography>
-                        <Typography variant={'body1'}>
+                        <Typography>
                             The resulting $BRIGHT will be included in the next claim period, starting
                             in approximately <strong>{durationString}</strong>.
                         </Typography>
-                        <Typography variant={'body1'}>
+                        <Typography>
                             You only get the Link Bonus once. You only need to link one address. Linking additional
                             addresses will not increase the $BRIGHT you will receive.
                         </Typography>
                     </Box>
                 </Grid>
-                <Grid item xs={6}>
-                    <img src={linkAddress} width={'90%'} alt={'link address'}/>
-                </Grid>
+                <Hidden xsDown>
+                    <Grid item sm={9} md={6}>
+                        <img src={linkAddress} width={'90%'} alt={'link address'}/>
+                    </Grid>
+                </Hidden>
             </Grid>
             {showWizard && <LinkAddressWizard onClose={handleCloseWizard} address={address} open={true}/>}
         </>)
@@ -85,18 +91,34 @@ const AddressLinkInfo = ({address, brightIdLinked, setBrightIdLinked, registrati
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     paragraph: {
-        padding: theme.spacing(2),
-        margin: theme.spacing(1)
+        [theme.breakpoints.down('xs')]: {
+            padding: theme.spacing(1),
+            marginLeft: theme.spacing(1),
+        },
+        [theme.breakpoints.up('sm')]: {
+            padding: theme.spacing(2),
+            margin: theme.spacing(1)
+        },
     },
     button: {
-        color: 'white',
-        maxWidth: '40%',
+        marginLeft: theme.spacing(1),
+        [theme.breakpoints.up('sm')]: {
+            marginLeft: theme.spacing(3),
+            maxWidth: '45%'
+        },
     },
     infoBox: {
         background: 'rgba(196, 196, 196, 0.25)', //'#C4C4C4',
-        padding: theme.spacing(4),
-        marginLeft: theme.spacing(3),
-        marginTop: theme.spacing(4)
+        [theme.breakpoints.down('xs')]: {
+            padding: theme.spacing(2),
+            marginLeft: theme.spacing(1),
+            marginTop: theme.spacing(2)
+        },
+        [theme.breakpoints.up('sm')]: {
+            padding: theme.spacing(4),
+            marginLeft: theme.spacing(3),
+            marginTop: theme.spacing(4)
+        }
     }
 }),)
 

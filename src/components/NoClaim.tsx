@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import {makeStyles} from '@material-ui/core/styles'
-import {Box, Grid, Typography} from '@material-ui/core'
+import {Box, Grid, Hidden, Typography} from '@material-ui/core'
 import noclaim from '../images/noclaim.svg'
+import HashDisplay from './hashDisplay'
 
 interface NoClaimProps {
     address: string
@@ -12,12 +13,14 @@ const NoClaim = ({address}:NoClaimProps)=>{
 
     return (
         <Grid container alignItems={'center'}>
-            <Grid item xs={5}>
-                <img src={noclaim} width={'90%'} alt={'no claim'}/>
-            </Grid>
-            <Grid item container direction={'column'} justify={'center'} xs={7}>
+            <Hidden xsDown>
+                <Grid item sm={3} md={5}>
+                    <img src={noclaim} width={'90%'} alt={'no claim'}/>
+                </Grid>
+            </Hidden>
+            <Grid item container direction={'column'} justify={'center'} xs={12} sm={9} md={7}>
                 <Typography align={'left'} variant={'h5'} className={classNames.noClaimText}>
-                    {`There is no $BRIGHT to claim for address ${address}`}
+                    There is no $BRIGHT to claim for address <HashDisplay hash={address}></HashDisplay>
                 </Typography>
                 <Typography className={classNames.infoBox}>
                     <Typography variant={'h6'}>Did you link your BrightId?</Typography>
@@ -30,12 +33,20 @@ const NoClaim = ({address}:NoClaimProps)=>{
 
 const useStyles = makeStyles((theme) => ({
     noClaimText: {
-        color: 'rgba(182, 75, 50, 1)'
+        color: 'rgba(182, 75, 50, 1)',
+        marginLeft: theme.spacing(3)
     },
     infoBox: {
         background: 'rgba(196, 196, 196, 0.25)', //'#C4C4C4',
-        padding: theme.spacing(4),
-        marginTop: theme.spacing(4)
+        [theme.breakpoints.down('xs')]: {
+            padding: theme.spacing(2),
+            marginTop: theme.spacing(2)
+        },
+        [theme.breakpoints.up('sm')]: {
+            padding: theme.spacing(4),
+            marginLeft: theme.spacing(3),
+            marginTop: theme.spacing(4)
+        }
     },
     infoBoxHeader: {
         fontWeight: 'bold'

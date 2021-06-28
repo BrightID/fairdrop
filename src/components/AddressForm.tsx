@@ -76,21 +76,21 @@ const AddressForm = ({initialValues, setAddress}: AddressFormProps) => {
                                       }}
                                   />
                               </Grid>
-                              <Grid item xs={6}>
-                                  <Button onClick={form.mutators.importWalletAddress} variant={'outlined'}>
-                                      Use Wallet Address
-                                  </Button>
-                              </Grid>
-                              <Grid item xs={4} className={classNames.rightAlignItem}>
-                                  <Button
-                                      type="submit"
-                                      variant={'contained'}
-                                      color={'primary'}
-                                      disabled={submitting}
-                                  >
-                                      check address
-                                  </Button>
-                              </Grid>
+                              <Button
+                                  className={classNames.Btn}
+                                  onClick={form.mutators.importWalletAddress}
+                                  variant={'outlined'}>
+                                  Use Wallet Address
+                              </Button>
+                              <Button
+                                  className={classNames.Btn}
+                                  type="submit"
+                                  variant={'contained'}
+                                  color={'primary'}
+                                  disabled={submitting}
+                              >
+                                  check address
+                              </Button>
                           </Grid>
                       </form>
               )}
@@ -99,22 +99,31 @@ const AddressForm = ({initialValues, setAddress}: AddressFormProps) => {
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-    card: {
-        padding: theme.spacing(2), margin: theme.spacing(1), textAlign: 'center', color: theme.palette.text.primary,
-    },
-    button: {
-        color: 'white'
-    },
     addressTextField: {
-        marginBottom: theme.spacing(2)
+        [theme.breakpoints.down('xs')]: {
+            marginTop: theme.spacing(2),
+        },
+        [theme.breakpoints.up('md')]: {
+            marginBottom: theme.spacing(2)
+        }
     },
     addressInput: {
-        fontSize: 20,
+        [theme.breakpoints.up('md')]: {
+            fontSize: 'large'
+        },
+        [theme.breakpoints.down('xs')]: {
+            fontSize: 14,
+        },
         background: 'white',
     },
-    rightAlignItem: {
-        display: 'flex',
-        justifyContent: 'flex-end'
+    Btn: {
+        [theme.breakpoints.down('xs')]: {
+            width: '100%',
+            marginTop: theme.spacing(2),
+        },
+        [theme.breakpoints.up('md')]: {
+            width: '40%',
+        },
     }
 }),)
 

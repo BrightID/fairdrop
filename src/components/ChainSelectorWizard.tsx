@@ -38,7 +38,7 @@ const ChainSelectorWizard = ({address, currentChainId, open, onClose, desiredCha
                     case WizardSteps.SigningMessage:
                         setStepInfo({
                             message: 'Setting Payout Chain',
-                            description: 'Please proof ownership of address by accepting the signature ' +
+                            description: 'Prove ownership of address by accepting the signature ' +
                                 'request in your wallet.'
                         })
                         // get signer for address
@@ -109,7 +109,7 @@ const ChainSelectorWizard = ({address, currentChainId, open, onClose, desiredCha
                 </DialogTitle>
                 <DialogContent>
                     <Grid item container direction={'column'} justify={'center'} alignItems={'center'} xs={12}>
-                        <Typography variant={'h6'}>{stepInfo.description}</Typography>
+                        <Typography variant={'body1'}>{stepInfo.description}</Typography>
                         {step === WizardSteps.Error && <Button onClick={handleCancel}
                                                                className={classNames.button}
                                                                color="primary"
@@ -132,15 +132,19 @@ const ChainSelectorWizard = ({address, currentChainId, open, onClose, desiredCha
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     dialog: {
-        padding: theme.spacing(5),
+        [theme.breakpoints.down('xs')]: {
+            padding: theme.spacing(1)
+        },
+        [theme.breakpoints.up('sm')]: {
+            padding: theme.spacing(5)
+        },
     },
     button: {
         padding: theme.spacing(2),
         margin: theme.spacing(2),
         marginTop: theme.spacing(4),
-        width: '80%'
+        width: '80%',
     },
-
 }),)
 
 export default ChainSelectorWizard

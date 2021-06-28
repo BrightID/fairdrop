@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react'
 import {
-    Box, Button, ButtonGroup, Grid, Typography
+    Box, Button, ButtonGroup, Grid, Hidden, Typography
 } from '@material-ui/core'
 import chainName from '../utils/chainName'
 import ChainSelectorWizard from './ChainSelectorWizard'
@@ -13,6 +13,7 @@ import boxes from '../images/boxes.svg'
 import {Alert} from '@material-ui/lab'
 import BinarySlider from './BinarySlider'
 import {mainnetChainId, xDaiChainId} from '../utils/chainIds'
+import HashDisplay from './hashDisplay'
 
 interface ChainSelectorProps {
     address: string
@@ -81,7 +82,7 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
     const durationString = formatDuration(duration, {format: ['days', 'hours', 'minutes']})
     return (<>
             <Grid container alignItems={'center'} spacing={10}>
-                <Grid item container direction={'column'} xs={6}>
+                <Grid item container direction={'column'} sm={9} md={6}>
                     <Typography className={classNames.paragraph} align={'left'} variant={'h4'}>
                         Select your preferred chain to receive $BRIGHT
                     </Typography>
@@ -90,7 +91,7 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
                         <BinarySlider value={sliderValue} setValue={handleBinarySliderChange} label0={chainName(mainnetChainId)} label1={chainName(xDaiChainId)}/>
                     </Box>}
                     {(walletAddress !== address) && <Alert severity={'warning'} className={classNames.alert}>
-                      You need to connect with address {address} in order to change the payout chain.
+                      You need to connect with address <strong><HashDisplay hash={address}/></strong> in order to change the payout chain.
                     </Alert> }
                     <Box className={classNames.infoBox}>
                         <Typography variant={'h6'}>Payout Chain Info</Typography>
@@ -104,9 +105,11 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
                         </Typography>
                     </Box>
                 </Grid>
-                <Grid item xs={6}>
-                    <img src={boxes} width={'100%'} alt={'boxes'}/>
-                </Grid>
+                <Hidden xsDown>
+                    <Grid item sm={3} md={6}>
+                        <img src={boxes} width={'100%'} alt={'boxes'}/>
+                    </Grid>
+                </Hidden>
             </Grid>
             {showWizard && <ChainSelectorWizard onClose={handleCloseWizard} open={true} address={address}
                                                 currentChainId={currentChainId} desiredChainId={otherChainId}/>}
@@ -115,21 +118,39 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     paragraph: {
-        padding: theme.spacing(2),
-        margin: theme.spacing(1)
+        [theme.breakpoints.down('xs')]: {
+            padding: theme.spacing(1),
+            marginLeft: theme.spacing(1),
+        },
+        [theme.breakpoints.up('sm')]: {
+            padding: theme.spacing(2),
+            margin: theme.spacing(1)
+        },
     },
     alert: {
         borderRadius: 5,
-        marginLeft: theme.spacing(3)
+        [theme.breakpoints.down('xs')]: {
+            marginLeft: theme.spacing(1)
+        },
+        [theme.breakpoints.up('sm')]: {
+            marginLeft: theme.spacing(3)
+        }
     },
     button: {
         color: 'white'
     },
     infoBox: {
         background: 'rgba(196, 196, 196, 0.25)', //'#C4C4C4',
-        padding: theme.spacing(4),
-        marginLeft: theme.spacing(3),
-        marginTop: theme.spacing(4)
+        [theme.breakpoints.down('xs')]: {
+            padding: theme.spacing(2),
+            marginLeft: theme.spacing(1),
+            marginTop: theme.spacing(2)
+        },
+        [theme.breakpoints.up('sm')]: {
+            padding: theme.spacing(4),
+            marginLeft: theme.spacing(3),
+            marginTop: theme.spacing(4)
+        }
     },
     sliderContainer: {
         marginLeft: theme.spacing(3),

@@ -143,8 +143,9 @@ const ActiveClaimController = ({claim, registrationInfo, payoutChainId, nextAmou
                 }
             } catch (err) {
                 console.log(`Error while claiming: ${err}`)
+                const message = err?.data?.message || err.message
                 setClaimState({
-                    txState: TxStates.Error, errorMessage: err.message
+                    txState: TxStates.Error, errorMessage: message
                 })
             }
         } else {

@@ -43,8 +43,8 @@ const CountDown = ({title, timestamp}:CountDownProps) => {
 
     return (
         <Box className={classNames.countdownContainer}>
-            <Typography variant={'h6'}>{title}</Typography>
-            <Box display={'flex'} flexDirection={'row'}>
+            <Typography variant={'h6'} className={classNames.xsCentered}>{title}</Typography>
+            <Box display={'flex'} flexDirection={'row'} className={classNames.numbersContainer}>
                 <Box flexDirection={'column'} className={classNames.itemContainer}>
                     <Box className={classNames.numberContainer}>
                         <Typography variant={'h2'} className={classNames.numberText}>
@@ -76,10 +76,17 @@ const CountDown = ({title, timestamp}:CountDownProps) => {
 const useStyles = makeStyles((theme: Theme) => createStyles({
     countdownContainer: {
         marginTop: theme.spacing(3),
-        marginBottom: theme.spacing(3)
+        marginBottom: theme.spacing(3),
     },
     itemContainer: {
         marginRight: theme.spacing(2)
+    },
+    numbersContainer: {
+        [theme.breakpoints.down('xs')]: {
+            justifyContent: 'center'
+        },
+        [theme.breakpoints.up('sm')]: {
+        }
     },
     numberContainer: {
         margin: theme.spacing(1),
@@ -92,5 +99,13 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     numberSubText: {
         fontWeight: 'bold',
     },
+    xsCentered: {
+        [theme.breakpoints.down('xs')]: {
+            textAlign: 'center'
+        },
+        [theme.breakpoints.up('sm')]: {
+            textAlign: 'left'
+        }
+    }
 }),)
 export default CountDown
