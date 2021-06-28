@@ -37,6 +37,11 @@ let theme = createMuiTheme({
                 color: 'white',
                 textTransform: 'none'
             }
+        },
+        MuiMenu: {
+            paper: {
+                borderRadius: 5
+            }
         }
     },
     palette: {
