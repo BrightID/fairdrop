@@ -1,7 +1,9 @@
 import {BigNumber} from "ethers"
-const { FAIRDROP_API_URL } = process.env;
+const { REACT_APP_FAIRDROP_API_URL } = process.env;
 
-const baseUrl = FAIRDROP_API_URL || 'https://fairdrop.brightid.org/api'
+const baseUrl = REACT_APP_FAIRDROP_API_URL || 'https://fairdrop.brightid.org/api'
+
+console.log(process.env)
 
 export type AddressInfo = {
     chainId: number
@@ -20,6 +22,25 @@ export type ClaimInfo = {
     address: string,
     amount: BigNumber,
     proof: Array<string>,
+}
+
+const getDistributorAddress = async (chainId: number): Promise<string|undefined> => {
+    const contractName = 'merkleDistributor'
+    const url = `${baseUrl}/contract/${chainId}/${contractName}`
+    const response = await fetch(url)
+    if (response.ok) {
+        const jsonData = await response.json()
+        console.log(jsonData)
+        return jsonData.address
+    } else {
+        if (response.status === 404) {
+            console.log(`No contract address for ${contractName} on ${chainId}`)
+            return
+        }
+        else {
+            throw Error(`${response.status} - ${response.statusText}`)
+        }
+    }
 }
 
 const getClaimInfo = async (address: string): Promise<ClaimInfo|undefined> => {
@@ -132,6 +153,7 @@ const setAddressPayoutChainId = async({address, chainId, signature}:PayoutChainP
 }
 
 export {
+    getDistributorAddress,
     getRegistrationInfo,
     getAddressInfo,
     getClaimInfo,

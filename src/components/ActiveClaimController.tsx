@@ -1,10 +1,9 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {BigNumber, ethers} from 'ethers'
-import deployments from '../deployments.json'
-import {MerkleDistributor} from '../typechain'
+import {MerkleDistributor, MerkleDistributor__factory} from '../typechain'
 import {EthersProviderContext} from './ProviderContext'
 import ActiveClaim from './ActiveClaim'
-import {ClaimInfo, RegistrationInfo} from '../utils/api'
+import {ClaimInfo, getDistributorAddress, RegistrationInfo} from '../utils/api'
 import ClaimWizard from './ClaimWizard'
 
 interface ActiveClaimControllerProps {
@@ -57,8 +56,11 @@ const ActiveClaimController = ({claim, registrationInfo, payoutChainId, nextAmou
                 return;
             }
 
-            // TODO - deployments file should have a section for each chainId -> Select contract address accordingly.
-            const contractAddress = deployments.contracts.MerkleDistributor.address
+            const contractAddress = await getDistributorAddress(claim.chainId)
+            if (!contractAddress) {
+                return;
+            }
+            console.log(`MerkleDistributor address: ${contractAddress}`)
             try {
                 // check if contract is deployed
                 const code = await provider.getCode(contractAddress)
@@ -66,9 +68,7 @@ const ActiveClaimController = ({claim, registrationInfo, payoutChainId, nextAmou
                     throw Error(`No contract deployed at ${contractAddress} on ${provider.network.chainId}`)
                 }
                 console.log(`Initializing merkleDrop contract on chain ${provider.network.chainId} at ${contractAddress}`)
-                const instance = (new ethers.Contract(contractAddress,
-                    deployments.contracts.MerkleDistributor.abi,
-                    signer)) as unknown as MerkleDistributor
+                const instance = MerkleDistributor__factory.connect(contractAddress, signer)
                 setMerkleDistributor(instance)
             } catch(e) {
                 console.log(e.message)
