@@ -1,7 +1,7 @@
 import {BigNumber} from "ethers"
-const { REACT_APP_API_URL } = process.env;
+const { FAIRDROP_API_URL } = process.env;
 
-const baseUrl = REACT_APP_API_URL || 'https://fairdrop.brightid.org/api'
+const baseUrl = FAIRDROP_API_URL || 'https://fairdrop.brightid.org/api'
 
 export type AddressInfo = {
     chainId: number
@@ -13,6 +13,52 @@ export type RegistrationInfo = {
     nextRegistrationStart: number,
     nextClaimStart: number
 }
+
+export type ClaimInfo = {
+    chainId: number,
+    index: number,
+    address: string,
+    amount: BigNumber,
+    proof: Array<string>,
+}
+
+const getClaimInfo = async (address: string): Promise<ClaimInfo|undefined> => {
+    const url = `${baseUrl}/claimInfo/${address}`
+    const response = await fetch(url)
+    if (response.ok) {
+        const jsonData = await response.json()
+        console.log(jsonData)
+        let {chainId, leaf} = jsonData
+        try {
+            leaf = JSON.parse(leaf)
+        } catch(e) {
+            console.log(`Failed to JSON parse leaf ${leaf}`)
+            throw (`Failed to JSON parse leaf ${leaf}`)
+        }
+        // parse json representation of BigNumber
+        try {
+            leaf.amount = BigNumber.from(leaf.amount)
+        } catch (e) {
+          throw(`Failed to parse claim amount from leaf ${leaf}`)
+        }
+        return {
+            chainId,
+            index: leaf.index,
+            address: leaf.address,
+            amount: leaf.amount,
+            proof: leaf.proof
+        }
+    } else {
+        if (response.status === 404) {
+            console.log(`No claim found for address ${address}`)
+            return
+        }
+        else {
+            throw Error(`${response.status} - ${response.statusText}`)
+        }
+    }
+}
+
 
 const getRegistrationInfo = async (): Promise<RegistrationInfo> => {
     const url = `${baseUrl}/registrationInfo`
@@ -79,8 +125,7 @@ const setAddressPayoutChainId = async({address, chainId, signature}:PayoutChainP
         body: JSON.stringify(postData)
     })
     if (response.ok) {
-        const jsonData = await response.json()
-        return jsonData
+        return await response.json()
     } else {
         throw Error(`${response.status} - ${response.statusText}`)
     }
@@ -89,5 +134,6 @@ const setAddressPayoutChainId = async({address, chainId, signature}:PayoutChainP
 export {
     getRegistrationInfo,
     getAddressInfo,
+    getClaimInfo,
     setAddressPayoutChainId
 }

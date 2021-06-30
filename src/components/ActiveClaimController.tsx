@@ -3,13 +3,12 @@ import {BigNumber, ethers} from 'ethers'
 import deployments from '../deployments.json'
 import {MerkleDistributor} from '../typechain'
 import {EthersProviderContext} from './ProviderContext'
-import {Claim} from './AddressRegistrationController'
 import ActiveClaim from './ActiveClaim'
-import {RegistrationInfo} from '../utils/api'
+import {ClaimInfo, RegistrationInfo} from '../utils/api'
 import ClaimWizard from './ClaimWizard'
 
 interface ActiveClaimControllerProps {
-    claim: Claim,
+    claim: ClaimInfo,
     registrationInfo: RegistrationInfo,
     payoutChainId: number,
     nextAmount: BigNumber
