@@ -3,14 +3,30 @@ import {makeStyles} from '@material-ui/core/styles'
 import {Box, Grid, Hidden, Typography} from '@material-ui/core'
 import noclaim from '../images/noclaim.svg'
 import HashDisplay from './HashDisplay'
+import {RegistrationInfo} from '../utils/api'
 
 interface NoClaimProps {
     address: string
+    brightIdLinked: boolean
+    registrationInfo: RegistrationInfo
 }
 
-const NoClaim = ({address}:NoClaimProps)=>{
+const NoClaim = ({address, brightIdLinked, registrationInfo}:NoClaimProps)=>{
     const classNames = useStyles()
-
+    let showLinkHint = false
+    if (!brightIdLinked) {
+        if (registrationInfo.currentRegistrationEnd > Date.now()) {
+            // we have an active registration phase
+            showLinkHint = true
+        } else if (registrationInfo.nextRegistrationStart > Date.now()) {
+            // we are in between registration phases, so linking still makes sense for the next phase
+            showLinkHint = true
+        } else {
+            // no active registration phase and no upcoming registration phase, so there is no point in linking
+            // address anymore.
+            showLinkHint = false
+        }
+    }
     return (
         <Grid container alignItems={'center'}>
             <Hidden xsDown>
@@ -22,10 +38,11 @@ const NoClaim = ({address}:NoClaimProps)=>{
                 <Typography align={'left'} variant={'h5'} className={classNames.noClaimText}>
                     There is no $BRIGHT to claim for address <HashDisplay hash={address} type={'address'}></HashDisplay>
                 </Typography>
-                <Typography className={classNames.infoBox}>
-                    <Typography variant={'h6'}>Did you link your BrightId?</Typography>
-                    <Typography variant={'body1'}>Link your address with your BrightID to get more $BRIGHT in the next claim phase!</Typography>
-                </Typography>
+                {showLinkHint && <Typography className={classNames.infoBox}>
+                  <Typography variant={'h6'}>Did you link your BrightId?</Typography>
+                  <Typography variant={'body1'}>Link your address with your BrightID to get more $BRIGHT in the next
+                    claim phase!</Typography>
+                </Typography>}
             </Grid>
         </Grid>
     )

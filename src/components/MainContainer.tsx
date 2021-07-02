@@ -154,13 +154,14 @@ const MainContainer = () => {
                   registrationInfo={registrationInfo}
                   registrationInfoLoading={registrationInfoLoading}
                   address={address}
+                  brightIdLinked={brightIdLinked}
                   nextAmount={nextAmount}
                   payoutChainId={payoutChainId}
                 />}
             </Container>
             {subNavBar}
         </>
-)
+    )
 }
 
 export default MainContainer
