@@ -72,32 +72,55 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
         otherChainId = mainnetChainId
     }
 
-    const remainingTicks = registrationInfo.currentRegistrationEnd - Date.now()
-    if (remainingTicks < 0) {
-        console.log(`Current registration phase has ended. Nothing can be changed at the moment`)
-        return null
-    }
+    const registrationTicksRemaining = registrationInfo.currentRegistrationEnd - Date.now()
     const duration = intervalToDuration({start: Date.now(), end: registrationInfo.nextClaimStart})
-    console.log(`Duration: ${formatDuration(duration)}`)
     const durationString = formatDuration(duration, {format: ['days', 'hours', 'minutes']})
-    return (<>
+    if (registrationTicksRemaining < 0 && registrationInfo.nextRegistrationStart > 0) {
+        // current registration phase has ended, next phase will start soon
+        return (<>
             <Grid container alignItems={'center'} spacing={10}>
                 <Grid item container direction={'column'} sm={9} md={6}>
                     <Typography className={classNames.paragraph} align={'left'} variant={'h4'}>
                         Select your preferred chain to receive $BRIGHT
                     </Typography>
-                    {(walletAddress === address) &&
-                        <Box className={classNames.sliderContainer}>
-                        <BinarySlider value={sliderValue} setValue={handleBinarySliderChange} label0={chainName(mainnetChainId)} label1={chainName(xDaiChainId)}/>
+                    <Alert severity={'warning'} className={classNames.alert}>
+                        <Typography>
+                            We are currently preparing the next airdrop phase. During this time you
+                            can't change your preferred payout chain.
+                        </Typography>
+                        <Typography>
+                             This functionality will be enabled again in approximately <strong>{durationString}</strong>.
+                        </Typography>
+                    </Alert>
+                </Grid>
+                <Hidden xsDown>
+                    <Grid item sm={3} md={6}>
+                        <img src={boxes} width={'100%'} alt={'boxes'}/>
+                    </Grid>
+                </Hidden>
+            </Grid>
+        </>)
+    } else {
+        return (<>
+            <Grid container alignItems={'center'} spacing={10}>
+                <Grid item container direction={'column'} sm={9} md={6}>
+                    <Typography className={classNames.paragraph} align={'left'} variant={'h4'}>
+                        Select your preferred chain to receive $BRIGHT
+                    </Typography>
+                    {(walletAddress === address) && <Box className={classNames.sliderContainer}>
+                      <BinarySlider value={sliderValue} setValue={handleBinarySliderChange}
+                                    label0={chainName(mainnetChainId)} label1={chainName(xDaiChainId)}/>
                     </Box>}
                     {(walletAddress !== address) && <Alert severity={'warning'} className={classNames.alert}>
-                      You need to connect with address <strong><HashDisplay hash={address} type={'address'}/></strong> in order to change the payout chain.
-                    </Alert> }
+                      You need to connect with address <strong><HashDisplay hash={address}
+                                                                            type={'address'}/></strong> in order to
+                      change the payout chain.
+                    </Alert>}
                     <Box className={classNames.infoBox}>
                         <Typography variant={'h6'}>Payout Chain Info</Typography>
                         <Typography variant={'body1'}>
                             Note that change of payout chain will take effect for the next claim period, starting
-                 in approximately <strong>{durationString}</strong>.
+                            in approximately <strong>{durationString}</strong>.
                         </Typography>
                         <Typography variant={'body1'}>
                             All unclaimed $BRIGHT will carry over to the next period and be available on
@@ -114,6 +137,7 @@ const ChainSelector = ({address, currentChainId, setChainId, registrationInfo}: 
             {showWizard && <ChainSelectorWizard onClose={handleCloseWizard} open={true} address={address}
                                                 currentChainId={currentChainId} desiredChainId={otherChainId}/>}
         </>)
+    }
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
