@@ -131,7 +131,7 @@ const MainContainer = () => {
     const registrationTimeRemaining = registrationInfo.currentRegistrationEnd - Date.now()
     const timeToNextPhaseStart = registrationInfo.nextRegistrationStart - Date.now()
     console.log(`Remaining registration time: ${registrationTimeRemaining}`)
-    console.log(`Next registration start time: ${registrationTimeRemaining}`)
+    console.log(`Next registration start time: ${registrationInfo.nextRegistrationStart}`)
     let subNavBar
     if ( (address !== '') && ((registrationTimeRemaining > 0) || (timeToNextPhaseStart > 0)) ) {
         const chainSelector = <ChainSelector address={address}

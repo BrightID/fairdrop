@@ -1,10 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {BigNumber, ethers} from 'ethers'
-import {MerkleDistributor, MerkleDistributor__factory} from '../typechain'
+import {MerkleDistributor, MerkleDistributor__factory, ERC20__factory, ERC20} from '../typechain'
 import {EthersProviderContext} from './ProviderContext'
 import ActiveClaim from './ActiveClaim'
 import {ClaimInfo, getDistributorAddress, RegistrationInfo} from '../utils/api'
 import ClaimWizard from './ClaimWizard'
+import ClaimingDisabled from './ClaimingDisabled'
 
 interface ActiveClaimControllerProps {
     claim: ClaimInfo,
@@ -30,6 +31,7 @@ interface ClaimState {
 
 const ActiveClaimController = ({claim, registrationInfo, payoutChainId, nextAmount}: ActiveClaimControllerProps) => {
     const [merkleDistributor, setMerkleDistributor] = useState<MerkleDistributor | undefined>(undefined)
+    const [token, setToken] = useState<ERC20 | undefined>(undefined)
     const [isClaimed, setIsClaimed] = useState(false)
     const [claimState, setClaimState] = useState<ClaimState>({txState: TxStates.Idle})
     const {wallet, network, onboardApi} = useContext(EthersProviderContext)
@@ -76,6 +78,42 @@ const ActiveClaimController = ({claim, registrationInfo, payoutChainId, nextAmou
         }
         runEffect()
     }, [wallet, claim, network])
+
+    // get token contract
+    useEffect(() => {
+        const getToken = async() => {
+            const provider = merkleDistributor?.provider
+            if (!provider) {
+                console.log(`No provider set in Merkledistributor!`)
+                return;
+            }
+
+            const contractAddress = await merkleDistributor?.token()
+            if (!contractAddress) {
+                console.log(`No token contract set in Merkledistributor!`)
+                return;
+            }
+
+            try {
+                // check if contract is deployed
+                const code = await provider.getCode(contractAddress)
+                if (code==="0x") {
+                    throw Error(`Token contract not deployed at ${contractAddress}`)
+                }
+                console.log(`Initializing token contract at ${contractAddress}`)
+                const instance = ERC20__factory.connect(contractAddress, provider)
+                setToken(instance)
+                //TEST
+                let name = await instance.name()
+                console.log(`TokenName: ${name}`)
+            } catch(e) {
+                console.log(e.message)
+            }
+        }
+        if (merkleDistributor) {
+            getToken()
+        }
+    }, [merkleDistributor])
 
     // get initial claim status
     useEffect(() => {
@@ -164,6 +202,10 @@ const ActiveClaimController = ({claim, registrationInfo, payoutChainId, nextAmou
 
     const connectWallet = async () => {
         await onboardApi?.walletSelect()
+    }
+
+    if (registrationInfo.currentRegistrationEnd < Date.now()) {
+        return (<ClaimingDisabled registrationInfo={registrationInfo}/>)
     }
 
     return (<>

@@ -37,9 +37,13 @@ const AddressRegistrationController = ({address, brightIdLinked, registrationInf
     useEffect(() => {
         const runEffect = async () => {
             setClaimLoading(true)
-            const claim = await getClaimInfo(address)
-            setClaim(claim)
-            setClaimLoading(false)
+            try {
+                const claim = await getClaimInfo(address)
+                setClaim(claim)
+                setClaimLoading(false)
+            } catch(e) {
+                console.log(`Error loading claim info: ${e}`)
+            }
         }
         runEffect()
     }, [address])
