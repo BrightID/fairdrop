@@ -126,14 +126,16 @@ const MainContainer = () => {
         }
     }
 
-    // Only enable change of payout chain or linking of address if we have an active or upcoming
-    // registration phase
+    // Only enable change of payout chain or linking of address if we have an upcoming
+    // claim phase
     const registrationTimeRemaining = registrationInfo.currentRegistrationEnd - Date.now()
-    const timeToNextPhaseStart = registrationInfo.nextRegistrationStart - Date.now()
-    console.log(`Remaining registration time: ${registrationTimeRemaining}`)
-    console.log(`Next registration start time: ${registrationInfo.nextRegistrationStart}`)
+    const timeToNextRegistrationStart = registrationInfo.nextRegistrationStart - Date.now()
+    const timeToNextClaimStart = registrationInfo.nextClaimStart - Date.now()
+    console.log(`Remaining claim/registration time: ${registrationTimeRemaining}`)
+    console.log(`Next registration starts in: ${timeToNextRegistrationStart}`)
+    console.log(`Next claim starts in: ${timeToNextClaimStart}`)
     let subNavBar
-    if ( (address !== '') && ((registrationTimeRemaining > 0) || (timeToNextPhaseStart > 0)) ) {
+    if ( (address !== '') && (timeToNextClaimStart > 0) ) {
         const chainSelector = <ChainSelector address={address}
                                              currentChainId={payoutChainId}
                                              setChainId={setPayoutChainId}

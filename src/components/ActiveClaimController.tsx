@@ -204,7 +204,9 @@ const ActiveClaimController = ({claim, registrationInfo, payoutChainId, nextAmou
         await onboardApi?.walletSelect()
     }
 
-    if (registrationInfo.currentRegistrationEnd < Date.now()) {
+    const now = Date.now()
+    if ((registrationInfo.currentRegistrationEnd < now) && registrationInfo.nextClaimStart > 0) {
+        // we are in phase transition
         return (<ClaimingDisabled registrationInfo={registrationInfo}/>)
     }
 
