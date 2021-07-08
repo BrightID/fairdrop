@@ -62,8 +62,9 @@ const AddressForm = ({initialValues, setAddress}: AddressFormProps) => {
                           onSubmit={handleSubmit}
                           noValidate
                       >
-                          <Grid container justify={'space-between'}>
-                              <Grid item xs={12}>
+                          <Grid container  xs={12} spacing={0} alignItems={'flex-start'}>
+                          
+                                  <Grid item xs={8}>
                                   <TextField
                                       id="address"
                                       type='text'
@@ -74,23 +75,32 @@ const AddressForm = ({initialValues, setAddress}: AddressFormProps) => {
                                               input: classNames.addressInput,
                                           }
                                       }}
+                                      variant="outlined"
+                                      label="Address"
                                   />
-                              </Grid>
-                              <Button
+                                  </Grid>
+                                  <Grid item  xs={4}>
+                                    <Button
+                                        className={classNames.Btn}
+                                        type="submit"
+                                        variant={'contained'}
+                                        color={'primary'}
+                                        disabled={submitting}
+                                        size="large" 
+                                        disableElevation={true}
+                                        fullWidth={true}
+                                    >
+                                    Check Address
+                                    </Button>
+                                </Grid>
+                             
+                              {/* <Button
                                   className={classNames.Btn}
                                   onClick={form.mutators.importWalletAddress}
                                   variant={'outlined'}>
                                   Use Wallet Address
-                              </Button>
-                              <Button
-                                  className={classNames.Btn}
-                                  type="submit"
-                                  variant={'contained'}
-                                  color={'primary'}
-                                  disabled={submitting}
-                              >
-                                  check address
-                              </Button>
+                              </Button> */}
+                             
                           </Grid>
                       </form>
               )}
@@ -100,12 +110,8 @@ const AddressForm = ({initialValues, setAddress}: AddressFormProps) => {
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     addressTextField: {
-        [theme.breakpoints.down('xs')]: {
-            marginTop: theme.spacing(2),
-        },
-        [theme.breakpoints.up('md')]: {
-            marginBottom: theme.spacing(2)
-        }
+        // borderTopLeftRadius: '35px',
+        // borderTopRightRadius: '35px',
     },
     addressInput: {
         [theme.breakpoints.up('md')]: {
@@ -115,15 +121,24 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
             fontSize: 14,
         },
         background: 'white',
+        paddingRight: '52px'
     },
     Btn: {
-        [theme.breakpoints.down('xs')]: {
-            width: '100%',
-            marginTop: theme.spacing(2),
-        },
         [theme.breakpoints.up('md')]: {
-            width: '40%',
+             padding: '16.5px 0',
         },
+        [theme.breakpoints.down('md')]: {
+           padding: '16px 0',
+        },
+         [theme.breakpoints.down('sm')]: {
+           padding: '15px 0',
+        },
+         [theme.breakpoints.down('xs')]: {
+           padding: '14px 0',
+        },
+        // width: '100%',
+        marginLeft: '-51px',
+        borderRadius: 50,
     }
 }),)
 
