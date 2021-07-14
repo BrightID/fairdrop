@@ -1,106 +1,119 @@
-import React, {useEffect, useState} from 'react'
-import {AppBar, Container, Tab, Tabs} from '@material-ui/core'
-import {makeStyles} from '@material-ui/core/styles'
+import React, { useEffect, useState } from 'react';
+import { AppBar, Container, Tab, Tabs } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 interface TabPanelProps {
-    children?: React.ReactNode;
-    index: any;
-    value: any;
+  children?: React.ReactNode;
+  index: any;
+  value: any;
 }
 
 const TabPanel = (props: TabPanelProps) => {
-    const {children, value, index, ...other} = props
+  const { children, value, index, ...other } = props;
 
-    return (<div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`tabpanel-${index}`}
-            {...other}
-        >
-        {value === index && (<div>{children}</div>)}
-        </div>)
-}
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      {...other}
+    >
+      {value === index && <div>{children}</div>}
+    </div>
+  );
+};
 
 const useStyles = makeStyles((theme) => ({
-    appBar: {
-        background: 'white',
-        boxShadow: 'none',
-        borderTop: '1px solid lightgrey',
-        borderBottom: '1px solid lightgrey',
-        marginBottom: theme.spacing(6),
-        marginTop: theme.spacing(3)
+  appBar: {
+    background: 'white',
+    boxShadow: 'none',
+    borderTop: '1px solid lightgrey',
+    borderBottom: '1px solid lightgrey',
+    marginBottom: theme.spacing(6),
+    marginTop: theme.spacing(3),
+  },
+  tabRoot: {
+    textTransform: 'none',
+    fontWeight: 'bold',
+    color: 'black',
+    [theme.breakpoints.up('sm')]: {
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2),
+      maxWidth: 'unset',
     },
-    tabRoot: {
-        textTransform: 'none',
-        fontWeight: 'bold',
-        color: 'black',
-        [theme.breakpoints.up('sm')]:
-        {
-            marginTop: theme.spacing(2),
-            marginBottom: theme.spacing(2),
-            maxWidth: 'unset',
-        }
+  },
+  tabRootRightAligned: {
+    marginLeft: 'auto',
+    textTransform: 'none',
+    fontWeight: 'bold',
+    color: 'black',
+    [theme.breakpoints.up('sm')]: {
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2),
+      maxWidth: 'unset',
     },
-    tabRootRightAligned: {
-        marginLeft: 'auto',
-        textTransform: 'none',
-        fontWeight: 'bold',
-        color: 'black',
-        [theme.breakpoints.up('sm')]: {
-            marginTop: theme.spacing(2),
-            marginBottom: theme.spacing(2),
-            maxWidth: 'unset',
-        }
-    },
-    selectedTab: {
-        color: 'rgba(182, 75, 50, 1)',
-    }
+  },
+  selectedTab: {
+    color: 'rgba(182, 75, 50, 1)',
+  },
 }));
 
 interface SubNavBarProps {
-    chainSelector: React.ReactNode
-    addressLinker: React.ReactNode
+  chainSelector: React.ReactNode;
+  addressLinker: React.ReactNode;
 }
 
-const SubNavBar = ({chainSelector, addressLinker}:SubNavBarProps) => {
-    const classes = useStyles()
-    const [value, setValue] = useState<number|false>(false)
+const SubNavBar = ({ chainSelector, addressLinker }: SubNavBarProps) => {
+  const classes = useStyles();
+  const [value, setValue] = useState<number | false>(false);
 
-    const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-        setValue(newValue)
-        console.log(`Tab changed to ${newValue}`)
-    }
+  const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    setValue(newValue);
+    console.log(`Tab changed to ${newValue}`);
+  };
 
-    useEffect(() => {
-        // Make sure selected Tab is visible on screen
-        console.log(`Scrolling to tab ${value}`)
-        document.querySelector(`#tabpanel-${value}`)?.scrollIntoView({behavior: 'smooth'});
-    }, [value])
+  useEffect(() => {
+    // Make sure selected Tab is visible on screen
+    console.log(`Scrolling to tab ${value}`);
+    document
+      .querySelector(`#tabpanel-${value}`)
+      ?.scrollIntoView({ behavior: 'smooth' });
+  }, [value]);
 
-    return (<>
-            <AppBar color={'transparent'} position={'static'} className={classes.appBar}>
-                <Tabs value={value} onChange={handleTabChange}>
-                    <Tab label="Claim on XDai"
-                         classes={{
-                        selected: classes.selectedTab,
-                        root: classes.tabRootRightAligned
-                    }}/>
-                    <Tab label="Link your BrightID to get more $BRIGHT"
-                         classes={{
-                             selected: classes.selectedTab,
-                             root: classes.tabRoot
-                    }}/>
-                </Tabs>
-            </AppBar>
-            <Container maxWidth="lg">
-                <TabPanel index={0} value={value}>
-                    {chainSelector}
-                </TabPanel>
-                <TabPanel index={1} value={value}>
-                    {addressLinker}
-                </TabPanel>
-            </Container>
-        </>)
-}
+  return (
+    <>
+      <AppBar
+        color={'transparent'}
+        position={'static'}
+        className={classes.appBar}
+      >
+        <Tabs value={value} onChange={handleTabChange}>
+          <Tab
+            label="Claim on XDai"
+            classes={{
+              selected: classes.selectedTab,
+              root: classes.tabRootRightAligned,
+            }}
+          />
+          <Tab
+            label="Link your BrightID to get more $BRIGHT"
+            classes={{
+              selected: classes.selectedTab,
+              root: classes.tabRoot,
+            }}
+          />
+        </Tabs>
+      </AppBar>
+      <Container maxWidth="lg">
+        <TabPanel index={0} value={value}>
+          {chainSelector}
+        </TabPanel>
+        <TabPanel index={1} value={value}>
+          {addressLinker}
+        </TabPanel>
+      </Container>
+    </>
+  );
+};
 
-export default SubNavBar
+export default SubNavBar;
