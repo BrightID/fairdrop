@@ -13,24 +13,24 @@ import {
   ContractTransaction,
   Overrides,
   CallOverrides,
-} from "ethers";
-import { BytesLike } from "@ethersproject/bytes";
-import { Listener, Provider } from "@ethersproject/providers";
-import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
+} from 'ethers';
+import { BytesLike } from '@ethersproject/bytes';
+import { Listener, Provider } from '@ethersproject/providers';
+import { FunctionFragment, EventFragment, Result } from '@ethersproject/abi';
+import { TypedEventFilter, TypedEvent, TypedListener } from './commons';
 
 interface GreeterInterface extends ethers.utils.Interface {
   functions: {
-    "greet()": FunctionFragment;
-    "setGreeting(string)": FunctionFragment;
+    'greet()': FunctionFragment;
+    'setGreeting(string)': FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "greet", values?: undefined): string;
-  encodeFunctionData(functionFragment: "setGreeting", values: [string]): string;
+  encodeFunctionData(functionFragment: 'greet', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'setGreeting', values: [string]): string;
 
-  decodeFunctionResult(functionFragment: "greet", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'greet', data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "setGreeting",
+    functionFragment: 'setGreeting',
     data: BytesLike
   ): Result;
 
@@ -83,14 +83,14 @@ export class Greeter extends Contract {
   functions: {
     greet(overrides?: CallOverrides): Promise<[string]>;
 
-    "greet()"(overrides?: CallOverrides): Promise<[string]>;
+    'greet()'(overrides?: CallOverrides): Promise<[string]>;
 
     setGreeting(
       _greeting: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "setGreeting(string)"(
+    'setGreeting(string)'(
       _greeting: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -98,14 +98,14 @@ export class Greeter extends Contract {
 
   greet(overrides?: CallOverrides): Promise<string>;
 
-  "greet()"(overrides?: CallOverrides): Promise<string>;
+  'greet()'(overrides?: CallOverrides): Promise<string>;
 
   setGreeting(
     _greeting: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "setGreeting(string)"(
+  'setGreeting(string)'(
     _greeting: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -113,11 +113,11 @@ export class Greeter extends Contract {
   callStatic: {
     greet(overrides?: CallOverrides): Promise<string>;
 
-    "greet()"(overrides?: CallOverrides): Promise<string>;
+    'greet()'(overrides?: CallOverrides): Promise<string>;
 
     setGreeting(_greeting: string, overrides?: CallOverrides): Promise<void>;
 
-    "setGreeting(string)"(
+    'setGreeting(string)'(
       _greeting: string,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -128,14 +128,14 @@ export class Greeter extends Contract {
   estimateGas: {
     greet(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "greet()"(overrides?: CallOverrides): Promise<BigNumber>;
+    'greet()'(overrides?: CallOverrides): Promise<BigNumber>;
 
     setGreeting(
       _greeting: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "setGreeting(string)"(
+    'setGreeting(string)'(
       _greeting: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -144,14 +144,14 @@ export class Greeter extends Contract {
   populateTransaction: {
     greet(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "greet()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    'greet()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     setGreeting(
       _greeting: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "setGreeting(string)"(
+    'setGreeting(string)'(
       _greeting: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;

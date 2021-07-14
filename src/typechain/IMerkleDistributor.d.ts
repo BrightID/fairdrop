@@ -13,56 +13,56 @@ import {
   ContractTransaction,
   Overrides,
   CallOverrides,
-} from "ethers";
-import { BytesLike } from "@ethersproject/bytes";
-import { Listener, Provider } from "@ethersproject/providers";
-import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
+} from 'ethers';
+import { BytesLike } from '@ethersproject/bytes';
+import { Listener, Provider } from '@ethersproject/providers';
+import { FunctionFragment, EventFragment, Result } from '@ethersproject/abi';
+import { TypedEventFilter, TypedEvent, TypedListener } from './commons';
 
 interface IMerkleDistributorInterface extends ethers.utils.Interface {
   functions: {
-    "claim(uint256,address,uint256,bytes32[])": FunctionFragment;
-    "expireTimestamp()": FunctionFragment;
-    "isClaimed(uint256)": FunctionFragment;
-    "merkleRoot()": FunctionFragment;
-    "sweep(address)": FunctionFragment;
-    "token()": FunctionFragment;
+    'claim(uint256,address,uint256,bytes32[])': FunctionFragment;
+    'expireTimestamp()': FunctionFragment;
+    'isClaimed(uint256)': FunctionFragment;
+    'merkleRoot()': FunctionFragment;
+    'sweep(address)': FunctionFragment;
+    'token()': FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "claim",
+    functionFragment: 'claim',
     values: [BigNumberish, string, BigNumberish, BytesLike[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "expireTimestamp",
+    functionFragment: 'expireTimestamp',
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "isClaimed",
+    functionFragment: 'isClaimed',
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "merkleRoot",
+    functionFragment: 'merkleRoot',
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "sweep", values: [string]): string;
-  encodeFunctionData(functionFragment: "token", values?: undefined): string;
+  encodeFunctionData(functionFragment: 'sweep', values: [string]): string;
+  encodeFunctionData(functionFragment: 'token', values?: undefined): string;
 
-  decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'claim', data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "expireTimestamp",
+    functionFragment: 'expireTimestamp',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "isClaimed", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "merkleRoot", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "sweep", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "token", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'isClaimed', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'merkleRoot', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'sweep', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'token', data: BytesLike): Result;
 
   events: {
-    "Claimed(uint256,address,uint256)": EventFragment;
+    'Claimed(uint256,address,uint256)': EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "Claimed"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Claimed'): EventFragment;
 }
 
 export class IMerkleDistributor extends Contract {
@@ -117,7 +117,7 @@ export class IMerkleDistributor extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "claim(uint256,address,uint256,bytes32[])"(
+    'claim(uint256,address,uint256,bytes32[])'(
       index: BigNumberish,
       account: string,
       amount: BigNumberish,
@@ -127,35 +127,35 @@ export class IMerkleDistributor extends Contract {
 
     expireTimestamp(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "expireTimestamp()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+    'expireTimestamp()'(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     isClaimed(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    "isClaimed(uint256)"(
+    'isClaimed(uint256)'(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     merkleRoot(overrides?: CallOverrides): Promise<[string]>;
 
-    "merkleRoot()"(overrides?: CallOverrides): Promise<[string]>;
+    'merkleRoot()'(overrides?: CallOverrides): Promise<[string]>;
 
     sweep(
       target: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "sweep(address)"(
+    'sweep(address)'(
       target: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     token(overrides?: CallOverrides): Promise<[string]>;
 
-    "token()"(overrides?: CallOverrides): Promise<[string]>;
+    'token()'(overrides?: CallOverrides): Promise<[string]>;
   };
 
   claim(
@@ -166,7 +166,7 @@ export class IMerkleDistributor extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "claim(uint256,address,uint256,bytes32[])"(
+  'claim(uint256,address,uint256,bytes32[])'(
     index: BigNumberish,
     account: string,
     amount: BigNumberish,
@@ -176,32 +176,32 @@ export class IMerkleDistributor extends Contract {
 
   expireTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "expireTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
+  'expireTimestamp()'(overrides?: CallOverrides): Promise<BigNumber>;
 
   isClaimed(index: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
-  "isClaimed(uint256)"(
+  'isClaimed(uint256)'(
     index: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   merkleRoot(overrides?: CallOverrides): Promise<string>;
 
-  "merkleRoot()"(overrides?: CallOverrides): Promise<string>;
+  'merkleRoot()'(overrides?: CallOverrides): Promise<string>;
 
   sweep(
     target: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "sweep(address)"(
+  'sweep(address)'(
     target: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   token(overrides?: CallOverrides): Promise<string>;
 
-  "token()"(overrides?: CallOverrides): Promise<string>;
+  'token()'(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     claim(
@@ -212,7 +212,7 @@ export class IMerkleDistributor extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "claim(uint256,address,uint256,bytes32[])"(
+    'claim(uint256,address,uint256,bytes32[])'(
       index: BigNumberish,
       account: string,
       amount: BigNumberish,
@@ -222,26 +222,26 @@ export class IMerkleDistributor extends Contract {
 
     expireTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "expireTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
+    'expireTimestamp()'(overrides?: CallOverrides): Promise<BigNumber>;
 
     isClaimed(index: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
-    "isClaimed(uint256)"(
+    'isClaimed(uint256)'(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     merkleRoot(overrides?: CallOverrides): Promise<string>;
 
-    "merkleRoot()"(overrides?: CallOverrides): Promise<string>;
+    'merkleRoot()'(overrides?: CallOverrides): Promise<string>;
 
     sweep(target: string, overrides?: CallOverrides): Promise<void>;
 
-    "sweep(address)"(target: string, overrides?: CallOverrides): Promise<void>;
+    'sweep(address)'(target: string, overrides?: CallOverrides): Promise<void>;
 
     token(overrides?: CallOverrides): Promise<string>;
 
-    "token()"(overrides?: CallOverrides): Promise<string>;
+    'token()'(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -264,7 +264,7 @@ export class IMerkleDistributor extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "claim(uint256,address,uint256,bytes32[])"(
+    'claim(uint256,address,uint256,bytes32[])'(
       index: BigNumberish,
       account: string,
       amount: BigNumberish,
@@ -274,35 +274,35 @@ export class IMerkleDistributor extends Contract {
 
     expireTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "expireTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
+    'expireTimestamp()'(overrides?: CallOverrides): Promise<BigNumber>;
 
     isClaimed(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "isClaimed(uint256)"(
+    'isClaimed(uint256)'(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     merkleRoot(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "merkleRoot()"(overrides?: CallOverrides): Promise<BigNumber>;
+    'merkleRoot()'(overrides?: CallOverrides): Promise<BigNumber>;
 
     sweep(
       target: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "sweep(address)"(
+    'sweep(address)'(
       target: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     token(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "token()"(overrides?: CallOverrides): Promise<BigNumber>;
+    'token()'(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -314,7 +314,7 @@ export class IMerkleDistributor extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "claim(uint256,address,uint256,bytes32[])"(
+    'claim(uint256,address,uint256,bytes32[])'(
       index: BigNumberish,
       account: string,
       amount: BigNumberish,
@@ -324,7 +324,7 @@ export class IMerkleDistributor extends Contract {
 
     expireTimestamp(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "expireTimestamp()"(
+    'expireTimestamp()'(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -333,27 +333,27 @@ export class IMerkleDistributor extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "isClaimed(uint256)"(
+    'isClaimed(uint256)'(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     merkleRoot(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "merkleRoot()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    'merkleRoot()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     sweep(
       target: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "sweep(address)"(
+    'sweep(address)'(
       target: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     token(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "token()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    'token()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }
