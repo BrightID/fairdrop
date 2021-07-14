@@ -1,10 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import { Button, Grid } from '@material-ui/core';
 import { ethers } from 'ethers';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Form } from 'react-final-form';
 import { TextField } from 'mui-rff';
 import { EthersProviderContext } from './ProviderContext';
+import { useEffect } from 'react';
 
 interface AddressFormData {
   address: string;
@@ -41,58 +42,62 @@ const AddressForm = ({ initialValues, setAddress }: AddressFormProps) => {
 
   return (
     <Form
-      mutators={{
-        importWalletAddress: async (args, state, utils) => {
-          console.log(`Mutator called, wallet address is ${walletAddress}`);
-          if (walletAddress && walletAddress !== '') {
-            utils.changeValue(state, 'address', () => walletAddress);
-          } else {
-            console.log(`Connecting wallet...`);
-            const selected = await onboardApi?.walletSelect();
-            if (selected) {
-              await onboardApi?.walletCheck();
-            }
-          }
-        },
-      }}
+      //   mutators={{
+      //     importWalletAddress: async (args, state, utils) => {
+      //       console.log('state', state);
+      //       utils.changeValue(state, 'address', () => walletAddress);
+      //       console.log(`Mutator called, wallet address is ${walletAddress}`);
+      //         if (walletAddress && walletAddress !== '') {
+      //           utils.changeValue(state, 'address', () => walletAddress);
+      //         } else {
+      //       console.log(`Connecting wallet...`);
+      //       const selected = await onboardApi?.walletSelect();
+      //       if (selected) {
+      //         await onboardApi?.walletCheck();
+      //       }
+      //         }
+      //     },
+      //   }}
       onSubmit={onSubmit}
-      initialValues={initialValues}
+      initialValues={{ address: walletAddress }}
       validate={validate}
-      render={({ form, handleSubmit, submitting, values }) => (
-        <form onSubmit={handleSubmit} noValidate>
-          <Grid container justify={'space-between'}>
-            <Grid item xs={12}>
-              <TextField
-                id="address"
-                type="text"
-                name="address"
-                className={classNames.addressTextField}
-                InputProps={{
-                  classes: {
-                    input: classNames.addressInput,
-                  },
-                }}
-              />
+      render={({ form, handleSubmit, submitting, values }) => {
+        return (
+          <form onSubmit={handleSubmit} noValidate>
+            <Grid container justify={'space-between'}>
+              <Grid item xs={12}>
+                <TextField
+                  id="address"
+                  type="text"
+                  name="address"
+                  className={classNames.addressTextField}
+                  InputProps={{
+                    classes: {
+                      input: classNames.addressInput,
+                    },
+                  }}
+                />
+              </Grid>
+              {/* <Button
+                className={classNames.Btn}
+                onClick={form.mutators.importWalletAddress}
+                variant={'outlined'}
+              >
+                Use Wallet Address
+              </Button> */}
+              <Button
+                className={classNames.Btn}
+                type="submit"
+                variant={'contained'}
+                color={'primary'}
+                disabled={submitting}
+              >
+                check address
+              </Button>
             </Grid>
-            <Button
-              className={classNames.Btn}
-              onClick={form.mutators.importWalletAddress}
-              variant={'outlined'}
-            >
-              Use Wallet Address
-            </Button>
-            <Button
-              className={classNames.Btn}
-              type="submit"
-              variant={'contained'}
-              color={'primary'}
-              disabled={submitting}
-            >
-              check address
-            </Button>
-          </Grid>
-        </form>
-      )}
+          </form>
+        );
+      }}
     />
   );
 };
