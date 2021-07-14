@@ -66,14 +66,20 @@ const AddressForm = ({ initialValues, setAddress }: AddressFormProps) => {
                 id="address"
                 type="text"
                 name="address"
-                className={classNames.addressTextField}
                 InputProps={{
                   classes: {
                     input: classNames.addressInput,
                   },
                 }}
+                InputLabelProps={{
+                  classes: {
+                    outlined: classNames.addressLabel,
+                    focused: classNames.addressLabelFocused,
+                  },
+                }}
                 variant="outlined"
                 label="Address"
+                size="small"
               />
             </Grid>
             <Grid item xs={4}>
@@ -83,7 +89,6 @@ const AddressForm = ({ initialValues, setAddress }: AddressFormProps) => {
                 variant={'contained'}
                 color={'primary'}
                 disabled={submitting}
-                size="large"
                 disableElevation={true}
                 fullWidth={true}
               >
@@ -106,10 +111,6 @@ const AddressForm = ({ initialValues, setAddress }: AddressFormProps) => {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    addressTextField: {
-      // borderTopLeftRadius: '35px',
-      // borderTopRightRadius: '35px',
-    },
     addressInput: {
       [theme.breakpoints.up('md')]: {
         fontSize: 'large',
@@ -118,23 +119,29 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: 14,
       },
       background: 'white',
-      paddingRight: '52px',
+      paddingRight: '50px',
+      paddingLeft: '20px',
+    },
+    addressLabel: {
+      paddingLeft: '5px',
+    },
+    addressLabelFocused: {
+      paddingLeft: '0px',
     },
     Btn: {
       [theme.breakpoints.up('md')]: {
-        padding: '16.5px 0',
+        padding: '9.2px 0',
       },
       [theme.breakpoints.down('md')]: {
-        padding: '16px 0',
+        padding: '9.2px 0',
       },
       [theme.breakpoints.down('sm')]: {
-        padding: '15px 0',
+        padding: '8.2px 0',
       },
       [theme.breakpoints.down('xs')]: {
-        padding: '14px 0',
+        padding: '7.2px 0',
       },
-      // width: '100%',
-      marginLeft: '-51px',
+      marginLeft: '-36px',
       borderRadius: 50,
     },
   })
