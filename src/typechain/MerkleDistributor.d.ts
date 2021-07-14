@@ -13,79 +13,79 @@ import {
   ContractTransaction,
   Overrides,
   CallOverrides,
-} from "ethers";
-import { BytesLike } from "@ethersproject/bytes";
-import { Listener, Provider } from "@ethersproject/providers";
-import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
+} from 'ethers';
+import { BytesLike } from '@ethersproject/bytes';
+import { Listener, Provider } from '@ethersproject/providers';
+import { FunctionFragment, EventFragment, Result } from '@ethersproject/abi';
+import { TypedEventFilter, TypedEvent, TypedListener } from './commons';
 
 interface MerkleDistributorInterface extends ethers.utils.Interface {
   functions: {
-    "claim(uint256,address,uint256,bytes32[])": FunctionFragment;
-    "expireTimestamp()": FunctionFragment;
-    "isClaimed(uint256)": FunctionFragment;
-    "merkleRoot()": FunctionFragment;
-    "owner()": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
-    "sweep(address)": FunctionFragment;
-    "token()": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
+    'claim(uint256,address,uint256,bytes32[])': FunctionFragment;
+    'expireTimestamp()': FunctionFragment;
+    'isClaimed(uint256)': FunctionFragment;
+    'merkleRoot()': FunctionFragment;
+    'owner()': FunctionFragment;
+    'renounceOwnership()': FunctionFragment;
+    'sweep(address)': FunctionFragment;
+    'token()': FunctionFragment;
+    'transferOwnership(address)': FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "claim",
+    functionFragment: 'claim',
     values: [BigNumberish, string, BigNumberish, BytesLike[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "expireTimestamp",
+    functionFragment: 'expireTimestamp',
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "isClaimed",
+    functionFragment: 'isClaimed',
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "merkleRoot",
+    functionFragment: 'merkleRoot',
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "renounceOwnership",
+    functionFragment: 'renounceOwnership',
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "sweep", values: [string]): string;
-  encodeFunctionData(functionFragment: "token", values?: undefined): string;
+  encodeFunctionData(functionFragment: 'sweep', values: [string]): string;
+  encodeFunctionData(functionFragment: 'token', values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "transferOwnership",
+    functionFragment: 'transferOwnership',
     values: [string]
   ): string;
 
-  decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'claim', data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "expireTimestamp",
+    functionFragment: 'expireTimestamp',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "isClaimed", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "merkleRoot", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'isClaimed', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'merkleRoot', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "renounceOwnership",
+    functionFragment: 'renounceOwnership',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "sweep", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "token", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'sweep', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'token', data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "transferOwnership",
+    functionFragment: 'transferOwnership',
     data: BytesLike
   ): Result;
 
   events: {
-    "Claimed(uint256,address,uint256)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
+    'Claimed(uint256,address,uint256)': EventFragment;
+    'OwnershipTransferred(address,address)': EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "Claimed"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Claimed'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
 }
 
 export class MerkleDistributor extends Contract {
@@ -140,7 +140,7 @@ export class MerkleDistributor extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "claim(uint256,address,uint256,bytes32[])"(
+    'claim(uint256,address,uint256,bytes32[])'(
       index: BigNumberish,
       account: string,
       amount: BigNumberish,
@@ -150,31 +150,31 @@ export class MerkleDistributor extends Contract {
 
     expireTimestamp(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "expireTimestamp()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+    'expireTimestamp()'(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     isClaimed(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    "isClaimed(uint256)"(
+    'isClaimed(uint256)'(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     merkleRoot(overrides?: CallOverrides): Promise<[string]>;
 
-    "merkleRoot()"(overrides?: CallOverrides): Promise<[string]>;
+    'merkleRoot()'(overrides?: CallOverrides): Promise<[string]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
-    "owner()"(overrides?: CallOverrides): Promise<[string]>;
+    'owner()'(overrides?: CallOverrides): Promise<[string]>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "renounceOwnership()"(
+    'renounceOwnership()'(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -183,21 +183,21 @@ export class MerkleDistributor extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "sweep(address)"(
+    'sweep(address)'(
       target: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     token(overrides?: CallOverrides): Promise<[string]>;
 
-    "token()"(overrides?: CallOverrides): Promise<[string]>;
+    'token()'(overrides?: CallOverrides): Promise<[string]>;
 
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "transferOwnership(address)"(
+    'transferOwnership(address)'(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -211,7 +211,7 @@ export class MerkleDistributor extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "claim(uint256,address,uint256,bytes32[])"(
+  'claim(uint256,address,uint256,bytes32[])'(
     index: BigNumberish,
     account: string,
     amount: BigNumberish,
@@ -221,28 +221,28 @@ export class MerkleDistributor extends Contract {
 
   expireTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "expireTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
+  'expireTimestamp()'(overrides?: CallOverrides): Promise<BigNumber>;
 
   isClaimed(index: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
-  "isClaimed(uint256)"(
+  'isClaimed(uint256)'(
     index: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   merkleRoot(overrides?: CallOverrides): Promise<string>;
 
-  "merkleRoot()"(overrides?: CallOverrides): Promise<string>;
+  'merkleRoot()'(overrides?: CallOverrides): Promise<string>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
-  "owner()"(overrides?: CallOverrides): Promise<string>;
+  'owner()'(overrides?: CallOverrides): Promise<string>;
 
   renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "renounceOwnership()"(
+  'renounceOwnership()'(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -251,21 +251,21 @@ export class MerkleDistributor extends Contract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "sweep(address)"(
+  'sweep(address)'(
     target: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   token(overrides?: CallOverrides): Promise<string>;
 
-  "token()"(overrides?: CallOverrides): Promise<string>;
+  'token()'(overrides?: CallOverrides): Promise<string>;
 
   transferOwnership(
     newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "transferOwnership(address)"(
+  'transferOwnership(address)'(
     newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -279,7 +279,7 @@ export class MerkleDistributor extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "claim(uint256,address,uint256,bytes32[])"(
+    'claim(uint256,address,uint256,bytes32[])'(
       index: BigNumberish,
       account: string,
       amount: BigNumberish,
@@ -289,41 +289,41 @@ export class MerkleDistributor extends Contract {
 
     expireTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "expireTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
+    'expireTimestamp()'(overrides?: CallOverrides): Promise<BigNumber>;
 
     isClaimed(index: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
-    "isClaimed(uint256)"(
+    'isClaimed(uint256)'(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     merkleRoot(overrides?: CallOverrides): Promise<string>;
 
-    "merkleRoot()"(overrides?: CallOverrides): Promise<string>;
+    'merkleRoot()'(overrides?: CallOverrides): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
-    "owner()"(overrides?: CallOverrides): Promise<string>;
+    'owner()'(overrides?: CallOverrides): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
+    'renounceOwnership()'(overrides?: CallOverrides): Promise<void>;
 
     sweep(target: string, overrides?: CallOverrides): Promise<void>;
 
-    "sweep(address)"(target: string, overrides?: CallOverrides): Promise<void>;
+    'sweep(address)'(target: string, overrides?: CallOverrides): Promise<void>;
 
     token(overrides?: CallOverrides): Promise<string>;
 
-    "token()"(overrides?: CallOverrides): Promise<string>;
+    'token()'(overrides?: CallOverrides): Promise<string>;
 
     transferOwnership(
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "transferOwnership(address)"(
+    'transferOwnership(address)'(
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -357,7 +357,7 @@ export class MerkleDistributor extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "claim(uint256,address,uint256,bytes32[])"(
+    'claim(uint256,address,uint256,bytes32[])'(
       index: BigNumberish,
       account: string,
       amount: BigNumberish,
@@ -367,31 +367,31 @@ export class MerkleDistributor extends Contract {
 
     expireTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "expireTimestamp()"(overrides?: CallOverrides): Promise<BigNumber>;
+    'expireTimestamp()'(overrides?: CallOverrides): Promise<BigNumber>;
 
     isClaimed(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "isClaimed(uint256)"(
+    'isClaimed(uint256)'(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     merkleRoot(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "merkleRoot()"(overrides?: CallOverrides): Promise<BigNumber>;
+    'merkleRoot()'(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
+    'owner()'(overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "renounceOwnership()"(
+    'renounceOwnership()'(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -400,21 +400,21 @@ export class MerkleDistributor extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "sweep(address)"(
+    'sweep(address)'(
       target: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     token(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "token()"(overrides?: CallOverrides): Promise<BigNumber>;
+    'token()'(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "transferOwnership(address)"(
+    'transferOwnership(address)'(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -429,7 +429,7 @@ export class MerkleDistributor extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "claim(uint256,address,uint256,bytes32[])"(
+    'claim(uint256,address,uint256,bytes32[])'(
       index: BigNumberish,
       account: string,
       amount: BigNumberish,
@@ -439,7 +439,7 @@ export class MerkleDistributor extends Contract {
 
     expireTimestamp(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "expireTimestamp()"(
+    'expireTimestamp()'(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -448,24 +448,24 @@ export class MerkleDistributor extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "isClaimed(uint256)"(
+    'isClaimed(uint256)'(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     merkleRoot(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "merkleRoot()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    'merkleRoot()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    'owner()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "renounceOwnership()"(
+    'renounceOwnership()'(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -474,21 +474,21 @@ export class MerkleDistributor extends Contract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "sweep(address)"(
+    'sweep(address)'(
       target: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     token(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "token()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    'token()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "transferOwnership(address)"(
+    'transferOwnership(address)'(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;

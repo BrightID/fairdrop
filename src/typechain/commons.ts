@@ -2,8 +2,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { EventFilter, Event } from "ethers";
-import { Result } from "@ethersproject/abi";
+import { EventFilter, Event } from 'ethers';
+import { Result } from '@ethersproject/abi';
 
 export interface TypedEventFilter<_EventArgsArray, _EventArgsObject>
   extends EventFilter {}
