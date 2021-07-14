@@ -5,7 +5,7 @@ import { Box, Button, Fab, Grid, Hidden, Typography } from '@material-ui/core';
 import chainName from '../utils/chainName';
 import { intervalToDuration } from 'date-fns';
 import { RegistrationInfo } from '../utils/api';
-import rocket from '../images/rocket.svg';
+import boxes from '../images/boxes.svg';
 import highfive from '../images/highfive.svg';
 import claimSuccess from '../images/claimSuccess.svg';
 import CountDown from './CountDown';
@@ -74,7 +74,7 @@ const ActiveClaim = ({
       <Grid container alignItems={'center'} spacing={10}>
         <Hidden xsDown>
           <Grid item sm={3} md={6}>
-            <img src={rocket} width={'100%'} alt={'rocket'} />
+            <img src={boxes} width={'100%'} alt={'boxes'} />
           </Grid>
         </Hidden>
         <Grid
@@ -134,7 +134,7 @@ const ActiveClaim = ({
       (selectedChainId !== claimChainId || nextAmount.gt(0)) &&
       remainingTicks > 0
     ) {
-      imageSrc = rocket;
+      imageSrc = boxes;
       const futureAmount = amount.add(nextAmount);
       const duration = intervalToDuration({
         start: Date.now(),
@@ -188,7 +188,7 @@ const ActiveClaim = ({
     <Grid container alignItems={'center'} spacing={10}>
       <Hidden xsDown>
         <Grid item sm={6}>
-          <img src={imageSrc} width={'100%'} alt={'rocket'} />
+          <img src={imageSrc} width={'100%'} alt={'boxes'} />
         </Grid>
       </Hidden>
       <Grid
