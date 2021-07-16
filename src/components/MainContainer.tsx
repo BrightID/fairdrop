@@ -88,18 +88,18 @@ const MainContainer = () => {
   }, [address]);
 
   // Default to walletAddress if no address is set
-  useEffect(() => {
-    if (address === '' && walletAddress && walletAddress !== '') {
-      console.log(`Using walletAddress ${walletAddress}`);
-      try {
-        const checksummedAddress = ethers.utils.getAddress(walletAddress);
-        setAddress(ethers.utils.getAddress(checksummedAddress));
-        window.location.hash = checksummedAddress;
-      } catch (e) {
-        console.log(`Error setting address: ${e}`);
-      }
-    }
-  }, [walletAddress]);
+  // useEffect(() => {
+  //   if (address === '' && walletAddress && walletAddress !== '') {
+  //     console.log(`Using walletAddress ${walletAddress}`);
+  //     try {
+  //       const checksummedAddress = ethers.utils.getAddress(walletAddress);
+  //       setAddress(ethers.utils.getAddress(checksummedAddress));
+  //       window.location.hash = checksummedAddress;
+  //     } catch (e) {
+  //       console.log(`Error setting address: ${e}`);
+  //     }
+  //   }
+  // }, [walletAddress, address]);
 
   // Get address from location hash
   const hash = window.location.hash;
