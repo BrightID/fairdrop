@@ -118,15 +118,39 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
         console.log(`Getting balance for ${address}`);
         const newBalance = await token.balanceOf(address);
         setBalance(newBalance);
-        // regularly update balance
-        console.log(`TODO Start watching token balance for ${address}`);
       }
     };
     runEffect();
     return () => {
-      console.log(`TODO Stop watching token balance for ${address}`);
       setBalance(undefined);
     };
+  }, [token, address]);
+
+  // listen for transfer events
+  useEffect(() => {
+    if (token && address && address !== '') {
+      const handler = (from: string, to: string, value: any) => {
+        console.log(
+          `Transfer from ${from} to ${to} value: ${value.toString()}`
+        );
+        token.balanceOf(address).then((newBalance) => {
+          setBalance(newBalance);
+        });
+      };
+      const inFilter = token.filters.Transfer(null, address, null);
+      const outFilter = token.filters.Transfer(address, null, null);
+      console.log(`Start listening for Transfer events for ${address}`);
+      token.on(inFilter, handler);
+      token.on(outFilter, handler);
+
+      return () => {
+        console.log(`Stop listening for Transfer events for ${address}`);
+        console.log(`Listeners inFilter: ${token.listeners(inFilter)}`);
+        console.log(`Listeners outFilter: ${token.listeners(outFilter)}`);
+        token.off(inFilter, handler);
+        token.off(outFilter, handler);
+      };
+    }
   }, [token, address]);
 
   const openMenu = Boolean(anchorEl);
