@@ -15,6 +15,7 @@ import {
 } from '../utils/api';
 import ClaimWizard from './ClaimWizard';
 import ClaimingDisabled from './ClaimingDisabled';
+import watchAsset from '../utils/watchAsset';
 
 interface ActiveClaimControllerProps {
   claim: ClaimInfo;
@@ -258,6 +259,23 @@ const ActiveClaimController = ({
     await onboardApi?.walletSelect();
   };
 
+  const watchAssetHandler = async () => {
+    if (token && wallet && wallet.provider) {
+      const address = token.address;
+      const decimals = await token.decimals();
+      const symbol = await token.symbol();
+      const image = 'https://fairdrop.brightid.org/favicon.ico';
+
+      await watchAsset({
+        address,
+        decimals,
+        symbol,
+        image,
+        provider: wallet.provider,
+      });
+    }
+  };
+
   const now = Date.now();
   if (
     registrationInfo.currentRegistrationEnd < now &&
@@ -266,6 +284,8 @@ const ActiveClaimController = ({
     // we are in phase transition
     return <ClaimingDisabled registrationInfo={registrationInfo} />;
   }
+
+  const isMetamask = wallet?.name === 'MetaMask';
 
   return (
     <>
@@ -279,6 +299,7 @@ const ActiveClaimController = ({
         registrationInfo={registrationInfo}
         connectWallet={connectWallet}
         claimHandler={redeem}
+        watchAssetHandler={isMetamask ? watchAssetHandler : undefined}
       />
       <ClaimWizard
         chainId={payoutChainId}

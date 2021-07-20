@@ -37,6 +37,9 @@ let theme = createMuiTheme({
         color: 'white',
         textTransform: 'none',
       },
+      outlined: {
+        textTransform: 'none',
+      },
     },
     MuiMenu: {
       paper: {
