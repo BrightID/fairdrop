@@ -20,6 +20,7 @@ interface ActiveClaimProps {
   registrationInfo: RegistrationInfo;
   connectWallet?: () => any;
   claimHandler: () => any;
+  watchAssetHandler: (() => any) | undefined;
 }
 
 const ActiveClaim = ({
@@ -32,6 +33,7 @@ const ActiveClaim = ({
   currentChainId,
   registrationInfo,
   connectWallet,
+  watchAssetHandler,
 }: ActiveClaimProps) => {
   const classNames = useStyles();
 
@@ -123,6 +125,17 @@ const ActiveClaim = ({
         >
           successfully claimed on {chainName(claimChainId)}!
         </Typography>
+        {watchAssetHandler && (
+          <Button
+            variant="contained"
+            color="primary"
+            className={classNames.button}
+            size={'large'}
+            onClick={watchAssetHandler}
+          >
+            Add $BRIGHT to Metamask
+          </Button>
+        )}
       </Grid>
     );
   } else {
