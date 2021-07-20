@@ -130,7 +130,7 @@ const ActiveClaim = ({
             variant="contained"
             color="primary"
             className={classNames.button}
-            size={'large'}
+            size={'small'}
             onClick={watchAssetHandler}
           >
             Add $BRIGHT to Metamask
