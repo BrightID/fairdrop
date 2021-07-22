@@ -23,6 +23,7 @@ interface ActiveClaimProps {
   connectWallet?: () => any;
   claimHandler: () => any;
   watchAssetHandler: (() => any) | undefined;
+  connectChainHandler: ((arg0: number) => any) | undefined;
 }
 
 const ActiveClaim = ({
@@ -36,6 +37,7 @@ const ActiveClaim = ({
   registrationInfo,
   connectWallet,
   watchAssetHandler,
+  connectChainHandler,
 }: ActiveClaimProps) => {
   const classNames = useStyles();
 
@@ -67,10 +69,19 @@ const ActiveClaim = ({
       action = (
         <Box className={classNames.infoBox}>
           <Typography variant={'h6'}>Change network</Typography>
-          <Typography variant={'body1'}>
+          <Typography variant={'body1'} gutterBottom={true}>
             Please switch your wallet to{' '}
             <strong>{chainName(claimChainId)}</strong> to check claim details
           </Typography>
+          {connectChainHandler && (
+            <Button
+              variant={'contained'}
+              color={'primary'}
+              onClick={() => connectChainHandler(claimChainId)}
+            >
+              Switch MetaMask to {chainName(claimChainId)}
+            </Button>
+          )}
         </Box>
       );
     }

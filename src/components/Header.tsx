@@ -79,7 +79,7 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
   // get token contract
   useEffect(() => {
     const getToken = async () => {
-      if (network === undefined) return;
+      if (!network) return;
       if (provider === undefined) return;
       let contractAddress;
       try {
@@ -145,8 +145,6 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
 
       return () => {
         console.log(`Stop listening for Transfer events for ${address}`);
-        console.log(`Listeners inFilter: ${token.listeners(inFilter)}`);
-        console.log(`Listeners outFilter: ${token.listeners(outFilter)}`);
         token.off(inFilter, handler);
         token.off(outFilter, handler);
       };

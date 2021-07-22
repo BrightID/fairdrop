@@ -16,6 +16,8 @@ import {
 import ClaimWizard from './ClaimWizard';
 import ClaimingDisabled from './ClaimingDisabled';
 import watchAsset from '../utils/watchAsset';
+import { switchToMainnet, switchToXDai } from '../utils/switchEthereumChain';
+import { mainnetChainId, xDaiChainId } from '../utils/chainIds';
 
 interface ActiveClaimControllerProps {
   claim: ClaimInfo;
@@ -276,6 +278,21 @@ const ActiveClaimController = ({
     }
   };
 
+  const connectChainHandler = async (chainId: number) => {
+    if (wallet && wallet.provider) {
+      switch (chainId) {
+        case xDaiChainId:
+          await switchToXDai({ provider: wallet.provider });
+          break;
+        case mainnetChainId:
+          await switchToMainnet({ provider: wallet.provider });
+          break;
+        default:
+          console.log(`Unhandled chainId ${chainId}`);
+      }
+    }
+  };
+
   const now = Date.now();
   if (
     registrationInfo.currentRegistrationEnd < now &&
@@ -300,6 +317,7 @@ const ActiveClaimController = ({
         connectWallet={connectWallet}
         claimHandler={redeem}
         watchAssetHandler={isMetamask ? watchAssetHandler : undefined}
+        connectChainHandler={isMetamask ? connectChainHandler : undefined}
       />
       <ClaimWizard
         chainId={payoutChainId}
