@@ -6,6 +6,7 @@ import linkAddress from '../images/linkAddress.svg';
 import { intervalToDuration } from 'date-fns';
 import formatDuration from 'date-fns/formatDuration';
 import { RegistrationInfo } from '../utils/api';
+import { Alert } from '@material-ui/lab';
 
 interface AddressLinkInfoProps {
   address: string;
@@ -33,6 +34,8 @@ const AddressLinkInfo = ({
     setBrightIdLinked(isLinked);
   };
 
+  const registrationTicksRemaining =
+    registrationInfo.currentRegistrationEnd - Date.now();
   const duration = intervalToDuration({
     start: Date.now(),
     end: registrationInfo.nextClaimStart,
@@ -58,6 +61,39 @@ const AddressLinkInfo = ({
         </Grid>
         <Hidden xsDown>
           <Grid item sm={3} md={6}>
+            <img src={linkAddress} width={'90%'} alt={'link address'} />
+          </Grid>
+        </Hidden>
+      </Grid>
+    );
+  } else if (
+    registrationTicksRemaining < 0 &&
+    registrationInfo.nextRegistrationStart > 0
+  ) {
+    // current registration phase has ended, next phase will start soon
+    return (
+      <Grid container spacing={10} alignItems={'center'}>
+        <Grid item container direction={'column'} xs={12} sm={9} md={6}>
+          <Typography
+            className={classNames.paragraph}
+            align={'left'}
+            variant={'h4'}
+          >
+            Link your BrightID to get more $BRIGHT at the next claim period
+          </Typography>
+          <Alert severity={'warning'} className={classNames.alert}>
+            <Typography>
+              We are currently preparing the next airdrop phase. During this
+              time you can't link your BrightID.
+            </Typography>
+            <Typography>
+              This functionality will be enabled again in approximately{' '}
+              <strong>{durationString}</strong>.
+            </Typography>
+          </Alert>
+        </Grid>
+        <Hidden xsDown>
+          <Grid item sm={9} md={6}>
             <img src={linkAddress} width={'90%'} alt={'link address'} />
           </Grid>
         </Hidden>
@@ -144,6 +180,15 @@ const useStyles = makeStyles((theme: Theme) =>
         padding: theme.spacing(4),
         marginLeft: theme.spacing(3),
         marginTop: theme.spacing(4),
+      },
+    },
+    alert: {
+      borderRadius: 5,
+      [theme.breakpoints.down('xs')]: {
+        marginLeft: theme.spacing(1),
+      },
+      [theme.breakpoints.up('sm')]: {
+        marginLeft: theme.spacing(3),
       },
     },
   })
