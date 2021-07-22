@@ -7,7 +7,7 @@ import { EthersProviderContext } from './ProviderContext';
 import { intervalToDuration } from 'date-fns';
 import formatDuration from 'date-fns/formatDuration';
 import { RegistrationInfo } from '../utils/api';
-import selectChain from '../images/selectChain.svg';
+import selectChain from '../images/network_selection.png';
 import { Alert } from '@material-ui/lab';
 import BinarySlider from './BinarySlider';
 import { mainnetChainId, xDaiChainId } from '../utils/chainIds';
