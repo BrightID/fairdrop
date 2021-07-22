@@ -7,7 +7,9 @@ import { intervalToDuration } from 'date-fns';
 import { RegistrationInfo } from '../utils/api';
 import rocket from '../images/rocket.svg';
 import highfive from '../images/highfive.svg';
+import boxes from '../images/boxes.svg';
 import claimSuccess from '../images/claimSuccess.svg';
+import claimPending from '../images/claim_pending.png';
 import CountDown from './CountDown';
 
 interface ActiveClaimProps {
@@ -76,7 +78,7 @@ const ActiveClaim = ({
       <Grid container alignItems={'center'} spacing={10}>
         <Hidden xsDown>
           <Grid item sm={3} md={6}>
-            <img src={rocket} width={'100%'} alt={'rocket'} />
+            <img src={boxes} width={'100%'} alt={'rocket'} />
           </Grid>
         </Hidden>
         <Grid
@@ -147,7 +149,7 @@ const ActiveClaim = ({
       (selectedChainId !== claimChainId || nextAmount.gt(0)) &&
       remainingTicks > 0
     ) {
-      imageSrc = rocket;
+      imageSrc = claimPending;
       const futureAmount = amount.add(nextAmount);
       const duration = intervalToDuration({
         start: Date.now(),
