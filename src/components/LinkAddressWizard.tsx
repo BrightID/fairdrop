@@ -4,7 +4,6 @@ import {
   DialogTitle,
   DialogContent,
   Typography,
-  DialogActions,
   Button,
   Link,
   Box,
@@ -14,6 +13,7 @@ import { generateDeeplink, verifyContextId } from 'brightid_sdk';
 import QRCode from 'qrcode.react';
 import { ContextInfo } from './AddressRegistrationController';
 import { makeStyles } from '@material-ui/core/styles';
+import { Alert } from '@material-ui/lab';
 
 interface LinkAddressWizardProps {
   onClose: (isLinked: boolean) => any;
@@ -35,6 +35,10 @@ const useStyles = makeStyles((theme) => ({
     width: '80%',
   },
   mobileInfo: {},
+  alert: {
+    borderRadius: 5,
+    marginTop: theme.spacing(2),
+  },
 }));
 
 const LinkAddressWizard = ({
@@ -78,7 +82,7 @@ const LinkAddressWizard = ({
       open={open}
       onClose={handleCancel}
       disableBackdropClick={true}
-      maxWidth={'md'}
+      maxWidth={'sm'}
     >
       <Box className={classNames.dialog}>
         <DialogTitle>
@@ -107,6 +111,10 @@ const LinkAddressWizard = ({
             <Typography variant={'h6'}>
               Waiting for link confirmation...
             </Typography>
+            <Alert severity={'info'} className={classNames.alert}>
+              After linking your address in the BrightID app it can take up to 2
+              minutes for the website to update.
+            </Alert>
             <Button
               className={classNames.cancelButton}
               onClick={handleCancel}
