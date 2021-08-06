@@ -29,6 +29,20 @@ const getDistributorAddress = async (
   chainId: number
 ): Promise<string | undefined> => {
   const contractName = 'merkleDistributor';
+  return await getContractAddress(chainId, contractName);
+};
+
+const getTokenAddress = async (
+  chainId: number
+): Promise<string | undefined> => {
+  const contractName = 'brightToken';
+  return await getContractAddress(chainId, contractName);
+};
+
+const getContractAddress = async (
+  chainId: number,
+  contractName: string
+): Promise<string | undefined> => {
   const url = `${baseUrl}/contract/${chainId}/${contractName}`;
   const response = await fetch(url);
   if (response.ok) {
@@ -161,6 +175,7 @@ const setAddressPayoutChainId = async ({
 
 export {
   getDistributorAddress,
+  getTokenAddress,
   getRegistrationInfo,
   getAddressInfo,
   getClaimInfo,

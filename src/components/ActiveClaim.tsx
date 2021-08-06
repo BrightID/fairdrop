@@ -7,7 +7,9 @@ import { intervalToDuration } from 'date-fns';
 import { RegistrationInfo } from '../utils/api';
 import boxes from '../images/boxes.svg';
 import highfive from '../images/highfive.svg';
+import boxes from '../images/boxes.svg';
 import claimSuccess from '../images/claimSuccess.svg';
+import claimPending from '../images/claim_pending.png';
 import CountDown from './CountDown';
 
 interface ActiveClaimProps {
@@ -20,6 +22,8 @@ interface ActiveClaimProps {
   registrationInfo: RegistrationInfo;
   connectWallet?: () => any;
   claimHandler: () => any;
+  watchAssetHandler: (() => any) | undefined;
+  connectChainHandler: ((arg0: number) => any) | undefined;
 }
 
 const ActiveClaim = ({
@@ -32,6 +36,8 @@ const ActiveClaim = ({
   currentChainId,
   registrationInfo,
   connectWallet,
+  watchAssetHandler,
+  connectChainHandler,
 }: ActiveClaimProps) => {
   const classNames = useStyles();
 
@@ -63,10 +69,19 @@ const ActiveClaim = ({
       action = (
         <Box className={classNames.infoBox}>
           <Typography variant={'h6'}>Change network</Typography>
-          <Typography variant={'body1'}>
+          <Typography variant={'body1'} gutterBottom={true}>
             Please switch your wallet to{' '}
             <strong>{chainName(claimChainId)}</strong> to check claim details
           </Typography>
+          {connectChainHandler && (
+            <Button
+              variant={'contained'}
+              color={'primary'}
+              onClick={() => connectChainHandler(claimChainId)}
+            >
+              Switch MetaMask to {chainName(claimChainId)}
+            </Button>
+          )}
         </Box>
       );
     }
@@ -123,6 +138,17 @@ const ActiveClaim = ({
         >
           successfully claimed on {chainName(claimChainId)}!
         </Typography>
+        {watchAssetHandler && (
+          <Button
+            variant="contained"
+            color="primary"
+            className={classNames.button}
+            size={'small'}
+            onClick={watchAssetHandler}
+          >
+            Add $BRIGHT to Metamask
+          </Button>
+        )}
       </Grid>
     );
   } else {

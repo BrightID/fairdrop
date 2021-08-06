@@ -15,7 +15,6 @@ import { verifyContextId } from 'brightid_sdk';
 import ChainSelector from './ChainSelector';
 import AddressLinkInfo from './AddressLinkInfo';
 import SubNavBar from './SubNavBar';
-import { EthersProviderContext } from './ProviderContext';
 
 const MainContainer = () => {
   const [address, setAddress] = useState('');
@@ -28,7 +27,6 @@ const MainContainer = () => {
   const [payoutChainId, setPayoutChainId] = useState(0);
   const [nextAmount, setNextAmount] = useState(BigNumber.from(0));
   const [brightIdLinked, setBrightIdLinked] = useState(false);
-  const { walletAddress } = useContext(EthersProviderContext);
 
   // Get info about registration phases from backend
   useEffect(() => {
@@ -86,20 +84,6 @@ const MainContainer = () => {
     };
     runEffect();
   }, [address]);
-
-  // Default to walletAddress if no address is set
-  useEffect(() => {
-    if (address === '' && walletAddress && walletAddress !== '') {
-      console.log(`Using walletAddress ${walletAddress}`);
-      try {
-        const checksummedAddress = ethers.utils.getAddress(walletAddress);
-        setAddress(ethers.utils.getAddress(checksummedAddress));
-        window.location.hash = checksummedAddress;
-      } catch (e) {
-        console.log(`Error setting address: ${e}`);
-      }
-    }
-  }, [walletAddress]);
 
   // Get address from location hash
   const hash = window.location.hash;

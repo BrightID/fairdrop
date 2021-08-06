@@ -15,6 +15,9 @@ import {
 } from '../utils/api';
 import ClaimWizard from './ClaimWizard';
 import ClaimingDisabled from './ClaimingDisabled';
+import watchAsset from '../utils/watchAsset';
+import { switchToMainnet, switchToXDai } from '../utils/switchEthereumChain';
+import { mainnetChainId, xDaiChainId } from '../utils/chainIds';
 
 interface ActiveClaimControllerProps {
   claim: ClaimInfo;
@@ -258,6 +261,38 @@ const ActiveClaimController = ({
     await onboardApi?.walletSelect();
   };
 
+  const watchAssetHandler = async () => {
+    if (token && wallet && wallet.provider) {
+      const address = token.address;
+      const decimals = await token.decimals();
+      const symbol = await token.symbol();
+      const image = 'https://fairdrop.brightid.org/favicon.ico';
+
+      await watchAsset({
+        address,
+        decimals,
+        symbol,
+        image,
+        provider: wallet.provider,
+      });
+    }
+  };
+
+  const connectChainHandler = async (chainId: number) => {
+    if (wallet && wallet.provider) {
+      switch (chainId) {
+        case xDaiChainId:
+          await switchToXDai({ provider: wallet.provider });
+          break;
+        case mainnetChainId:
+          await switchToMainnet({ provider: wallet.provider });
+          break;
+        default:
+          console.log(`Unhandled chainId ${chainId}`);
+      }
+    }
+  };
+
   const now = Date.now();
   if (
     registrationInfo.currentRegistrationEnd < now &&
@@ -266,6 +301,8 @@ const ActiveClaimController = ({
     // we are in phase transition
     return <ClaimingDisabled registrationInfo={registrationInfo} />;
   }
+
+  const isMetamask = wallet?.name === 'MetaMask';
 
   return (
     <>
@@ -279,6 +316,8 @@ const ActiveClaimController = ({
         registrationInfo={registrationInfo}
         connectWallet={connectWallet}
         claimHandler={redeem}
+        watchAssetHandler={isMetamask ? watchAssetHandler : undefined}
+        connectChainHandler={isMetamask ? connectChainHandler : undefined}
       />
       <ClaimWizard
         chainId={payoutChainId}

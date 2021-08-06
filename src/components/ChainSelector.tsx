@@ -1,12 +1,5 @@
 import React, { useContext, useState } from 'react';
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Grid,
-  Hidden,
-  Typography,
-} from '@material-ui/core';
+import { Box, Grid, Hidden, Typography } from '@material-ui/core';
 import chainName from '../utils/chainName';
 import ChainSelectorWizard from './ChainSelectorWizard';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -14,7 +7,7 @@ import { EthersProviderContext } from './ProviderContext';
 import { intervalToDuration } from 'date-fns';
 import formatDuration from 'date-fns/formatDuration';
 import { RegistrationInfo } from '../utils/api';
-import boxes from '../images/boxes.svg';
+import selectChain from '../images/network_selection.png';
 import { Alert } from '@material-ui/lab';
 import BinarySlider from './BinarySlider';
 import { mainnetChainId, xDaiChainId } from '../utils/chainIds';
@@ -126,7 +119,7 @@ const ChainSelector = ({
           </Grid>
           <Hidden xsDown>
             <Grid item sm={3} md={6}>
-              <img src={boxes} width={'100%'} alt={'boxes'} />
+              <img src={selectChain} width={'100%'} alt={'selectChain'} />
             </Grid>
           </Hidden>
         </Grid>
@@ -178,7 +171,7 @@ const ChainSelector = ({
           </Grid>
           <Hidden xsDown>
             <Grid item sm={3} md={6}>
-              <img src={boxes} width={'100%'} alt={'boxes'} />
+              <img src={selectChain} width={'100%'} alt={'selectChain'} />
             </Grid>
           </Hidden>
         </Grid>
