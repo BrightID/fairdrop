@@ -61,57 +61,59 @@ const AddressForm = ({ initialValues, setAddress }: AddressFormProps) => {
       onSubmit={onSubmit}
       initialValues={{ address: walletAddress }}
       validate={validate}
-      render={({ form, handleSubmit, submitting, values }) => {
-        return (
-          <form onSubmit={handleSubmit} noValidate>
-            <Grid container justify={'space-between'}>
-              <Grid item xs={12}>
-                <TextField
-                  id="address"
-                  type="text"
-                  name="address"
-                  className={classNames.addressTextField}
-                  InputProps={{
-                    classes: {
-                      input: classNames.addressInput,
-                    },
-                  }}
-                />
-              </Grid>
-              {/* <Button
-                className={classNames.Btn}
-                onClick={form.mutators.importWalletAddress}
-                variant={'outlined'}
-              >
-                Use Wallet Address
-              </Button> */}
+      render={({ form, handleSubmit, submitting, values }) => (
+        <form onSubmit={handleSubmit} noValidate>
+          <Grid container xs={12} spacing={0} alignItems={'flex-start'}>
+            <Grid item xs={8}>
+              <TextField
+                id="address"
+                type="text"
+                name="address"
+                InputProps={{
+                  classes: {
+                    input: classNames.addressInput,
+                  },
+                }}
+                InputLabelProps={{
+                  classes: {
+                    outlined: classNames.addressLabel,
+                    focused: classNames.addressLabelFocused,
+                  },
+                }}
+                variant="outlined"
+                label="Address"
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={4}>
               <Button
                 className={classNames.Btn}
                 type="submit"
                 variant={'contained'}
                 color={'primary'}
                 disabled={submitting}
+                disableElevation={true}
+                fullWidth={true}
               >
-                check address
+                Check Address
               </Button>
             </Grid>
-          </form>
-        );
-      }}
+
+            {/* <Button
+                                  className={classNames.Btn}
+                                  onClick={form.mutators.importWalletAddress}
+                                  variant={'outlined'}>
+                                  Use Wallet Address
+                              </Button> */}
+          </Grid>
+        </form>
+      )}
     />
   );
 };
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    addressTextField: {
-      [theme.breakpoints.down('xs')]: {
-        marginTop: theme.spacing(2),
-      },
-      [theme.breakpoints.up('md')]: {
-        marginBottom: theme.spacing(2),
-      },
-    },
     addressInput: {
       [theme.breakpoints.up('md')]: {
         fontSize: 'large',
@@ -120,15 +122,30 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: 14,
       },
       background: 'white',
+      paddingRight: '50px',
+      paddingLeft: '20px',
+    },
+    addressLabel: {
+      paddingLeft: '5px',
+    },
+    addressLabelFocused: {
+      paddingLeft: '0px',
     },
     Btn: {
-      [theme.breakpoints.down('xs')]: {
-        width: '100%',
-        marginTop: theme.spacing(2),
-      },
       [theme.breakpoints.up('md')]: {
-        width: '40%',
+        padding: '9.2px 0',
       },
+      [theme.breakpoints.down('md')]: {
+        padding: '9.2px 0',
+      },
+      [theme.breakpoints.down('sm')]: {
+        padding: '8.2px 0',
+      },
+      [theme.breakpoints.down('xs')]: {
+        padding: '7.2px 0',
+      },
+      marginLeft: '-36px',
+      borderRadius: 50,
     },
   })
 );
