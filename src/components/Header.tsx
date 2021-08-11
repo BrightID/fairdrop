@@ -68,13 +68,14 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
   const [popupAnchorEl, setPopupAnchorEl] = React.useState<null | HTMLElement>(
     null
   );
-  const { wallet, network, provider, onboardApi } = useContext(
+  const { wallet, network, provider, onboardApi, walletAddress } = useContext(
     EthersProviderContext
   );
   const theme = useTheme();
   const xsDisplay = useMediaQuery(theme.breakpoints.down('xs'));
   const [token, setToken] = useState<ERC20 | undefined>(undefined);
   const [balance, setBalance] = useState<BigNumber | undefined>();
+  const [buttonLabel, setButtonLabel] = useState('Connect Wallet');
 
   // get token contract
   useEffect(() => {
@@ -154,7 +155,18 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
   const openMenu = Boolean(anchorEl);
   const openPopup = Boolean(popupAnchorEl);
   const walletName = wallet?.name || undefined;
-  const buttonLabel = walletName || 'Connect Wallet';
+
+  useEffect(() => {
+    if (walletAddress) {
+      setButtonLabel(
+        `${walletAddress.substring(0, 6)}...${walletAddress.substring(
+          walletAddress.length - 4
+        )}`
+      );
+    } else {
+      setButtonLabel('Connect Wallet');
+    }
+  }, [walletAddress]);
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

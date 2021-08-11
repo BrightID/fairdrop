@@ -85,11 +85,14 @@ const ProviderContext: React.FC<ProviderContextProps> = ({ children }) => {
                 wallet.provider
               );
               setProvider(ethersProvider);
+              // store the selected wallet name to be retrieved next time the app loads
+              window.localStorage.setItem('selectedWallet', wallet.name || '');
             } else {
               console.log(`Got undefined wallet from onboard...`);
               setSupportsRpcUrl(false);
               setWallet(null);
               setProvider(undefined);
+              window.localStorage.setItem('selectedWallet', '');
             }
           },
           address: (addr) => {
