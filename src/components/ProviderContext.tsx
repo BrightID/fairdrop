@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import Onboard from 'bnc-onboard';
 import { API, Wallet } from 'bnc-onboard/dist/src/interfaces';
+import { SettingsBrightnessRounded } from '@material-ui/icons';
 
 // derived from https://docs.blocknative.com/onboard#wallet-modules
 const walletNamesWithRpcUrl = [
@@ -58,7 +59,24 @@ const ProviderContext: React.FC<ProviderContextProps> = ({ children }) => {
   const [provider, setProvider] = useState<
     ethers.providers.Web3Provider | undefined
   >(undefined);
+  const [signer, setSigner] = useState<ethers.Signer | undefined>(undefined);
   const [walletAddress, setWalletAddress] = useState('');
+
+  // load wallet if already exists
+  useEffect(() => {
+    const runEffect = async () => {
+      const previouslySelectedWallet =
+        window.localStorage.getItem('selectedWallet');
+
+      // call wallet select with that value if it exists
+      if (previouslySelectedWallet) {
+        await onboard?.walletSelect(previouslySelectedWallet);
+      }
+    };
+    if (!walletAddress) {
+      runEffect();
+    }
+  }, [walletAddress, onboard]);
 
   // setup onboard.js
   useEffect(() => {
@@ -85,6 +103,7 @@ const ProviderContext: React.FC<ProviderContextProps> = ({ children }) => {
                 wallet.provider
               );
               setProvider(ethersProvider);
+              setSigner(ethersProvider.getSigner());
               // store the selected wallet name to be retrieved next time the app loads
               window.localStorage.setItem('selectedWallet', wallet.name || '');
             } else {
@@ -92,6 +111,7 @@ const ProviderContext: React.FC<ProviderContextProps> = ({ children }) => {
               setSupportsRpcUrl(false);
               setWallet(null);
               setProvider(undefined);
+              setSigner(undefined);
               window.localStorage.setItem('selectedWallet', '');
             }
           },
@@ -155,6 +175,7 @@ const ProviderContext: React.FC<ProviderContextProps> = ({ children }) => {
     network,
     provider,
     walletAddress,
+    signer,
   };
   return (
     <EthersProviderContext.Provider value={ctx}>
@@ -164,3 +185,21 @@ const ProviderContext: React.FC<ProviderContextProps> = ({ children }) => {
 };
 
 export default ProviderContext;
+
+export function useWallet() {
+  const context = useContext(EthersProviderContext);
+  if (!context) {
+    throw new Error('Missing Contracts context');
+  }
+  const { wallet, onboardApi, network, provider, walletAddress, signer } =
+    context;
+
+  return {
+    wallet,
+    onboardApi,
+    network,
+    provider,
+    walletAddress,
+    signer,
+  };
+}
