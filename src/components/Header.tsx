@@ -19,16 +19,20 @@ import { ERC20, ERC20__factory } from '../typechain';
 import { getTokenAddress } from '../utils/api';
 import { BigNumber, utils } from 'ethers';
 import watchAsset from '../utils/watchAsset';
+import { DRAWER_WIDTH } from '../utils/constants';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
   appBar: {
-    background: 'white',
+    background: 'transparent',
     boxShadow: 'none',
-    borderBottom: '1px solid lightgrey',
     marginBottom: theme.spacing(6),
+    [theme.breakpoints.up('sm')]: {
+      width: `calc(100% - ${DRAWER_WIDTH}px)`,
+      marginLeft: DRAWER_WIDTH,
+    },
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -308,9 +312,11 @@ const Header = () => {
         className={classes.appBar}
       >
         <Toolbar>
-          <Typography variant="h6" className={classes.title} color={'primary'}>
-            $BRIGHT
-          </Typography>
+          <Typography
+            variant="h6"
+            className={classes.title}
+            color={'primary'}
+          ></Typography>
           {buildAppbarButtons()}
         </Toolbar>
       </AppBar>

@@ -12,6 +12,7 @@ import MainContainer from './pages/MainContainer';
 import FarmsContainer from './pages/FarmsContainer';
 import Header from './components/Header';
 import Notification from './components/Notification';
+import DrawerLeft from './components/DrawerLeft';
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
         <ContractsProvider>
           <ERC20TokensProvider>
             <Header />
+            <DrawerLeft />
             <SnackbarProvider
               maxSnack={4}
               anchorOrigin={{

@@ -1,8 +1,9 @@
-import { Box, Button, Grid, Typography } from '@material-ui/core';
+import { Box, Button, Container, Grid, Typography } from '@material-ui/core';
 
 import React, { useContext, useEffect, useState } from 'react';
-
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { BigNumber, ethers, utils } from 'ethers';
+import FarmingBox from '../components/FarmingBox';
 import { useWallet } from '../contexts/wallet';
 import { useContracts } from '../contexts/contracts';
 import { useV3Liquidity } from '../hooks/useV3Liquidity';
@@ -11,12 +12,14 @@ import { useV2Staking } from '../hooks/useV2Staking';
 import { useERC20Tokens } from '../contexts/erc20Tokens';
 import chainName from '../utils/chainName';
 import V3StakeBtn from '../components/V3StakeBtn';
+import { DRAWER_WIDTH } from '../utils/constants';
 
 const STARTS_WITH = 'data:application/json;base64,';
-const STEPS = ['approve', 'transfer', 'stake', 'unstake'];
+
 const STEPS2 = ['approve', 'stake', 'unstake'];
 
 const FarmsContainer = () => {
+  const classes = useStyles();
   const { wallet, onboardApi, walletAddress, signer, network } = useWallet();
 
   console.log('network', network);
@@ -123,107 +126,161 @@ const FarmsContainer = () => {
 
   return (
     <>
-      <Grid container xs={12} alignItems={'flex-start'}>
-        <Grid item xs={12}>
-          {loadingNftPositions ? (
-            <Typography variant={'h4'}>Loading...</Typography>
-          ) : (
-            <Typography variant={'h4'}>Farm Ready</Typography>
+      {/* <DrawerLeft /> */}
+      <Container className={classes.content}>
+        <Grid container xs={12} alignItems={'flex-start'}>
+          <Grid item xs={12} style={{ height: 400 }} container>
+            <Grid
+              item
+              sm={12}
+              md={4}
+              alignItems={'center'}
+              justify={'center'}
+              className={classes.farmContainer}
+              container
+              // spacing={2}
+            >
+              <FarmingBox />
+            </Grid>
+            <Grid
+              item
+              sm={12}
+              md={4}
+              alignItems={'center'}
+              justify={'center'}
+              className={classes.farmContainer}
+              container
+              // spacing={2}
+            >
+              <FarmingBox />
+            </Grid>
+            <Grid
+              item
+              sm={12}
+              md={4}
+              alignItems={'center'}
+              justify={'center'}
+              className={classes.farmContainer}
+              container
+              // spacing={2}
+            >
+              <FarmingBox />
+            </Grid>
+          </Grid>
+          <Grid item xs={12} style={{ height: 400 }} container>
+            <Grid
+              item
+              xs={6}
+              alignItems={'center'}
+              justify={'center'}
+              style={{ height: 400, borderStyle: 'solid' }}
+              container
+            >
+              <Typography variant={'body1'}>
+                {utils.formatUnits(BigNumber.from(uniV2LpBalance), 18)}{' '}
+                {uniV2LpSymbol}
+              </Typography>
+              <Box px={4} mb={2} p={5}>
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  onClick={approveOrTransferOrStake2}
+                >
+                  {isWorking2 ? isWorking2 : STEPS2[activeStep2]}
+                </Button>
+              </Box>
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              alignItems={'center'}
+              justify={'center'}
+              className={classes.farmContainer}
+              container
+            >
+              <FarmingBox />
+            </Grid>
+          </Grid>
+          {nftPositions.length > 0 && (
+            <>
+              <Grid item xs={12}>
+                <Typography variant={'h4'}>
+                  Congrats you have an nft position
+                </Typography>
+              </Grid>
+              <Grid
+                item
+                xs={6}
+                alignItems={'center'}
+                justify={'center'}
+                style={{ height: 400, borderStyle: 'solid' }}
+                container
+              >
+                <img src={json.image} alt={'nft position'} height={300} />
+              </Grid>
+              <Grid
+                item
+                xs={6}
+                alignItems={'center'}
+                justify={'center'}
+                style={{ height: 400, borderStyle: 'solid' }}
+                container
+              >
+                <Box px={4} mb={2} p={5}>
+                  <V3StakeBtn position={activePosition} />
+                </Box>
+                {activeStep === 2 && (
+                  <Box px={4} mb={2}>
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      onClick={withdrawNft}
+                    >
+                      {isWorking ? isWorking : 'Withdraw'}
+                    </Button>
+                  </Box>
+                )}
+
+                {!reward?.isZero() && (
+                  <Box px={4} mb={2} p={5}>
+                    <Typography variant={'body1'}>
+                      {utils.formatUnits(BigNumber.from(reward), 18)} BRIGHT
+                    </Typography>
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      onClick={claimReward}
+                    >
+                      {isWorking ? isWorking : 'Claim'}
+                    </Button>
+                  </Box>
+                )}
+              </Grid>
+            </>
           )}
         </Grid>
-        <Grid item xs={12}>
-          <Typography variant={'h4'}>Lets test the staking contract</Typography>
-        </Grid>
-        <Grid
-          item
-          xs={6}
-          alignItems={'center'}
-          justify={'center'}
-          style={{ height: 400, borderStyle: 'solid' }}
-          container
-        >
-          <Typography variant={'body1'}>
-            {utils.formatUnits(BigNumber.from(uniV2LpBalance), 18)}{' '}
-            {uniV2LpSymbol}
-          </Typography>
-          <Box px={4} mb={2} p={5}>
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={approveOrTransferOrStake2}
-            >
-              {isWorking2 ? isWorking2 : STEPS2[activeStep2]}
-            </Button>
-          </Box>
-        </Grid>
-        <Grid
-          item
-          xs={6}
-          alignItems={'center'}
-          justify={'center'}
-          style={{ height: 400, borderStyle: 'solid' }}
-          container
-        ></Grid>
-        {nftPositions.length > 0 && (
-          <>
-            <Grid item xs={12}>
-              <Typography variant={'h4'}>
-                Congrats you have an nft position
-              </Typography>
-            </Grid>
-            <Grid
-              item
-              xs={6}
-              alignItems={'center'}
-              justify={'center'}
-              style={{ height: 400, borderStyle: 'solid' }}
-              container
-            >
-              <img src={json.image} alt={'nft position'} height={300} />
-            </Grid>
-            <Grid
-              item
-              xs={6}
-              alignItems={'center'}
-              justify={'center'}
-              style={{ height: 400, borderStyle: 'solid' }}
-              container
-            >
-              <Box px={4} mb={2} p={5}>
-                <V3StakeBtn position={activePosition} />
-              </Box>
-              {activeStep === 2 && (
-                <Box px={4} mb={2}>
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                    onClick={withdrawNft}
-                  >
-                    {isWorking ? isWorking : 'Withdraw'}
-                  </Button>
-                </Box>
-              )}
-
-              {!reward?.isZero() && (
-                <Box px={4} mb={2} p={5}>
-                  <Typography variant={'body1'}>
-                    {utils.formatUnits(BigNumber.from(reward), 18)} BRIGHT
-                  </Typography>
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                    onClick={claimReward}
-                  >
-                    {isWorking ? isWorking : 'Claim'}
-                  </Button>
-                </Box>
-              )}
-            </Grid>
-          </>
-        )}
-      </Grid>
+      </Container>
     </>
   );
 };
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: 'flex',
+    },
+    // necessary for content to be below app bar
+    toolbar: theme.mixins.toolbar,
+    content: {
+      [theme.breakpoints.up('sm')]: {
+        width: `calc(100% - ${DRAWER_WIDTH}px)`,
+        marginLeft: DRAWER_WIDTH,
+      },
+    },
+    farmContainer: {
+      borderStyle: 'solid',
+    },
+  })
+);
 
 export default FarmsContainer;
