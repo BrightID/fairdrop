@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Contract, BigNumber } from 'ethers';
 import ERC20_CONTRACT_ABI from '../abis/erc20.json';
-import { useWallet } from '../components/ProviderContext';
+import { useWallet } from '../contexts/wallet';
 import { sleep } from '../utils/promise';
 
 export function useTokenInfo(tokenAddress: string | null) {

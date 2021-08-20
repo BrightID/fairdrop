@@ -8,7 +8,7 @@ import {
   useState,
 } from 'react';
 
-import { useWallet } from '../components/ProviderContext';
+import { useWallet } from '../contexts/wallet';
 import { BRIGHT, UNISWAP_V2_LP_POOL } from '../utils/constants';
 import { useTokenInfo } from '../hooks/useTokenInfo';
 

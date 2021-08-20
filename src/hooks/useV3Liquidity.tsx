@@ -9,7 +9,7 @@ import {
 // import _flatten from 'lodash/flatten';
 // import _orderBy from 'lodash/orderBy';
 import { BigNumber } from 'ethers';
-import { useWallet } from '../components/ProviderContext';
+import { useWallet } from '../contexts/wallet';
 import { useContracts } from '../contexts/contracts';
 // import useTokenInfo from 'hooks/useTokenInfo';
 import { Incentive, LiquidityPosition } from '../utils/types';

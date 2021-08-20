@@ -3,7 +3,7 @@ import { Box, Grid, Hidden, Typography } from '@material-ui/core';
 import chainName from '../utils/chainName';
 import ChainSelectorWizard from './ChainSelectorWizard';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { EthersProviderContext } from './ProviderContext';
+import { EthersWalletContext } from '../contexts/wallet';
 import { intervalToDuration } from 'date-fns';
 import formatDuration from 'date-fns/formatDuration';
 import { RegistrationInfo } from '../utils/api';
@@ -27,9 +27,7 @@ const ChainSelector = ({
   registrationInfo,
 }: ChainSelectorProps) => {
   const classNames = useStyles();
-  const { wallet, onboardApi, walletAddress } = useContext(
-    EthersProviderContext
-  );
+  const { wallet, onboardApi, walletAddress } = useContext(EthersWalletContext);
   const [showWizard, setShowWizard] = useState(false);
   const [sliderValue, setSliderValue] = useState<0 | 1>(
     currentChainId === mainnetChainId ? 0 : 1

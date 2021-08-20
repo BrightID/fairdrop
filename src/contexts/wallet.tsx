@@ -22,10 +22,12 @@ const infuraRPCUrl = 'mainnet.infura.io/v3/';
 
 const ChainIds = {
   Mainnet: 1,
+  // Rinkeby: 4,
   IDChain: 74,
   XDai: 100,
   Hardhat: 31337,
 };
+
 type ChainId = typeof ChainIds[keyof typeof ChainIds];
 
 const rpcUrls = {
@@ -33,9 +35,10 @@ const rpcUrls = {
   [ChainIds.IDChain]: 'https://idchain.one/rpc/',
   [ChainIds.XDai]: 'https://rpc.xdaichain.com/',
   [ChainIds.Hardhat]: 'http://127.0.0.1:8545/',
+  // [ChainIds.Rinkeby]:
 };
 
-type ProviderContextType = {
+type WalletContextType = {
   provider?: ethers.providers.Web3Provider;
   wallet?: Wallet;
   signer?: ethers.Signer;
@@ -44,11 +47,11 @@ type ProviderContextType = {
   network?: number;
   walletAddress?: string;
 };
-export const EthersWalletContext = React.createContext<ProviderContextType>({});
+export const EthersWalletContext = React.createContext<WalletContextType>({});
 
-type ProviderContextProps = {};
+type WalletContextProps = {};
 
-const ProviderContext: React.FC<ProviderContextProps> = ({ children }) => {
+export const WalletContext: React.FC<WalletContextProps> = ({ children }) => {
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [supportsRpcUrl, setSupportsRpcUrl] = useState(false);
   const [onboard, setOnboard] = useState<API | undefined>(undefined);
@@ -182,7 +185,7 @@ const ProviderContext: React.FC<ProviderContextProps> = ({ children }) => {
   );
 };
 
-export default ProviderContext;
+export default WalletContext;
 
 export function useWallet() {
   const context = useContext(EthersWalletContext);

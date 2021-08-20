@@ -3,7 +3,7 @@ import { Box, Button, Grid, Typography } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { BigNumber, ethers, utils } from 'ethers';
-import { useWallet } from '../components/ProviderContext';
+import { useWallet } from '../contexts/wallet';
 import { useContracts } from '../contexts/contracts';
 import { useV3Liquidity } from '../hooks/useV3Liquidity';
 import { useV3Staking } from '../hooks/useV3Staking';

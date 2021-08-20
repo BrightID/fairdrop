@@ -9,7 +9,7 @@ import {
   Close as CloseIcon,
 } from '@material-ui/icons';
 import { SnackbarKey, useSnackbar } from 'notistack';
-import { useWallet } from './ProviderContext';
+import { useWallet } from '../contexts/wallet';
 
 const useStyles = makeStyles((theme) => ({
   paper: {

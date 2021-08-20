@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { utils, BigNumber } from 'ethers';
-import { useWallet } from '../components/ProviderContext';
+import { useWallet } from '../contexts/wallet';
 import { useContracts } from '../contexts/contracts';
 import { useNotifications } from '../contexts/notifications';
 import { useV3Liquidity } from './useV3Liquidity';

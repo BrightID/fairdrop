@@ -14,7 +14,7 @@ import {
   STAKING_REWARDS_CONTRACT,
   UNISWAP_V2_LP_POOL,
 } from '../utils/constants';
-import { useWallet } from '../components/ProviderContext';
+import { useWallet } from '../contexts/wallet';
 // import useTokenInfo from 'hooks/useTokenInfo';
 import NFT_POSITIONS_MANAGER_ABI from '../abis/nft_positions_manager.json';
 import UNISWAP_V3_STAKER_ABI from '../abis/uniswap_v3_staker.json';

@@ -5,7 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Popover from '@material-ui/core/Popover';
-import { useWallet } from './ProviderContext';
+import { useWallet } from '../contexts/wallet';
 import HashDisplay from './HashDisplay';
 import MenuIcon from '@material-ui/icons/Menu';
 import {

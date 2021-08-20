@@ -6,7 +6,7 @@ import {
   ERC20__factory,
   ERC20,
 } from '../typechain';
-import { EthersProviderContext } from './ProviderContext';
+import { EthersWalletContext } from '../contexts/wallet';
 import ActiveClaim from './ActiveClaim';
 import {
   ClaimInfo,
@@ -55,7 +55,7 @@ const ActiveClaimController = ({
   const [claimState, setClaimState] = useState<ClaimState>({
     txState: TxStates.Idle,
   });
-  const { wallet, network, onboardApi } = useContext(EthersProviderContext);
+  const { wallet, network, onboardApi } = useContext(EthersWalletContext);
   const [showWizard, setShowWizard] = useState(false);
 
   // initialize contract instance

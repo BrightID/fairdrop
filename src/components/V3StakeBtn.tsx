@@ -3,7 +3,7 @@ import { BigNumber, utils } from 'ethers';
 import { Button, Card, CardContent, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useContracts } from '../contexts/contracts';
-import { useWallet } from '../components/ProviderContext';
+import { useWallet } from '../contexts/wallet';
 import { useV3Staking } from '../hooks/useV3Staking';
 import { LiquidityPosition } from '../utils/types';
 

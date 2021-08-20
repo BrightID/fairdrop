@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Form } from 'react-final-form';
 import { TextField } from 'mui-rff';
-import { EthersProviderContext } from './ProviderContext';
+import { EthersWalletContext } from '../contexts/wallet';
 import { useEffect } from 'react';
 
 interface AddressFormData {
@@ -18,7 +18,7 @@ interface AddressFormProps {
 
 const AddressForm = ({ initialValues, setAddress }: AddressFormProps) => {
   const classNames = useStyles();
-  const { onboardApi, walletAddress } = useContext(EthersProviderContext);
+  const { onboardApi, walletAddress } = useContext(EthersWalletContext);
 
   const onSubmit = (values: AddressFormData) => {
     console.log(`Submitting ${values.address}`);

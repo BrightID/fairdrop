@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { setAddressPayoutChainId } from '../utils/api';
-import { EthersProviderContext } from './ProviderContext';
+import { EthersWalletContext } from '../contexts/wallet';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import chainName from '../utils/chainName';
 
@@ -39,7 +39,7 @@ const ChainSelectorWizard = ({
 }: ChainSelectorWizardProps) => {
   const classNames = useStyles();
   const [step, setStep] = useState<WizardStep>(WizardSteps.SigningMessage);
-  const { provider } = useContext(EthersProviderContext);
+  const { provider } = useContext(EthersWalletContext);
   const [stepInfo, setStepInfo] = useState({ message: '', description: '' });
   const [signature, setSignature] = useState('');
 

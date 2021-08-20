@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { CssBaseline } from '@material-ui/core';
 import { SnackbarProvider } from 'notistack';
-import ProviderContext from './components/ProviderContext';
+import { WalletContext } from './contexts/wallet';
 import { ContractsProvider } from './contexts/contracts';
 import { ERC20TokensProvider } from './contexts/erc20Tokens';
 import { NotificationsProvider } from './contexts/notifications';
@@ -17,7 +17,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <ProviderContext>
+      <WalletContext>
         <ContractsProvider>
           <ERC20TokensProvider>
             <Header />
@@ -48,7 +48,7 @@ const App = () => {
             </SnackbarProvider>
           </ERC20TokensProvider>
         </ContractsProvider>
-      </ProviderContext>
+      </WalletContext>
     </ThemeProvider>
   );
 };
