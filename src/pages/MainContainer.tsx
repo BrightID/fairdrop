@@ -1,9 +1,9 @@
-import Header from './Header';
+// import Header from '../components/Header';
 import { Container } from '@material-ui/core';
-import AddressEntryComponent from './AddressEntryComponent';
+import AddressEntryComponent from '../components/AddressEntryComponent';
 import AddressRegistrationController, {
   ContextInfo,
-} from './AddressRegistrationController';
+} from '../components/AddressRegistrationController';
 import React, { useContext, useEffect, useState } from 'react';
 import {
   getAddressInfo,
@@ -12,9 +12,9 @@ import {
 } from '../utils/api';
 import { BigNumber, ethers } from 'ethers';
 import { verifyContextId } from 'brightid_sdk';
-import ChainSelector from './ChainSelector';
-import AddressLinkInfo from './AddressLinkInfo';
-import SubNavBar from './SubNavBar';
+import ChainSelector from '../components/ChainSelector';
+import AddressLinkInfo from '../components/AddressLinkInfo';
+import SubNavBar from '../components/SubNavBar';
 
 const MainContainer = () => {
   const [address, setAddress] = useState('');
@@ -56,9 +56,9 @@ const MainContainer = () => {
   useEffect(() => {
     const runEffect = async () => {
       try {
-        const addressInfo = await getAddressInfo(address);
-        setPayoutChainId(addressInfo.chainId);
-        setNextAmount(addressInfo.nextAmount);
+        // const addressInfo = await getAddressInfo(address);
+        // setPayoutChainId(addressInfo.chainId);
+        // setNextAmount(addressInfo.nextAmount);
       } catch (e) {
         console.log(`getAddressInfo failed: ${e}`);
       }
@@ -134,7 +134,8 @@ const MainContainer = () => {
   console.log(`Next registration starts in: ${timeToNextRegistrationStart}`);
   console.log(`Next claim starts in: ${timeToNextClaimStart}`);
   let subNavBar;
-  if (address !== '' && timeToNextClaimStart > 0) {
+  // if (address !== '' && timeToNextClaimStart > 0) {
+  if (address !== '') {
     const chainSelector = (
       <ChainSelector
         address={address}
@@ -161,10 +162,6 @@ const MainContainer = () => {
 
   return (
     <>
-      <Header
-        address={address}
-        changeAddress={() => newAddressHandler(undefined)}
-      />
       <Container maxWidth="lg">
         {address === '' && (
           <AddressEntryComponent

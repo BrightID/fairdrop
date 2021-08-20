@@ -59,7 +59,7 @@ let theme = createMuiTheme({
     fontFamily: 'DM Sans',
   },
   shape: {
-    borderRadius: 50,
+    // borderRadius: 50,
   },
 });
 

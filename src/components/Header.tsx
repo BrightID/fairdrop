@@ -5,7 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Popover from '@material-ui/core/Popover';
-import { EthersProviderContext } from './ProviderContext';
+import { useWallet } from './ProviderContext';
 import HashDisplay from './HashDisplay';
 import MenuIcon from '@material-ui/icons/Menu';
 import {
@@ -57,20 +57,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface HeaderProps {
-  address?: string;
-  changeAddress: () => any;
-}
-
-const Header = ({ address, changeAddress }: HeaderProps) => {
+const Header = () => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [popupAnchorEl, setPopupAnchorEl] = React.useState<null | HTMLElement>(
     null
   );
-  const { wallet, network, provider, onboardApi, walletAddress } = useContext(
-    EthersProviderContext
-  );
+  const { wallet, network, provider, onboardApi, walletAddress } = useWallet();
   const theme = useTheme();
   const xsDisplay = useMediaQuery(theme.breakpoints.down('xs'));
   const [token, setToken] = useState<ERC20 | undefined>(undefined);
@@ -115,9 +108,9 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
   useEffect(() => {
     const runEffect = async () => {
       // get initial balance
-      if (token && address) {
-        console.log(`Getting balance for ${address}`);
-        const newBalance = await token.balanceOf(address);
+      if (token && walletAddress) {
+        console.log(`Getting balance for ${walletAddress}`);
+        const newBalance = await token.balanceOf(walletAddress);
         setBalance(newBalance);
       }
     };
@@ -125,32 +118,32 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
     return () => {
       setBalance(undefined);
     };
-  }, [token, address]);
+  }, [token, walletAddress]);
 
   // listen for transfer events
   useEffect(() => {
-    if (token && address && address !== '') {
+    if (token && walletAddress && walletAddress !== '') {
       const handler = (from: string, to: string, value: any) => {
         console.log(
           `Transfer from ${from} to ${to} value: ${value.toString()}`
         );
-        token.balanceOf(address).then((newBalance) => {
+        token.balanceOf(walletAddress).then((newBalance) => {
           setBalance(newBalance);
         });
       };
-      const inFilter = token.filters.Transfer(null, address, null);
-      const outFilter = token.filters.Transfer(address, null, null);
-      console.log(`Start listening for Transfer events for ${address}`);
+      const inFilter = token.filters.Transfer(null, walletAddress, null);
+      const outFilter = token.filters.Transfer(walletAddress, null, null);
+      console.log(`Start listening for Transfer events for ${walletAddress}`);
       token.on(inFilter, handler);
       token.on(outFilter, handler);
 
       return () => {
-        console.log(`Stop listening for Transfer events for ${address}`);
+        console.log(`Stop listening for Transfer events for ${walletAddress}`);
         token.off(inFilter, handler);
         token.off(outFilter, handler);
       };
     }
-  }, [token, address]);
+  }, [token, walletAddress]);
 
   const openMenu = Boolean(anchorEl);
   const openPopup = Boolean(popupAnchorEl);
@@ -196,7 +189,7 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
 
   const changeAddressFromMenu = () => {
     setAnchorEl(null);
-    changeAddress();
+    // changeAddress();
   };
 
   const watchAssetHandler = async () => {
@@ -242,9 +235,9 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
             onClose={handleCloseMenu}
           >
             <MenuItem onClick={switchWallet}>{buttonLabel}</MenuItem>
-            {address && (
+            {walletAddress && (
               <MenuItem onClick={changeAddressFromMenu}>
-                <HashDisplay hash={address} type={'address'} />
+                <HashDisplay hash={walletAddress} type={'address'} />
               </MenuItem>
             )}
             {balance && (
@@ -293,16 +286,6 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
                 </Button>
               </Popover>
             </>
-          )}
-          {address && (
-            <Button
-              className={classes.changeAddressBtn}
-              variant={'contained'}
-              color={'primary'}
-              onClick={changeAddress}
-            >
-              <HashDisplay hash={address} type={'address'} />
-            </Button>
           )}
           <Button
             className={classes.changeWalletBtn}
