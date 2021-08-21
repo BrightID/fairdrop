@@ -140,7 +140,7 @@ const FarmsContainer = () => {
               container
               // spacing={2}
             >
-              <FarmingBox />
+              <FarmingBox position={activePosition} />
             </Grid>
             <Grid
               item
@@ -152,7 +152,7 @@ const FarmsContainer = () => {
               container
               // spacing={2}
             >
-              <FarmingBox />
+              <FarmingBox position={activePosition} />
             </Grid>
             <Grid
               item
@@ -164,7 +164,7 @@ const FarmsContainer = () => {
               container
               // spacing={2}
             >
-              <FarmingBox />
+              <FarmingBox position={activePosition} />
             </Grid>
           </Grid>
           <Grid item xs={12} style={{ height: 400 }} container>
@@ -198,7 +198,7 @@ const FarmsContainer = () => {
               className={classes.farmContainer}
               container
             >
-              <FarmingBox />
+              <FarmingBox position={activePosition} />
             </Grid>
           </Grid>
           {nftPositions.length > 0 && (
