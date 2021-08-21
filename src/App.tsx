@@ -13,6 +13,7 @@ import FarmsContainer from './pages/FarmsContainer';
 import Header from './components/Header';
 import Notification from './components/Notification';
 import DrawerLeft from './components/DrawerLeft';
+import V3StakingModal from './modals/V3StakingModal';
 
 const App = () => {
   return (
@@ -36,22 +37,31 @@ const App = () => {
               )}
             >
               <NotificationsProvider>
-                <Router>
-                  <Switch>
-                    <Route path="/farms">
-                      <FarmsContainer />
-                    </Route>
-                    <Route path="/">
-                      <MainContainer />
-                    </Route>
-                  </Switch>
-                </Router>
+                <Routes />
               </NotificationsProvider>
             </SnackbarProvider>
           </ERC20TokensProvider>
         </ContractsProvider>
       </WalletContext>
     </ThemeProvider>
+  );
+};
+
+const Routes = () => {
+  return (
+    <Router>
+      <Switch>
+        <Route path="/stake/v3/:tokenId">
+          <V3StakingModal />
+        </Route>
+        <Route path="/farms">
+          <FarmsContainer />
+        </Route>
+        <Route path="/">
+          <MainContainer />
+        </Route>
+      </Switch>
+    </Router>
   );
 };
 

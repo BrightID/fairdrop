@@ -4,6 +4,7 @@ import {
   ReactNode,
   useCallback,
   useContext,
+  useMemo,
   useState,
 } from 'react';
 // import _flatten from 'lodash/flatten';
@@ -40,15 +41,20 @@ export function useV3Liquidity() {
     ? null
     : INCENTIVE_REFUNDEE_ADDRESS[network];
 
-  const currentIncentive = {
-    key: [
-      brightAddress,
-      poolAddress,
-      INCENTIVE_START_TIME,
-      INCENTIVE_END_TIME,
-      incentiveRefundeeAddress,
-    ],
-  };
+  const currentIncentive = useMemo(() => {
+    if (!brightAddress || !poolAddress || !incentiveRefundeeAddress)
+      return { key: null };
+
+    return {
+      key: [
+        brightAddress,
+        poolAddress,
+        INCENTIVE_START_TIME,
+        INCENTIVE_END_TIME,
+        incentiveRefundeeAddress,
+      ],
+    };
+  }, [brightAddress, poolAddress, incentiveRefundeeAddress]);
 
   // check for WETH / BRIGHT Pair
   const checkForBrightLp = useCallback(
@@ -149,6 +155,7 @@ export function useV3Liquidity() {
           walletAddress,
           uniswapV3StakerContract.address,
         ];
+
         const allPositions = await Promise.all(owners.map(loadPositions));
 
         const downloadURI = async (position: any): Promise<any | null> => {
@@ -176,18 +183,12 @@ export function useV3Liquidity() {
     nftManagerPositionsContract,
     walletAddress,
     checkForBrightLp,
-    // currentIncentive.key,
+    currentIncentive.key,
   ]);
 
   return {
     nftPositions,
     currentIncentive,
-    // incentives,
-    // currentIncentiveId,
-    // currentIncentive,
-    // setCurrentIncentiveId,
-    // currentIncentiveRewardTokenSymbol,
-    // currentIncentiveRewardTokenDecimals,
     loadingNftPositions,
     checkForNftPositions,
   };

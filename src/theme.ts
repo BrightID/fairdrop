@@ -46,7 +46,13 @@ let theme = createMuiTheme({
         borderRadius: 5,
       },
     },
+    MuiFab: {
+      primary: {
+        color: 'white',
+      },
+    },
   },
+
   palette: {
     primary: {
       // light: will be calculated from palette.primary.main,

@@ -14,12 +14,14 @@ import {
   Typography,
   Divider,
   Hidden,
+  Fab,
   IconButton,
   ListItem,
   ListItemIcon,
   ListItemText,
   Paper,
 } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import { Add as AddIcon, LocalAtm as LocalAtmIcon } from '@material-ui/icons';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { SnackbarKey, useSnackbar } from 'notistack';
@@ -41,10 +43,18 @@ interface FarmingBoxProps {
 
 const FarmingBox = ({ position }: FarmingBoxProps) => {
   const classes = useStyles();
+  const history = useHistory();
+
+  const navToStake = () => {
+    history.push('/stake/v3/1');
+  };
+  const navToUnstake = () => {
+    history.push('/unstake/v3/1');
+  };
 
   return (
-    <Paper elevation={3} className={classes.container}>
-      <Box className={classes.main} border={1}>
+    <Paper elevation={2} className={classes.container}>
+      <Box className={classes.main}>
         <Box
           display="flex"
           flexDirection="row"
@@ -106,21 +116,18 @@ const FarmingBox = ({ position }: FarmingBoxProps) => {
           borderColor={'rgba(0, 0, 0, 0.12)'}
           py={1}
         >
-          <IconButton
-            className={classes.iconButton}
-            aria-label="add"
-            size="small"
-          >
+          <Fab size="small" color="primary" aria-label="remove">
             <RemoveRoundedIcon />
-          </IconButton>
-          <IconButton
-            className={classes.iconButton}
-            aria-label="add"
+          </Fab>
+          <Fab
+            onClick={navToStake}
             size="small"
+            color="primary"
+            aria-label="add"
             style={{ marginLeft: '10px' }}
           >
             <AddRoundedIcon />
-          </IconButton>
+          </Fab>
         </Box>
         <Box
           display={'flex'}
@@ -153,9 +160,6 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       flexDirection: 'column',
       padding: '24px',
-    },
-    iconButton: {
-      border: 'solid 2px',
     },
   })
 );
