@@ -17,7 +17,7 @@ export type LiquidityPosition = {
   approvedAddress: string;
   owner: string;
   reward: BigNumber;
-  staked: boolean;
+  staked: number;
   tokenId: BigNumber;
   uri: string;
 };

@@ -35,7 +35,7 @@ interface V3StakingModalProps {
   position: LiquidityPosition | null;
 }
 
-const STEPS = ['Approve', 'Stake', 'Stake'];
+const STEPS = ['Unstake', 'Withdraw'];
 
 const STARTS_WITH = 'data:application/json;base64,';
 
@@ -61,18 +61,16 @@ const V3StakingModal: FC = () => {
 
   const { approvedAddress, owner, staked, tokenId } = positionSelected || {};
 
-  const { isWorking, approve, transfer, stake } = useV3Staking(
-    tokenId?.toNumber()
-  );
+  const { isWorking, unstake, withdraw } = useV3Staking(tokenId?.toNumber());
 
   const unstakedPositions = useMemo(
     () =>
       nftPositions.filter(
         (position) =>
-          position.owner.toLowerCase() === walletAddress?.toLowerCase() ||
-          position.staked === 0
+          position.owner.toLowerCase() ===
+          uniswapV3StakerContract?.address.toLowerCase()
       ),
-    [nftPositions, walletAddress]
+    [nftPositions, uniswapV3StakerContract]
   );
 
   const handleClose = () => {
@@ -87,61 +85,34 @@ const V3StakingModal: FC = () => {
   }, [network, walletAddress, checkForNftPositions]);
 
   useEffect(() => {
-    if (
-      !approvedAddress ||
-      !owner ||
-      !tokenId ||
-      !uniswapV3StakerContract ||
-      !walletAddress
-    )
-      return;
+    if (!owner || !tokenId || !uniswapV3StakerContract) return;
     const load = async () => {
-      console.log('checking status of nft approval');
-      const stakerContractIsApproved =
-        approvedAddress.toLowerCase() ===
-        uniswapV3StakerContract.address.toLowerCase();
+      const nftOwnedByStaker =
+        owner?.toLowerCase() === uniswapV3StakerContract.address.toLowerCase();
 
-      const nftOwnedByUser = owner === walletAddress;
-
-      const nftOwnedByStaker = owner === uniswapV3StakerContract.address;
-
-      if (nftOwnedByUser && stakerContractIsApproved) {
+      if (nftOwnedByStaker && !staked) {
         console.log('nft not transferred');
         setActiveStep(1);
-      } else if (!staked && nftOwnedByStaker) {
+      } else if (nftOwnedByStaker && staked) {
         console.log('nft staked');
-        setActiveStep(2);
-      } else if (nftOwnedByUser && !stakerContractIsApproved) {
-        console.log('nft not approved');
         setActiveStep(0);
       }
     };
 
     load();
-  }, [
-    approvedAddress,
-    owner,
-    tokenId,
-    uniswapV3StakerContract,
-    walletAddress,
-    staked,
-  ]);
+  }, [owner, tokenId, uniswapV3StakerContract, staked]);
 
   console.log('activeStep', activeStep);
 
   const approveOrTransferOrStake = () => {
     switch (activeStep) {
       case 0:
-        return approve(() => {
+        return unstake(() => {
           checkForNftPositions();
           setActiveStep(1);
         });
       case 1:
-        return transfer(() => {
-          history.push('/farms');
-        });
-      case 2:
-        return stake(() => {
+        return withdraw(() => {
           history.push('/farms');
         });
 
@@ -160,12 +131,12 @@ const V3StakingModal: FC = () => {
     <Dialog
       open={true}
       onClose={handleClose}
-      aria-labelledby="nft-staking-modal"
+      aria-labelledby="nft-unstaking-modal"
       maxWidth="sm"
       fullWidth={true}
     >
       <DialogTitle>
-        <Typography variant="h6">Stake Uniswap V3 position</Typography>
+        <Typography variant="h6">Unstake Uniswap V3 position</Typography>
         <IconButton
           aria-label="close"
           className={classes.closeButton}
@@ -308,9 +279,7 @@ const NoUserPositions = () => {
   const classes = useStyles();
   return (
     <Box className={classes.emptyContainer}>
-      <Typography>
-        You do not currently have any uniswap v3 positions available to stake.
-      </Typography>
+      <Typography>You do not currently have any staked positions.</Typography>
     </Box>
   );
 };

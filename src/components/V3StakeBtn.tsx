@@ -11,7 +11,7 @@ interface V3StakeBtnProps {
   position: LiquidityPosition | null;
 }
 
-const STEPS = ['approve', 'stake', 'unstake', 'withdraw'];
+const STEPS = ['APPROVE', 'stake', 'unstake', 'withdraw'];
 
 const V3StakeBtn = ({ position }: V3StakeBtnProps) => {
   const classes = useStyles();
@@ -77,7 +77,7 @@ const V3StakeBtn = ({ position }: V3StakeBtnProps) => {
 
   return (
     <Button
-      color="secondary"
+      color="primary"
       variant="contained"
       onClick={approveOrTransferOrStake}
     >

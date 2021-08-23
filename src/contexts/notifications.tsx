@@ -21,7 +21,7 @@ export const NotificationsProvider: FC<{ children: ReactNode }> = ({
     enqueueSnackbar(
       { type: 'tx', description, hash },
       {
-        persist: true,
+        persist: false,
       }
     );
   };
@@ -46,7 +46,7 @@ export const NotificationsProvider: FC<{ children: ReactNode }> = ({
         message,
       },
       {
-        persist: true,
+        persist: false,
       }
     );
   };

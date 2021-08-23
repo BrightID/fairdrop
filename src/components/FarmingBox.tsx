@@ -46,10 +46,10 @@ const FarmingBox = ({ position }: FarmingBoxProps) => {
   const history = useHistory();
 
   const navToStake = () => {
-    history.push('/stake/v3/1');
+    history.push('/stake/v3');
   };
   const navToUnstake = () => {
-    history.push('/unstake/v3/1');
+    history.push('/unstake/v3');
   };
 
   return (
@@ -116,7 +116,12 @@ const FarmingBox = ({ position }: FarmingBoxProps) => {
           borderColor={'rgba(0, 0, 0, 0.12)'}
           py={1}
         >
-          <Fab size="small" color="primary" aria-label="remove">
+          <Fab
+            onClick={navToUnstake}
+            size="small"
+            color="primary"
+            aria-label="remove"
+          >
             <RemoveRoundedIcon />
           </Fab>
           <Fab

@@ -112,9 +112,10 @@ export function useV3Liquidity() {
       const { token0, token1, liquidity, fee } =
         await nftManagerPositionsContract.positions(tokenId);
       // check for liquidity
-      // if (liquidity.isZero()) {
-      //   return null;
-      // }
+      if (liquidity.isZero()) {
+        return null;
+      }
+
       // check for Bright / ETH pair
       if (!checkForBrightLp(token0, token1)) {
         return null;

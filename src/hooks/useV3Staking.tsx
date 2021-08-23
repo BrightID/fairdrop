@@ -62,15 +62,15 @@ export function useV3Staking(tokenId: number | undefined) {
         return;
 
       try {
-        setIsWorking('Transfering...');
+        setIsWorking('Staking...');
 
         const data = abiEncoder.encode(
           ['address', 'address', 'uint', 'uint', 'address'],
           currentIncentive.key
         );
         await tx(
-          'Transfering...',
-          'Transfered!',
+          'Staking...',
+          'Staked!',
           () =>
             nftManagerPositionsContract.safeTransferFrom(
               walletAddress,
