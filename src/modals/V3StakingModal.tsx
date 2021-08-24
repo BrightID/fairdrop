@@ -165,7 +165,7 @@ const V3StakingModal: FC = () => {
       fullWidth={true}
     >
       <DialogTitle>
-        <Typography variant="h6">Stake Uniswap V3 position</Typography>
+        <Typography variant="h6">Stake BRIGHT-ETH 0.3% NFT</Typography>
         <IconButton
           aria-label="close"
           className={classes.closeButton}

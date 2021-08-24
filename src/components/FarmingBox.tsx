@@ -46,7 +46,7 @@ const FarmingBox = ({ position }: FarmingBoxProps) => {
   const history = useHistory();
 
   const navToStake = () => {
-    history.push('/stake/v3');
+    history.push('/stake/v2');
   };
   const navToUnstake = () => {
     history.push('/unstake/v3');

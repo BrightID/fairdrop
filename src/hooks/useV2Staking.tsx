@@ -1,12 +1,13 @@
 import { useCallback, useState } from 'react';
-import { utils, BigNumber } from 'ethers';
+import BigNumber from 'bignumber.js';
+import { utils, BigNumber as BNethers } from 'ethers';
 import { useWallet } from '../contexts/wallet';
 import { useContracts } from '../contexts/contracts';
 import { useNotifications } from '../contexts/notifications';
 import { useV3Liquidity } from './useV3Liquidity';
 import { useERC20Tokens } from '../contexts/erc20Tokens';
 
-const approveValue = BigNumber.from(
+const approveValue = new BigNumber(
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
 );
 
@@ -43,21 +44,35 @@ export function useV2Staking(tokenId?: number) {
   );
 
   const stake = useCallback(
-    async (next: () => void) => {
-      if (!(uniV2LpToken?.contract && stakingRewardsContract)) return;
+    async (value: BigNumber, next: () => void) => {
+      if (
+        !uniV2LpToken?.contract ||
+        !stakingRewardsContract ||
+        !walletAddress ||
+        !uniV2LpToken?.balance ||
+        value.isZero()
+      )
+        return;
 
       try {
+        console.log('trying here');
         setIsWorking('Staking...');
         const stakerAllowance = await uniV2LpToken.contract?.allowance(
           walletAddress,
           stakingRewardsContract.address
         );
 
-        console.log('is okay?', stakerAllowance.gte(uniV2LpToken.balance));
+        let ethersValue = BNethers.from(value.toString());
 
-        if (stakerAllowance.gte(uniV2LpToken?.balance)) {
+        console.log('ethersValue', ethersValue);
+
+        // check if allowance is greater and value to stake is less than balance
+        if (
+          stakerAllowance.gte(ethersValue) &&
+          ethersValue.lte(uniV2LpToken.balance)
+        ) {
           await tx('Staking...', 'Staked!', () =>
-            stakingRewardsContract.stake(uniV2LpToken?.balance)
+            stakingRewardsContract.stake(ethersValue)
           );
         }
 

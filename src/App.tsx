@@ -15,6 +15,7 @@ import Notification from './components/Notification';
 import DrawerLeft from './components/DrawerLeft';
 import V3StakingModal from './modals/V3StakingModal';
 import V3UnstakingModal from './modals/V3UnstakingModal';
+import V2StakingModal from './modals/V2StakingModal';
 
 const App = () => {
   return (
@@ -57,6 +58,9 @@ const Routes = () => {
         </Route>
         <Route path="/unstake/v3">
           <V3UnstakingModal />
+        </Route>
+        <Route path="/stake/v2">
+          <V2StakingModal />
         </Route>
         <Route path="/farms">
           <FarmsContainer />

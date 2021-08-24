@@ -14,10 +14,6 @@ import chainName from '../utils/chainName';
 import V3StakeBtn from '../components/V3StakeBtn';
 import { DRAWER_WIDTH } from '../utils/constants';
 
-const STARTS_WITH = 'data:application/json;base64,';
-
-const STEPS2 = ['approve', 'stake', 'unstake'];
-
 const FarmsContainer = () => {
   const classes = useStyles();
   const { wallet, onboardApi, walletAddress, signer, network } = useWallet();
@@ -26,8 +22,6 @@ const FarmsContainer = () => {
 
   const { checkForNftPositions, loadingNftPositions, nftPositions } =
     useV3Liquidity();
-
-  const displayPositions = nftPositions;
 
   const activePosition = nftPositions[0];
 
@@ -50,18 +44,7 @@ const FarmsContainer = () => {
 
   const tokenId = activePosition?.tokenId;
 
-  let tokenURI = activePosition?.uri;
-
   const reward = activePosition?.reward ?? 0;
-
-  // if (tokenURI && tokenURI.startsWith(STARTS_WITH)) {
-  //   tokenURI = tokenURI.slice(STARTS_WITH.length);
-  // }
-
-  let json = {} as any;
-  if (tokenURI) {
-    json = JSON.parse(atob(tokenURI.slice(STARTS_WITH.length)));
-  }
 
   const { stakingRewardsContract } = useContracts();
   const { isWorking, approve, claim, transfer, stake, unstake, withdraw } =
@@ -72,12 +55,6 @@ const FarmsContainer = () => {
   const uniV2LpSymbol = uniV2LpToken?.symbol;
 
   const uniV2LpBalance = uniV2LpToken?.balance;
-
-  const {
-    approve: approve2,
-    isWorking: isWorking2,
-    stake: stake2,
-  } = useV2Staking();
 
   const [activeStep, setActiveStep] = useState<number>(0);
   const [activeStep2, setActiveStep2] = useState<number>(0);
@@ -99,22 +76,6 @@ const FarmsContainer = () => {
 
     load();
   }, [uniV2LpToken, stakingRewardsContract, walletAddress]);
-
-  const approveOrTransferOrStake2 = () => {
-    switch (activeStep2) {
-      case 0:
-        return approve2(() => setActiveStep2(1));
-      case 1:
-        return stake2(() => setActiveStep2(2));
-      // case 2:
-      //   return stake(() => setActiveStep2(3));
-      // case 3:
-      //   return unstake(() => setActiveStep2(2));
-
-      default:
-        console.warn(`unknown step: ${activeStep}`);
-    }
-  };
 
   const withdrawNft = () => {
     return withdraw(() => setActiveStep(0));
@@ -180,15 +141,6 @@ const FarmsContainer = () => {
                 {utils.formatUnits(BigNumber.from(uniV2LpBalance), 18)}{' '}
                 {uniV2LpSymbol}
               </Typography>
-              <Box px={4} mb={2} p={5}>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  onClick={approveOrTransferOrStake2}
-                >
-                  {isWorking2 ? isWorking2 : STEPS2[activeStep2]}
-                </Button>
-              </Box>
             </Grid>
             <Grid
               item
@@ -215,9 +167,7 @@ const FarmsContainer = () => {
                 justify={'center'}
                 style={{ height: 400, borderStyle: 'solid' }}
                 container
-              >
-                <img src={json.image} alt={'nft position'} height={300} />
-              </Grid>
+              ></Grid>
               <Grid
                 item
                 xs={6}

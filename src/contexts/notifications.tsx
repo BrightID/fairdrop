@@ -33,7 +33,7 @@ export const NotificationsProvider: FC<{ children: ReactNode }> = ({
         message: msg?.error?.message || msg.responseText || msg.message || msg,
       },
       {
-        persist: true,
+        persist: false,
       }
     );
   };
