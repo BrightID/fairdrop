@@ -5,42 +5,29 @@ import clsx from 'clsx';
 import {
   Box,
   Button,
-  ButtonBase,
   Dialog,
   DialogActions,
   DialogTitle,
   DialogContent,
   Divider,
-  ImageList,
-  ImageListItem,
-  ImageListItemBar,
   InputAdornment,
   Link,
   OutlinedInput,
   IconButton,
   Typography,
-  Grid,
 } from '@material-ui/core';
 
 import CloseIcon from '@material-ui/icons/Close';
-import { useParams, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
 import LaunchIcon from '@material-ui/icons/Launch';
 import { useContracts } from '../contexts/contracts';
 import { useWallet } from '../contexts/wallet';
 import { useERC20Tokens } from '../contexts/erc20Tokens';
 import { useV2Staking } from '../hooks/useV2Staking';
 import { LiquidityPosition } from '../utils/types';
-import { isClassExpression } from 'typescript';
-
-interface V2StakingModalProps {
-  position: LiquidityPosition | null;
-}
 
 const STEPS = ['Approve', 'Stake', 'Stake'];
-
-const STARTS_WITH = 'data:application/json;base64,';
 
 const preventDefault = (event: React.SyntheticEvent) => event.preventDefault();
 
@@ -48,10 +35,9 @@ const V2StakingModal: FC = () => {
   const classes = useStyles();
   const history = useHistory();
   const inputRef = useRef<any>(null);
-  // const { nft } = useParams();
 
   const { stakingRewardsContract } = useContracts();
-  const { wallet, onboardApi, walletAddress, signer, network } = useWallet();
+  const { walletAddress } = useWallet();
 
   const [activeStep, setActiveStep] = useState<number>(0);
   const [inputValue, setInputValue] = useState<{
@@ -62,11 +48,7 @@ const V2StakingModal: FC = () => {
     bn: new BigNumber(0),
   });
 
-  console.log(inputValue);
-
   const { uniV2LpToken } = useERC20Tokens();
-
-  const uniV2LpSymbol = uniV2LpToken?.symbol;
 
   const uniV2LpBalance = uniV2LpToken?.balance;
 
@@ -78,7 +60,8 @@ const V2StakingModal: FC = () => {
       uniV2LpDisplay = Number(utils.formatUnits(uniV2LpBalance, 18));
 
       disableConfirm =
-        inputValue.bn.gt(uniV2LpBalance) || inputValue.bn.isZero();
+        inputValue.bn.isZero() ||
+        inputValue.bn.gt(new BigNumber(uniV2LpBalance.toString()));
     } catch {}
   }
 

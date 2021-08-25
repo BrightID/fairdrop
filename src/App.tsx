@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { CssBaseline } from '@material-ui/core';
+
 import { SnackbarProvider } from 'notistack';
 import { WalletContext } from './contexts/wallet';
 import { ContractsProvider } from './contexts/contracts';

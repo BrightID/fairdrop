@@ -89,7 +89,7 @@ const FarmsContainer = () => {
     <>
       {/* <DrawerLeft /> */}
       <Container className={classes.content}>
-        <Grid container xs={12} alignItems={'flex-start'}>
+        <Grid container alignItems={'flex-start'}>
           <Grid item xs={12} style={{ height: 400 }} container>
             <Grid
               item
@@ -101,7 +101,7 @@ const FarmsContainer = () => {
               container
               // spacing={2}
             >
-              <FarmingBox position={activePosition} />
+              <FarmingBox farm={'UNISWAP'} />
             </Grid>
             <Grid
               item
@@ -113,7 +113,7 @@ const FarmsContainer = () => {
               container
               // spacing={2}
             >
-              <FarmingBox position={activePosition} />
+              <FarmingBox farm={'SUBS'} />
             </Grid>
             <Grid
               item
@@ -125,89 +125,9 @@ const FarmsContainer = () => {
               container
               // spacing={2}
             >
-              <FarmingBox position={activePosition} />
+              <FarmingBox farm={'HONEY'} />
             </Grid>
           </Grid>
-          <Grid item xs={12} style={{ height: 400 }} container>
-            <Grid
-              item
-              xs={6}
-              alignItems={'center'}
-              justify={'center'}
-              style={{ height: 400, borderStyle: 'solid' }}
-              container
-            >
-              <Typography variant={'body1'}>
-                {utils.formatUnits(BigNumber.from(uniV2LpBalance), 18)}{' '}
-                {uniV2LpSymbol}
-              </Typography>
-            </Grid>
-            <Grid
-              item
-              xs={6}
-              alignItems={'center'}
-              justify={'center'}
-              className={classes.farmContainer}
-              container
-            >
-              <FarmingBox position={activePosition} />
-            </Grid>
-          </Grid>
-          {nftPositions.length > 0 && (
-            <>
-              <Grid item xs={12}>
-                <Typography variant={'h4'}>
-                  Congrats you have an nft position
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={6}
-                alignItems={'center'}
-                justify={'center'}
-                style={{ height: 400, borderStyle: 'solid' }}
-                container
-              ></Grid>
-              <Grid
-                item
-                xs={6}
-                alignItems={'center'}
-                justify={'center'}
-                style={{ height: 400, borderStyle: 'solid' }}
-                container
-              >
-                <Box px={4} mb={2} p={5}>
-                  <V3StakeBtn position={activePosition} />
-                </Box>
-                {activeStep === 2 && (
-                  <Box px={4} mb={2}>
-                    <Button
-                      color="secondary"
-                      variant="contained"
-                      onClick={withdrawNft}
-                    >
-                      {isWorking ? isWorking : 'Withdraw'}
-                    </Button>
-                  </Box>
-                )}
-
-                {!reward?.isZero() && (
-                  <Box px={4} mb={2} p={5}>
-                    <Typography variant={'body1'}>
-                      {utils.formatUnits(BigNumber.from(reward), 18)} BRIGHT
-                    </Typography>
-                    <Button
-                      color="secondary"
-                      variant="contained"
-                      onClick={claimReward}
-                    >
-                      {isWorking ? isWorking : 'Claim'}
-                    </Button>
-                  </Box>
-                )}
-              </Grid>
-            </>
-          )}
         </Grid>
       </Container>
     </>
@@ -228,7 +148,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     farmContainer: {
-      borderStyle: 'solid',
+      // borderStyle: 'solid',
     },
   })
 );

@@ -5,28 +5,21 @@ import clsx from 'clsx';
 import {
   Box,
   Button,
-  ButtonBase,
   Dialog,
-  DialogActions,
   DialogTitle,
   DialogContent,
   Divider,
-  ImageList,
-  ImageListItem,
-  ImageListItemBar,
   InputAdornment,
   Link,
   OutlinedInput,
   IconButton,
   Typography,
-  Grid,
 } from '@material-ui/core';
 
 import CloseIcon from '@material-ui/icons/Close';
-import { useParams, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
-import LaunchIcon from '@material-ui/icons/Launch';
+
 import { useContracts } from '../contexts/contracts';
 import { useWallet } from '../contexts/wallet';
 import { useERC20Tokens } from '../contexts/erc20Tokens';
@@ -45,13 +38,11 @@ const V2UnstakingModal: FC = () => {
   // const { nft } = useParams();
 
   const { stakingRewardsContract } = useContracts();
-  const { wallet, onboardApi, walletAddress, signer, network } = useWallet();
+  const { walletAddress } = useWallet();
 
   const [stakedBalance, setStakedBalance] = useState<BigNumberEthers>(
     BigNumberEthers.from(0)
   );
-
-  console.log('stakedBalance3', stakedBalance.toString());
 
   const [inputValue, setInputValue] = useState<{
     display: number;
@@ -61,8 +52,13 @@ const V2UnstakingModal: FC = () => {
     bn: new BigNumber(0),
   });
 
-  console.log('inputValue', inputValue);
-  let disableConfirm = false;
+  let disableWithdraw = false;
+
+  try {
+    disableWithdraw =
+      inputValue.bn.isZero() ||
+      inputValue.bn.gt(new BigNumber(stakedBalance.toString()));
+  } catch {}
 
   const { isWorking, exit, withdraw } = useV2Staking();
 
@@ -80,10 +76,13 @@ const V2UnstakingModal: FC = () => {
   };
 
   const withdrawStake = useCallback(() => {
-    return withdraw(inputValue.bn, () => {
-      history.push('/farms');
-    });
-  }, [inputValue.bn, history, withdraw]);
+    try {
+      if (!disableWithdraw)
+        return withdraw(inputValue.bn, () => {
+          history.push('/farms');
+        });
+    } catch {}
+  }, [inputValue.bn, history, withdraw, disableWithdraw]);
 
   const exitStake = useCallback(() => {
     return exit(() => {
@@ -179,7 +178,7 @@ const V2UnstakingModal: FC = () => {
           exitStake={exitStake}
           withdrawStake={withdrawStake}
           handleClose={handleClose}
-          disableConfirm={disableConfirm}
+          disableWithdraw={disableWithdraw}
         />
       </DialogContent>
     </Dialog>
@@ -190,14 +189,14 @@ interface FormButtonsProps {
   exitStake: () => void;
   withdrawStake: () => void;
   handleClose: () => void;
-  disableConfirm: boolean;
+  disableWithdraw: boolean;
 }
 
 const FormButtons = ({
   exitStake,
   withdrawStake,
   handleClose,
-  disableConfirm,
+  disableWithdraw,
 }: FormButtonsProps) => {
   const classes = useStyles();
 
@@ -209,9 +208,9 @@ const FormButtons = ({
           color="primary"
           size="large"
           onClick={withdrawStake}
-          disabled={disableConfirm}
+          disabled={disableWithdraw}
         >
-          Withdraw
+          Withdraw without claiming
         </Button>
         <Button
           variant="contained"

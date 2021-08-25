@@ -28,3 +28,7 @@ export type ERC20Token = {
   decimals: number | null;
   symbol: string | null;
 };
+
+export const FARMS = ['UNISWAP', 'SUBS', 'HONEY'] as const;
+
+export type FARM = typeof FARMS[number];

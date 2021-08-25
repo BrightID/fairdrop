@@ -2,106 +2,54 @@ import { FC, ReactElement, useMemo } from 'react';
 import clsx from 'clsx';
 
 import {
-  Avatar,
-  AppBar,
   Box,
   Button,
-  Chip,
-  Drawer,
-  Toolbar,
-  List,
   CssBaseline,
   Typography,
   Divider,
   Hidden,
-  Fab,
-  IconButton,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   Paper,
 } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
-import { Add as AddIcon, LocalAtm as LocalAtmIcon } from '@material-ui/icons';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { SnackbarKey, useSnackbar } from 'notistack';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import { useWallet } from '../contexts/wallet';
-import V3StakeBtn from '../components/V3StakeBtn';
-import AddRoundedIcon from '@material-ui/icons/AddRounded';
-import RemoveRoundedIcon from '@material-ui/icons/RemoveRounded';
-import { DRAWER_WIDTH } from '../utils/constants';
-import { LiquidityPosition } from '../utils/types';
+import { FARM } from '../utils/types';
+import { FarmingTitleBox } from './FarmingTitleBox';
+import { FarmingStakedBox } from './FarmingStakedBox';
+import { FarmingHarvestBox } from './FarmingHarvestBox';
 
 interface FarmingBoxProps {
-  position: LiquidityPosition | null;
+  farm: FARM;
 }
 
-const FarmingBox = ({ position }: FarmingBoxProps) => {
+const FarmingBox = ({ farm }: FarmingBoxProps) => {
   const classes = useStyles();
-  const history = useHistory();
 
-  const navToStake = () => {
-    history.push('/stake/v2');
-  };
-  const navToUnstake = () => {
-    history.push('/unstake/v2');
-  };
+  const { walletAddress } = useWallet();
+
+  console.log('walletAddress', walletAddress);
 
   return (
     <Paper elevation={2} className={classes.container}>
       <Box className={classes.main}>
-        <Box
-          display="flex"
-          flexDirection="row"
-          justifyContent="space-between"
-          border={1}
-        >
-          <Box>
-            <Avatar>H</Avatar>
+        <Box className={classes.titleBox}>
+          <FarmingTitleBox farm={farm} />
+        </Box>
+        <Box className={classes.middleRowContainer}>
+          <Box className={classes.middleRow}>
+            <FarmingStakedBox farm={farm} />
           </Box>
-          <Box display="flex" flexDirection="column">
-            <Typography variant={'h5'}>BRIGHT / ETH</Typography>
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              mt={0.5}
-            >
-              <Chip
-                label="Uniswap V3"
-                color="primary"
-                size="small"
-                style={{ color: '#fff' }}
-              />
+          <Box className={classes.middleRow}>
+            <FarmingHarvestBox farm={farm} />
+          </Box>
+
+          <Box className={classes.middleRow}>
+            <Box>
+              <Typography className={classes.subheader}>
+                LP in wallet:
+              </Typography>
+              <Typography>0</Typography>
             </Box>
-          </Box>
-        </Box>
-        <Box border={1} mt={1}>
-          <Typography>APR: {'50%'}</Typography>
-        </Box>
-        <Box border={1} mt={1}>
-          <Typography>Staked LP Tokens</Typography>
-          <Typography>0</Typography>
-        </Box>
-        <Box flexGrow={1} />
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          border={1}
-          mt={1}
-        >
-          <Box display="inline">
-            <Typography>BRIGHT Earned:</Typography>
-            <Typography>0</Typography>
-          </Box>
-          <Box display="inline">
-            <Button>Harvest</Button>
+            <Box></Box>
           </Box>
         </Box>
       </Box>
@@ -115,25 +63,7 @@ const FarmingBox = ({ position }: FarmingBoxProps) => {
           borderRight={1}
           borderColor={'rgba(0, 0, 0, 0.12)'}
           py={1}
-        >
-          <Fab
-            onClick={navToUnstake}
-            size="small"
-            color="primary"
-            aria-label="remove"
-          >
-            <RemoveRoundedIcon />
-          </Fab>
-          <Fab
-            onClick={navToStake}
-            size="small"
-            color="primary"
-            aria-label="add"
-            style={{ marginLeft: '10px' }}
-          >
-            <AddRoundedIcon />
-          </Fab>
-        </Box>
+        ></Box>
         <Box
           display={'flex'}
           alignItems="center"
@@ -159,12 +89,36 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: '24px',
       height: '90%',
       minHeight: 300,
+      overflow: 'hidden',
     },
     main: {
       display: 'flex',
       flexGrow: 1,
       flexDirection: 'column',
       padding: '24px',
+      paddingBottom: '0px',
+    },
+    titleBox: {
+      display: 'flex',
+      flexDirecion: 'column',
+      justifyContent: 'space-between',
+    },
+    middleRowContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-evenly',
+      flexGrow: 1,
+    },
+    middleRow: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      // marginTop: 20,
+    },
+    subheader: {
+      fontWeight: 'bold',
+      fontSize: 14,
     },
   })
 );

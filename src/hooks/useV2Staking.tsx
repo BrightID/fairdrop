@@ -129,29 +129,21 @@ export function useV2Staking(tokenId?: number) {
     [stakingRewardsContract, tx, walletAddress]
   );
 
-  const claim = useCallback(
+  const harvest = useCallback(
     async (next: () => void) => {
-      if (!stakingRewardsContract && !walletAddress) return;
-      // tx()
-      // try {
-      //   setIsWorking('Claiming...');
-      //   const reward = await stakingRewardsContract.rewards(
-      //     currentIncentive.key[0],
-      //     address
-      //   );
-      //   await tx('Claiming...', 'Claimed!', () =>
-      //     stakingRewardsContract.claimReward(
-      //       currentIncentive.key[0],
-      //       address,
-      //       reward
-      //     )
-      //   );
-      //   next();
-      // } catch (e) {
-      //   console.warn(e);
-      // } finally {
-      //   setIsWorking(null);
-      // }
+      if (!stakingRewardsContract || !walletAddress) return;
+      try {
+        setIsWorking('Harvesting...');
+
+        await tx('Harvesting...', 'Harvested!', () =>
+          stakingRewardsContract.getReward()
+        );
+        next();
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setIsWorking(null);
+      }
     },
     [walletAddress, stakingRewardsContract, tx]
   );
@@ -161,7 +153,7 @@ export function useV2Staking(tokenId?: number) {
     approve,
     stake,
     exit,
-    claim,
+    harvest,
     withdraw,
   };
 }

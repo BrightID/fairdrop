@@ -1,6 +1,5 @@
 import { FC, ReactElement, useMemo } from 'react';
 import clsx from 'clsx';
-
 import {
   AppBar,
   Drawer,
@@ -17,16 +16,12 @@ import {
   Paper,
 } from '@material-ui/core';
 import { Home as HomeIcon, LocalAtm as LocalAtmIcon } from '@material-ui/icons';
+import { createBrowserHistory } from 'history';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { SnackbarKey, useSnackbar } from 'notistack';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import { useWallet } from '../contexts/wallet';
 import { DRAWER_WIDTH } from '../utils/constants';
 
+const MENU_ITEMS = ['Home', 'Farms'];
 const IconMap: { [item: string]: any } = {
   Home: <HomeIcon />,
   Farms: <LocalAtmIcon />,
@@ -34,6 +29,22 @@ const IconMap: { [item: string]: any } = {
 
 const DrawerLeft = () => {
   const classes = useStyles();
+
+  const handleNav = (item: string) => () => {
+    switch (item) {
+      case MENU_ITEMS[0]: {
+        window.location.href = '/';
+        return;
+      }
+      case MENU_ITEMS[1]: {
+        window.location.href = '/farms';
+        return;
+      }
+      default: {
+        return;
+      }
+    }
+  };
 
   return (
     <nav className={classes.drawer} aria-label="mailbox folders">
@@ -48,8 +59,8 @@ const DrawerLeft = () => {
           <div className={classes.toolbar} />
           <Divider />
           <List>
-            {['Home', 'Farms'].map((text, index) => (
-              <ListItem button key={text}>
+            {MENU_ITEMS.map((text) => (
+              <ListItem button key={text} onClick={handleNav(text)}>
                 <ListItemIcon>{IconMap[text]}</ListItemIcon>
                 <ListItemText primary={text} />
               </ListItem>
