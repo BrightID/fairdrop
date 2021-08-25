@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import BigNumber from 'bignumber.js';
-import { utils } from 'ethers';
+import { utils, BigNumber as BigNumberEthers } from 'ethers';
 import clsx from 'clsx';
 import {
   Box,
@@ -34,17 +34,11 @@ import { useV2Staking } from '../hooks/useV2Staking';
 import { LiquidityPosition } from '../utils/types';
 import { isClassExpression } from 'typescript';
 
-interface V2StakingModalProps {
-  position: LiquidityPosition | null;
-}
-
 const STEPS = ['Approve', 'Stake', 'Stake'];
-
-const STARTS_WITH = 'data:application/json;base64,';
 
 const preventDefault = (event: React.SyntheticEvent) => event.preventDefault();
 
-const V2StakingModal: FC = () => {
+const V2UnstakingModal: FC = () => {
   const classes = useStyles();
   const history = useHistory();
   const inputRef = useRef<any>(null);
@@ -53,7 +47,12 @@ const V2StakingModal: FC = () => {
   const { stakingRewardsContract } = useContracts();
   const { wallet, onboardApi, walletAddress, signer, network } = useWallet();
 
-  const [activeStep, setActiveStep] = useState<number>(0);
+  const [stakedBalance, setStakedBalance] = useState<BigNumberEthers>(
+    BigNumberEthers.from(0)
+  );
+
+  console.log('stakedBalance3', stakedBalance.toString());
+
   const [inputValue, setInputValue] = useState<{
     display: number;
     bn: BigNumber;
@@ -62,86 +61,61 @@ const V2StakingModal: FC = () => {
     bn: new BigNumber(0),
   });
 
-  console.log(inputValue);
-
-  const { uniV2LpToken } = useERC20Tokens();
-
-  const uniV2LpSymbol = uniV2LpToken?.symbol;
-
-  const uniV2LpBalance = uniV2LpToken?.balance;
-
-  let uniV2LpDisplay = 0;
+  console.log('inputValue', inputValue);
   let disableConfirm = false;
 
-  if (uniV2LpBalance) {
-    try {
-      uniV2LpDisplay = Number(utils.formatUnits(uniV2LpBalance, 18));
+  const { isWorking, exit, withdraw } = useV2Staking();
 
-      disableConfirm =
-        inputValue.bn.gt(uniV2LpBalance) || inputValue.bn.isZero();
-    } catch {}
-  }
-
-  const { isWorking, approve, stake } = useV2Staking();
+  useEffect(() => {
+    if (!walletAddress || !stakingRewardsContract) return;
+    const load = async () => {
+      const balance = await stakingRewardsContract.balanceOf(walletAddress);
+      setStakedBalance(balance);
+    };
+    load();
+  }, [walletAddress, stakingRewardsContract]);
 
   const handleClose = () => {
     history.push('/farms');
   };
 
-  useEffect(() => {
-    if (!uniV2LpToken || !stakingRewardsContract || !walletAddress) return;
-    const load = async () => {
-      const stakerAllowance = await uniV2LpToken.contract?.allowance(
-        walletAddress,
-        stakingRewardsContract?.address
-      );
-      const stakerContractIsApproved = !stakerAllowance?.isZero();
+  const withdrawStake = useCallback(() => {
+    return withdraw(inputValue.bn, () => {
+      history.push('/farms');
+    });
+  }, [inputValue.bn, history, withdraw]);
 
-      if (stakerContractIsApproved) {
-        console.log('lp not staked');
-        setActiveStep(1);
-      }
-    };
-
-    load();
-  }, [uniV2LpToken, stakingRewardsContract, walletAddress]);
-
-  const approveOrTransferOrStake = useCallback(() => {
-    switch (activeStep) {
-      case 0:
-        return approve(() => {
-          setActiveStep(1);
-        });
-      case 1:
-        return stake(inputValue.bn, () => {
-          history.push('/farms');
-        });
-
-      default:
-        console.warn(`unknown step: ${activeStep}`);
-    }
-  }, [inputValue.bn, activeStep, approve, history, stake]);
+  const exitStake = useCallback(() => {
+    return exit(() => {
+      history.push('/farms');
+    });
+  }, [history, exit]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('input is changing...');
     if (Number(event.target.value) < 0) return;
     try {
       setInputValue({
         display: Number(event.target.value),
         bn: new BigNumber(`${event.target.value}e+18`),
       });
-    } catch {}
+    } catch {
+      console.log('there is an error...');
+    }
   };
 
   const handleMax = useCallback(() => {
-    if (!inputRef.current || !uniV2LpBalance) return;
+    if (!inputRef.current || !stakedBalance) return;
 
-    inputRef.current.value = uniV2LpDisplay;
+    try {
+      inputRef.current.value = Number(utils.formatUnits(stakedBalance, 18));
 
-    setInputValue({
-      display: uniV2LpDisplay,
-      bn: uniV2LpBalance,
-    });
-  }, [uniV2LpBalance, uniV2LpDisplay]);
+      setInputValue({
+        display: Number(utils.formatUnits(stakedBalance, 18)),
+        bn: new BigNumber(stakedBalance.toString()),
+      });
+    } catch {}
+  }, [stakedBalance]);
 
   return (
     <Dialog
@@ -152,7 +126,7 @@ const V2StakingModal: FC = () => {
       fullWidth={true}
     >
       <DialogTitle>
-        <Typography variant="h6">Stake ETH-BRIGHT LP</Typography>
+        <Typography variant="h6">Withdraw ETH-BRIGHT LP</Typography>
         <IconButton
           aria-label="close"
           className={classes.closeButton}
@@ -166,7 +140,7 @@ const V2StakingModal: FC = () => {
 
       <DialogContent className={classes.container}>
         <Box className={classes.balanceBox}>
-          {utils.formatUnits(uniV2LpBalance, 18)} ETH-BRIGHT Available
+          {utils.formatUnits(stakedBalance, 18)} ETH-BRIGHT Available
         </Box>
         <Box className={classes.inputField}>
           <OutlinedInput
@@ -176,7 +150,6 @@ const V2StakingModal: FC = () => {
             type={'number'}
             inputRef={inputRef}
             inputProps={{
-              max: uniV2LpDisplay,
               min: 0,
               step: 0.01,
             }}
@@ -203,77 +176,55 @@ const V2StakingModal: FC = () => {
           />
         </Box>
         <FormButtons
-          approveOrTransferOrStake={approveOrTransferOrStake}
+          exitStake={exitStake}
+          withdrawStake={withdrawStake}
           handleClose={handleClose}
           disableConfirm={disableConfirm}
-          activeStep={activeStep}
         />
       </DialogContent>
-      <DialogActions className={classes.bottom}>
-        <Button href="#" color="primary" endIcon={<LaunchIcon />}>
-          Get BRIGHT / ETH 0.3% Position
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };
 
 interface FormButtonsProps {
-  approveOrTransferOrStake: () => void;
+  exitStake: () => void;
+  withdrawStake: () => void;
   handleClose: () => void;
   disableConfirm: boolean;
-  activeStep: number;
 }
 
 const FormButtons = ({
-  approveOrTransferOrStake,
+  exitStake,
+  withdrawStake,
   handleClose,
   disableConfirm,
-  activeStep,
 }: FormButtonsProps) => {
   const classes = useStyles();
 
   return (
     <Box className={classes.btnContainer} mt={3}>
-      {activeStep === 0 && (
-        <>
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            onClick={approveOrTransferOrStake}
-            style={{
-              width: '50%',
-            }}
-          >
-            Approve
-          </Button>
-        </>
-      )}
-      {activeStep === 1 && (
-        <>
-          <Button
-            variant="outlined"
-            color="primary"
-            size="large"
-            onClick={handleClose}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            disabled={disableConfirm}
-            onClick={approveOrTransferOrStake}
-            style={{
-              marginLeft: 50,
-            }}
-          >
-            Confirm
-          </Button>
-        </>
-      )}
+      <>
+        <Button
+          variant="outlined"
+          color="primary"
+          size="large"
+          onClick={withdrawStake}
+          disabled={disableConfirm}
+        >
+          Withdraw
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={exitStake}
+          style={{
+            marginLeft: 50,
+          }}
+        >
+          Exit and Claim all rewards
+        </Button>
+      </>
     </Box>
   );
 };
@@ -319,4 +270,4 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default V2StakingModal;
+export default V2UnstakingModal;

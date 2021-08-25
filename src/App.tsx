@@ -16,6 +16,7 @@ import DrawerLeft from './components/DrawerLeft';
 import V3StakingModal from './modals/V3StakingModal';
 import V3UnstakingModal from './modals/V3UnstakingModal';
 import V2StakingModal from './modals/V2StakingModal';
+import V2UnstakingModal from './modals/V2UnstakingModal';
 
 const App = () => {
   return (
@@ -61,6 +62,9 @@ const Routes = () => {
         </Route>
         <Route path="/stake/v2">
           <V2StakingModal />
+        </Route>
+        <Route path="/unstake/v2">
+          <V2UnstakingModal />
         </Route>
         <Route path="/farms">
           <FarmsContainer />

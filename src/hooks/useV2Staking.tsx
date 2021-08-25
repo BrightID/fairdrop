@@ -1,10 +1,9 @@
 import { useCallback, useState } from 'react';
 import BigNumber from 'bignumber.js';
-import { utils, BigNumber as BNethers } from 'ethers';
+import { utils, BigNumber as BigNumberEthers } from 'ethers';
 import { useWallet } from '../contexts/wallet';
 import { useContracts } from '../contexts/contracts';
 import { useNotifications } from '../contexts/notifications';
-import { useV3Liquidity } from './useV3Liquidity';
 import { useERC20Tokens } from '../contexts/erc20Tokens';
 
 const approveValue = new BigNumber(
@@ -14,10 +13,8 @@ const approveValue = new BigNumber(
 export function useV2Staking(tokenId?: number) {
   const { tx } = useNotifications();
   const { walletAddress } = useWallet();
-  const address = walletAddress;
   const { stakingRewardsContract } = useContracts();
   const { uniV2LpToken } = useERC20Tokens();
-  const { currentIncentive } = useV3Liquidity();
 
   const [isWorking, setIsWorking] = useState<string | null>(null);
 
@@ -62,7 +59,7 @@ export function useV2Staking(tokenId?: number) {
           stakingRewardsContract.address
         );
 
-        let ethersValue = BNethers.from(value.toString());
+        let ethersValue = BigNumberEthers.from(value.toString());
 
         console.log('ethersValue', ethersValue);
 
@@ -86,14 +83,41 @@ export function useV2Staking(tokenId?: number) {
     [uniV2LpToken, stakingRewardsContract, tx, walletAddress]
   );
 
-  const unstake = useCallback(
+  const withdraw = useCallback(
+    async (value: BigNumber, next: () => void) => {
+      if (!stakingRewardsContract || !walletAddress || value.isZero()) return;
+
+      let ethersValue = BigNumberEthers.from(value.toString());
+
+      const stakedBalance = await stakingRewardsContract.balanceOf(
+        walletAddress
+      );
+
+      try {
+        setIsWorking('Unstaking...');
+        if (ethersValue.lte(stakedBalance)) {
+          await tx('Unstaking...', 'Unstaked!', () =>
+            stakingRewardsContract.withdraw(ethersValue)
+          );
+        }
+        next();
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setIsWorking(null);
+      }
+    },
+    [stakingRewardsContract, tx, walletAddress]
+  );
+
+  const exit = useCallback(
     async (next: () => void) => {
-      if (!(stakingRewardsContract && currentIncentive.key)) return;
+      if (!stakingRewardsContract || !walletAddress) return;
 
       try {
         setIsWorking('Unstaking...');
         await tx('Unstaking...', 'Unstaked!', () =>
-          stakingRewardsContract.unstakeToken(currentIncentive.key, tokenId)
+          stakingRewardsContract.exit()
         );
         next();
       } catch (e) {
@@ -102,60 +126,41 @@ export function useV2Staking(tokenId?: number) {
         setIsWorking(null);
       }
     },
-    [tokenId, currentIncentive.key, stakingRewardsContract, tx]
+    [stakingRewardsContract, tx, walletAddress]
   );
 
   const claim = useCallback(
     async (next: () => void) => {
-      if (!(stakingRewardsContract && currentIncentive.key && address)) return;
-
-      try {
-        setIsWorking('Claiming...');
-        const reward = await stakingRewardsContract.rewards(
-          currentIncentive.key[0],
-          address
-        );
-        await tx('Claiming...', 'Claimed!', () =>
-          stakingRewardsContract.claimReward(
-            currentIncentive.key[0],
-            address,
-            reward
-          )
-        );
-        next();
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        setIsWorking(null);
-      }
+      if (!stakingRewardsContract && !walletAddress) return;
+      // tx()
+      // try {
+      //   setIsWorking('Claiming...');
+      //   const reward = await stakingRewardsContract.rewards(
+      //     currentIncentive.key[0],
+      //     address
+      //   );
+      //   await tx('Claiming...', 'Claimed!', () =>
+      //     stakingRewardsContract.claimReward(
+      //       currentIncentive.key[0],
+      //       address,
+      //       reward
+      //     )
+      //   );
+      //   next();
+      // } catch (e) {
+      //   console.warn(e);
+      // } finally {
+      //   setIsWorking(null);
+      // }
     },
-    [currentIncentive.key, address, stakingRewardsContract, tx]
-  );
-
-  const withdraw = useCallback(
-    async (next: () => void) => {
-      if (!(stakingRewardsContract && address)) return;
-
-      try {
-        setIsWorking('Withdrawing...');
-        await tx('Withdrawing...', 'Withdrew!', () =>
-          stakingRewardsContract.withdrawToken(tokenId, address, [])
-        );
-        next();
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        setIsWorking(null);
-      }
-    },
-    [tokenId, address, stakingRewardsContract, tx]
+    [walletAddress, stakingRewardsContract, tx]
   );
 
   return {
     isWorking,
     approve,
     stake,
-    unstake,
+    exit,
     claim,
     withdraw,
   };
