@@ -10,6 +10,7 @@ import { useWallet } from '../contexts/wallet';
 import { useContracts } from '../contexts/contracts';
 import { LiquidityPosition } from '../utils/types';
 import { FARM } from '../utils/types';
+import { sleep } from '../utils/promise';
 
 export const SubsStakedBox: FC = () => {
   const classes = useStyles();
@@ -21,13 +22,36 @@ export const SubsStakedBox: FC = () => {
 
   useEffect(() => {
     if (!walletAddress || !stakingRewardsContract) return;
+
+    const onBalanceChange = async (address: string) => {
+      if (address.toLowerCase() === walletAddress.toLowerCase()) {
+        await sleep(500);
+        const balance = await stakingRewardsContract.balanceOf(walletAddress);
+        setStakedBalance(utils.formatUnits(balance, 18));
+      }
+    };
+
     const load = async () => {
       try {
         const balance = await stakingRewardsContract.balanceOf(walletAddress);
         setStakedBalance(utils.formatUnits(balance, 18));
       } catch {}
     };
+
+    const subscribe = () => {
+      if (!stakingRewardsContract) return () => {};
+      const stakeEvent = stakingRewardsContract.filters.Staked();
+      const withdrawnEvent = stakingRewardsContract.filters.Withdrawn();
+      stakingRewardsContract.on(stakeEvent, onBalanceChange);
+      stakingRewardsContract.on(withdrawnEvent, onBalanceChange);
+
+      return () => {
+        stakingRewardsContract.off(stakeEvent, onBalanceChange);
+        stakingRewardsContract.off(withdrawnEvent, onBalanceChange);
+      };
+    };
     load();
+    return subscribe();
   }, [walletAddress, stakingRewardsContract]);
 
   const navToStake = () => {
@@ -85,13 +109,35 @@ export const HoneyStakedBox: FC = () => {
 
   useEffect(() => {
     if (!walletAddress || !stakingRewardsContract) return;
+
+    const onBalanceChange = async (address: string) => {
+      if (address.toLowerCase() === walletAddress.toLowerCase()) {
+        await sleep(500);
+        const balance = await stakingRewardsContract.balanceOf(walletAddress);
+        setStakedBalance(utils.formatUnits(balance, 18));
+      }
+    };
+
     const load = async () => {
       try {
         const balance = await stakingRewardsContract.balanceOf(walletAddress);
         setStakedBalance(utils.formatUnits(balance, 18));
       } catch {}
     };
+    const subscribe = () => {
+      if (!stakingRewardsContract) return () => {};
+      const stakeEvent = stakingRewardsContract.filters.Staked();
+      const withdrawnEvent = stakingRewardsContract.filters.Withdrawn();
+      stakingRewardsContract.on(stakeEvent, onBalanceChange);
+      stakingRewardsContract.on(withdrawnEvent, onBalanceChange);
+
+      return () => {
+        stakingRewardsContract.off(stakeEvent, onBalanceChange);
+        stakingRewardsContract.off(withdrawnEvent, onBalanceChange);
+      };
+    };
     load();
+    return subscribe();
   }, [walletAddress, stakingRewardsContract]);
 
   const navToStake = () => {

@@ -19,9 +19,12 @@ export const SubsHarvestBox: FC = () => {
   const { stakingRewardsContract } = useContracts();
   const { isWorking, harvest } = useV2Staking();
   const [rewardBalance, setRewardBalance] = useState<string>('0.0');
+  const [event, setEvent] = useState<number>(0);
 
   const checkForRewards = useCallback(() => {
     if (!walletAddress || !stakingRewardsContract) return;
+    console.log('event', event);
+
     const load = async () => {
       try {
         const balance = await stakingRewardsContract.earned(walletAddress);
@@ -29,7 +32,7 @@ export const SubsHarvestBox: FC = () => {
       } catch {}
     };
     load();
-  }, [walletAddress, stakingRewardsContract]);
+  }, [walletAddress, stakingRewardsContract, event]);
 
   const handleHarvest = useCallback(() => {
     return harvest(() => {
@@ -46,6 +49,29 @@ export const SubsHarvestBox: FC = () => {
       clearInterval(interval);
     };
   }, [checkForRewards]);
+
+  useEffect(() => {
+    if (!walletAddress || !stakingRewardsContract) return;
+
+    const updateEvent = (address: string) => {
+      if (address.toLowerCase() === walletAddress.toLowerCase()) {
+        setEvent((e) => e + 1);
+      }
+    };
+    const subscribe = () => {
+      if (!stakingRewardsContract) return () => {};
+      const stakeEvent = stakingRewardsContract.filters.Staked();
+      const withdrawnEvent = stakingRewardsContract.filters.Withdrawn();
+      stakingRewardsContract.on(stakeEvent, updateEvent);
+      stakingRewardsContract.on(withdrawnEvent, updateEvent);
+
+      return () => {
+        stakingRewardsContract.off(stakeEvent, updateEvent);
+        stakingRewardsContract.off(withdrawnEvent, updateEvent);
+      };
+    };
+    return subscribe();
+  }, [walletAddress, stakingRewardsContract]);
 
   return (
     <>
@@ -68,9 +94,11 @@ export const HoneyHarvestBox: FC = () => {
   const { stakingRewardsContract } = useContracts();
   const { isWorking, harvest } = useV2Staking();
   const [rewardBalance, setRewardBalance] = useState<string>('0');
+  const [event, setEvent] = useState<number>(0);
 
   const checkForRewards = useCallback(() => {
     if (!walletAddress || !stakingRewardsContract) return;
+    console.log('event', event);
     const load = async () => {
       try {
         const balance = await stakingRewardsContract.earned(walletAddress);
@@ -78,7 +106,7 @@ export const HoneyHarvestBox: FC = () => {
       } catch {}
     };
     load();
-  }, [walletAddress, stakingRewardsContract]);
+  }, [walletAddress, stakingRewardsContract, event]);
 
   const handleHarvest = useCallback(() => {
     return harvest(() => {
@@ -95,6 +123,30 @@ export const HoneyHarvestBox: FC = () => {
       clearInterval(interval);
     };
   }, [checkForRewards]);
+
+  useEffect(() => {
+    if (!walletAddress || !stakingRewardsContract) return;
+
+    const updateEvent = (address: string) => {
+      if (address.toLowerCase() === walletAddress.toLowerCase()) {
+        setEvent((e) => e + 1);
+      }
+    };
+    const subscribe = () => {
+      if (!stakingRewardsContract) return () => {};
+      const stakeEvent = stakingRewardsContract.filters.Staked();
+      const withdrawnEvent = stakingRewardsContract.filters.Withdrawn();
+      stakingRewardsContract.on(stakeEvent, updateEvent);
+      stakingRewardsContract.on(withdrawnEvent, updateEvent);
+
+      return () => {
+        stakingRewardsContract.off(stakeEvent, updateEvent);
+        stakingRewardsContract.off(withdrawnEvent, updateEvent);
+      };
+    };
+    return subscribe();
+  }, [walletAddress, stakingRewardsContract]);
+
   return (
     <>
       <Box>
