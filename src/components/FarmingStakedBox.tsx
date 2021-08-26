@@ -154,7 +154,7 @@ export const UniswapV3StakedBox: FC = () => {
       <Box>
         <Typography className={classes.subheader}>Staked NFT's</Typography>
         {walletAddress ? (
-          <Typography>{stakedPositions.length}</Typography>
+          <Typography>{stakedPositions?.length}</Typography>
         ) : (
           <Button variant={'outlined'} size={'small'}>
             Connect Wallet
@@ -168,6 +168,7 @@ export const UniswapV3StakedBox: FC = () => {
             size="small"
             color="primary"
             aria-label="remove"
+            disabled={stakedPositions?.length === 0}
           >
             <RemoveRoundedIcon />
           </Fab>
