@@ -22,20 +22,14 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 import { useParams, useHistory } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
 import LaunchIcon from '@material-ui/icons/Launch';
 import { useContracts } from '../contexts/contracts';
 import { useWallet } from '../contexts/wallet';
 import { useV3Liquidity } from '../hooks/useV3Liquidity';
 import { useV3Staking } from '../hooks/useV3Staking';
 import { LiquidityPosition } from '../utils/types';
-import { isClassExpression } from 'typescript';
 
-interface V3StakingModalProps {
-  position: LiquidityPosition | null;
-}
-
-const STEPS = ['Unstake', 'Withdraw'];
+const STEPS = ['Unstake'];
 
 const STARTS_WITH = 'data:application/json;base64,';
 
@@ -44,10 +38,9 @@ const preventDefault = (event: React.SyntheticEvent) => event.preventDefault();
 const V3StakingModal: FC = () => {
   const classes = useStyles();
   const history = useHistory();
-  // const { nft } = useParams();
 
   const { uniswapV3StakerContract } = useContracts();
-  const { wallet, onboardApi, walletAddress, signer, network } = useWallet();
+  const { walletAddress, network } = useWallet();
 
   const [activeStep, setActiveStep] = useState<number>(0);
 
@@ -61,9 +54,9 @@ const V3StakingModal: FC = () => {
 
   const { approvedAddress, owner, staked, tokenId } = positionSelected || {};
 
-  const { isWorking, unstake, withdraw } = useV3Staking(tokenId?.toNumber());
+  const { isWorking, exit } = useV3Staking(tokenId?.toNumber());
 
-  const unstakedPositions = useMemo(
+  const stakedPositions = useMemo(
     () =>
       nftPositions.filter(
         (position) =>
@@ -84,35 +77,10 @@ const V3StakingModal: FC = () => {
     }
   }, [network, walletAddress, checkForNftPositions]);
 
-  useEffect(() => {
-    if (!owner || !tokenId || !uniswapV3StakerContract) return;
-    const load = async () => {
-      const nftOwnedByStaker =
-        owner?.toLowerCase() === uniswapV3StakerContract.address.toLowerCase();
-
-      if (nftOwnedByStaker && !staked) {
-        console.log('nft not transferred');
-        setActiveStep(1);
-      } else if (nftOwnedByStaker && staked) {
-        console.log('nft staked');
-        setActiveStep(0);
-      }
-    };
-
-    load();
-  }, [owner, tokenId, uniswapV3StakerContract, staked]);
-
-  console.log('activeStep', activeStep);
-
   const approveOrTransferOrStake = () => {
     switch (activeStep) {
       case 0:
-        return unstake(() => {
-          checkForNftPositions();
-          setActiveStep(1);
-        });
-      case 1:
-        return withdraw(() => {
+        return exit(() => {
           history.push('/farms');
         });
 
@@ -123,9 +91,9 @@ const V3StakingModal: FC = () => {
 
   const loading = loadingNftPositions && nftPositions.length === 0;
 
-  const noOwnedPositions = !loading && unstakedPositions.length === 0;
+  const noOwnedPositions = !loading && stakedPositions.length === 0;
 
-  const displayStaking = !loading && unstakedPositions.length > 0;
+  const displayStaking = !loading && stakedPositions.length > 0;
 
   return (
     <Dialog
@@ -161,7 +129,7 @@ const V3StakingModal: FC = () => {
               container
             >
               <DisplayNfts
-                nftPositions={unstakedPositions}
+                nftPositions={stakedPositions}
                 setPositionSelected={setPositionSelected}
                 positionSelected={positionSelected}
               />

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { BigNumber as BigNumberEthers, utils } from 'ethers';
 import { useHistory } from 'react-router-dom';
@@ -7,8 +7,9 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AddRoundedIcon from '@material-ui/icons/AddRounded';
 import RemoveRoundedIcon from '@material-ui/icons/RemoveRounded';
 import { useWallet } from '../contexts/wallet';
+import { useV3Liquidity } from '../hooks/useV3Liquidity';
 import { useContracts } from '../contexts/contracts';
-import { LiquidityPosition } from '../utils/types';
+import { useStakingRewardsInfo } from '../hooks/useStakingRewardsInfo';
 import { FARM } from '../utils/types';
 import { sleep } from '../utils/promise';
 
@@ -16,43 +17,15 @@ export const SubsStakedBox: FC = () => {
   const classes = useStyles();
   const { walletAddress } = useWallet();
   const history = useHistory();
-  const { stakingRewardsContract } = useContracts();
 
-  const [stakedBalance, setStakedBalance] = useState<string>('0.0');
+  // put subs token here
+  const { stakedBalance } = useStakingRewardsInfo('');
 
-  useEffect(() => {
-    if (!walletAddress || !stakingRewardsContract) return;
+  let displayBalance = '0.0';
 
-    const onBalanceChange = async (address: string) => {
-      if (address.toLowerCase() === walletAddress.toLowerCase()) {
-        await sleep(500);
-        const balance = await stakingRewardsContract.balanceOf(walletAddress);
-        setStakedBalance(utils.formatUnits(balance, 18));
-      }
-    };
-
-    const load = async () => {
-      try {
-        const balance = await stakingRewardsContract.balanceOf(walletAddress);
-        setStakedBalance(utils.formatUnits(balance, 18));
-      } catch {}
-    };
-
-    const subscribe = () => {
-      if (!stakingRewardsContract) return () => {};
-      const stakeEvent = stakingRewardsContract.filters.Staked();
-      const withdrawnEvent = stakingRewardsContract.filters.Withdrawn();
-      stakingRewardsContract.on(stakeEvent, onBalanceChange);
-      stakingRewardsContract.on(withdrawnEvent, onBalanceChange);
-
-      return () => {
-        stakingRewardsContract.off(stakeEvent, onBalanceChange);
-        stakingRewardsContract.off(withdrawnEvent, onBalanceChange);
-      };
-    };
-    load();
-    return subscribe();
-  }, [walletAddress, stakingRewardsContract]);
+  if (stakedBalance) {
+    displayBalance = utils.formatUnits(stakedBalance, 18);
+  }
 
   const navToStake = () => {
     history.push('/stake/v2');
@@ -60,13 +33,13 @@ export const SubsStakedBox: FC = () => {
   const navToUnstake = () => {
     history.push('/unstake/v2');
   };
-  console.log('stakedBalane', stakedBalance, typeof stakedBalance);
+
   return (
     <>
       <Box>
         <Typography className={classes.subheader}>Staked LP Tokens</Typography>
         {walletAddress ? (
-          <Typography>{stakedBalance}</Typography>
+          <Typography>{displayBalance}</Typography>
         ) : (
           <Button variant={'outlined'} size={'small'}>
             Connect Wallet
@@ -80,7 +53,7 @@ export const SubsStakedBox: FC = () => {
             size="small"
             color="primary"
             aria-label="remove"
-            disabled={stakedBalance === '0.0'}
+            disabled={displayBalance === '0.0'}
           >
             <RemoveRoundedIcon />
           </Fab>
@@ -103,42 +76,15 @@ export const HoneyStakedBox: FC = () => {
   const classes = useStyles();
   const { walletAddress } = useWallet();
   const history = useHistory();
-  const { stakingRewardsContract } = useContracts();
 
-  const [stakedBalance, setStakedBalance] = useState<string>('0');
+  // put honey token here
+  const { stakedBalance } = useStakingRewardsInfo('');
 
-  useEffect(() => {
-    if (!walletAddress || !stakingRewardsContract) return;
+  let displayBalance = '0.0';
 
-    const onBalanceChange = async (address: string) => {
-      if (address.toLowerCase() === walletAddress.toLowerCase()) {
-        await sleep(500);
-        const balance = await stakingRewardsContract.balanceOf(walletAddress);
-        setStakedBalance(utils.formatUnits(balance, 18));
-      }
-    };
-
-    const load = async () => {
-      try {
-        const balance = await stakingRewardsContract.balanceOf(walletAddress);
-        setStakedBalance(utils.formatUnits(balance, 18));
-      } catch {}
-    };
-    const subscribe = () => {
-      if (!stakingRewardsContract) return () => {};
-      const stakeEvent = stakingRewardsContract.filters.Staked();
-      const withdrawnEvent = stakingRewardsContract.filters.Withdrawn();
-      stakingRewardsContract.on(stakeEvent, onBalanceChange);
-      stakingRewardsContract.on(withdrawnEvent, onBalanceChange);
-
-      return () => {
-        stakingRewardsContract.off(stakeEvent, onBalanceChange);
-        stakingRewardsContract.off(withdrawnEvent, onBalanceChange);
-      };
-    };
-    load();
-    return subscribe();
-  }, [walletAddress, stakingRewardsContract]);
+  if (stakedBalance) {
+    displayBalance = utils.formatUnits(stakedBalance, 18);
+  }
 
   const navToStake = () => {
     history.push('/stake/v2');
@@ -151,7 +97,7 @@ export const HoneyStakedBox: FC = () => {
       <Box>
         <Typography className={classes.subheader}>Staked LP Tokens</Typography>
         {walletAddress ? (
-          <Typography>{stakedBalance}</Typography>
+          <Typography>{displayBalance}</Typography>
         ) : (
           <Button variant={'outlined'} size={'small'}>
             Connect Wallet
@@ -165,7 +111,7 @@ export const HoneyStakedBox: FC = () => {
             size="small"
             color="primary"
             aria-label="remove"
-            disabled={stakedBalance === '0.0'}
+            disabled={displayBalance === '0.0'}
           >
             <RemoveRoundedIcon />
           </Fab>
@@ -186,20 +132,29 @@ export const HoneyStakedBox: FC = () => {
 
 export const UniswapV3StakedBox: FC = () => {
   const classes = useStyles();
-  const { walletAddress } = useWallet();
+  const { walletAddress, network } = useWallet();
+  const { uniswapV3StakerContract } = useContracts();
   const history = useHistory();
+  const { checkForNftPositions, stakedPositions } = useV3Liquidity();
+  // check for NFT positions in user's wallet
+  useEffect(() => {
+    if (walletAddress && network && (network === 1 || network === 4)) {
+      checkForNftPositions();
+    }
+  }, [network, walletAddress, checkForNftPositions]);
+
   const navToStake = () => {
-    history.push('/stake/v2');
+    history.push('/stake/v3');
   };
   const navToUnstake = () => {
-    history.push('/unstake/v2');
+    history.push('/unstake/v3');
   };
   return (
     <>
       <Box>
         <Typography className={classes.subheader}>Staked NFT's</Typography>
         {walletAddress ? (
-          <Typography>0</Typography>
+          <Typography>{stakedPositions.length}</Typography>
         ) : (
           <Button variant={'outlined'} size={'small'}>
             Connect Wallet

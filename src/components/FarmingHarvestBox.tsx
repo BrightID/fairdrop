@@ -1,10 +1,10 @@
 import { FC, useCallback, useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { BigNumber as BigNumberEthers, utils } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { useHistory } from 'react-router-dom';
 import { Button, Box, Fab, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-
+import { useV3Liquidity } from '../hooks/useV3Liquidity';
 import { useWallet } from '../contexts/wallet';
 import { useV2Staking } from '../hooks/useV2Staking';
 import { useContracts } from '../contexts/contracts';
@@ -164,13 +164,54 @@ export const HoneyHarvestBox: FC = () => {
 
 export const UniswapV3HarvestBox: FC = () => {
   const classes = useStyles();
-  const { walletAddress } = useWallet();
+  const { walletAddress, network } = useWallet();
+  const [rewards, setRewards] = useState<string>('0.0');
+  const { stakedPositions, currentIncentive, checkForNftPositions } =
+    useV3Liquidity();
+  const { uniswapV3StakerContract } = useContracts();
+
+  useEffect(() => {
+    if (walletAddress && network && (network === 1 || network === 4)) {
+      checkForNftPositions();
+    }
+  }, [network, walletAddress, checkForNftPositions]);
+
+  useEffect(() => {
+    if (!uniswapV3StakerContract || !walletAddress || !currentIncentive.key)
+      return;
+    const load = async () => {
+      try {
+        // check rewards
+        const getReward = (p: LiquidityPosition) =>
+          uniswapV3StakerContract.getRewardInfo(
+            currentIncentive.key,
+            p?.tokenId
+          );
+
+        const rewards = await Promise.all(stakedPositions.map(getReward));
+        console.log('stakedPositions', stakedPositions);
+        console.log('rewards', rewards);
+        const allRewards = rewards.reduce(
+          (acc: BigNumber, [reward]) => acc.add(reward),
+          BigNumber.from(0)
+        );
+        setRewards(utils.formatUnits(allRewards, 18).slice(0, 12));
+      } catch {}
+    };
+
+    load();
+  }, [
+    stakedPositions,
+    uniswapV3StakerContract,
+    walletAddress,
+    currentIncentive.key,
+  ]);
 
   return (
     <>
       <Box>
         <Typography className={classes.subheader}>$BRIGHT Earned:</Typography>
-        <Typography>0</Typography>
+        <Typography>{rewards}</Typography>
       </Box>
       <Box>
         <Button variant={'contained'}>Harvest</Button>

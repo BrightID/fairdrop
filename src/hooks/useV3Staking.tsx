@@ -16,40 +16,6 @@ export function useV3Staking(tokenId: number | undefined) {
 
   const [isWorking, setIsWorking] = useState<string | null>(null);
 
-  const approve = useCallback(
-    async (next: () => void) => {
-      if (
-        !walletAddress ||
-        !nftManagerPositionsContract ||
-        !uniswapV3StakerContract ||
-        !tokenId
-      )
-        return;
-
-      try {
-        setIsWorking('Approving...');
-        await tx('Approving...', 'Approved!', () =>
-          nftManagerPositionsContract.approve(
-            uniswapV3StakerContract.address,
-            tokenId
-          )
-        );
-        next();
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        setIsWorking(null);
-      }
-    },
-    [
-      tokenId,
-      uniswapV3StakerContract,
-      nftManagerPositionsContract,
-      tx,
-      walletAddress,
-    ]
-  );
-
   const transfer = useCallback(
     async (next: () => void) => {
       if (
@@ -68,19 +34,13 @@ export function useV3Staking(tokenId: number | undefined) {
           ['address', 'address', 'uint', 'uint', 'address'],
           currentIncentive.key
         );
-        await tx(
-          'Staking...',
-          'Staked!',
-          () =>
-            nftManagerPositionsContract.safeTransferFrom(
-              walletAddress,
-              uniswapV3StakerContract.address,
-              tokenId,
-              data
-            )
-          // nftManagerPositionsContract[
-          //   'safeTransferFrom(address,address,uint256)'
-          // ](address, uniswapV3StakerContract.address, tokenId) // https://stackoverflow.com/questions/68289806/no-safetransferfrom-function-in-ethers-js-contract-instance
+        await tx('Staking...', 'Staked!', () =>
+          nftManagerPositionsContract.safeTransferFrom(
+            walletAddress,
+            uniswapV3StakerContract.address,
+            tokenId,
+            data
+          )
         );
         next();
       } catch (e) {
@@ -97,6 +57,128 @@ export function useV3Staking(tokenId: number | undefined) {
       walletAddress,
       tx,
     ]
+  );
+
+  const exit = useCallback(
+    async (next: () => void) => {
+      if (
+        !tokenId ||
+        !walletAddress ||
+        !uniswapV3StakerContract ||
+        !currentIncentive.key
+      )
+        return;
+
+      try {
+        setIsWorking('Unstaking...');
+
+        const unstakeCalldata =
+          uniswapV3StakerContract.interface.encodeFunctionData('unstakeToken', [
+            currentIncentive.key,
+            tokenId,
+          ]);
+
+        const claimRewardCalldata =
+          uniswapV3StakerContract.interface.encodeFunctionData('claimReward', [
+            currentIncentive.key[0],
+            walletAddress,
+            0,
+          ]);
+
+        const withdrawTokenCalldata =
+          uniswapV3StakerContract.interface.encodeFunctionData(
+            'withdrawToken',
+            [tokenId, walletAddress, 0]
+          );
+
+        await tx('Unstaking...', 'Unstaked!', () =>
+          uniswapV3StakerContract.multicall([
+            unstakeCalldata,
+            claimRewardCalldata,
+            withdrawTokenCalldata,
+          ])
+        );
+        next();
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setIsWorking(null);
+      }
+    },
+    [tokenId, currentIncentive.key, uniswapV3StakerContract, tx, walletAddress]
+  );
+
+  const claimUnstakeStake = useCallback(
+    async (next: () => void) => {
+      if (
+        !tokenId ||
+        !walletAddress ||
+        !uniswapV3StakerContract ||
+        !currentIncentive.key
+      )
+        return;
+
+      try {
+        setIsWorking('Claiming...');
+        const unstakeCalldata =
+          uniswapV3StakerContract.interface.encodeFunctionData('unstakeToken', [
+            currentIncentive.key,
+            tokenId,
+          ]);
+
+        const claimRewardCalldata =
+          uniswapV3StakerContract.interface.encodeFunctionData('claimReward', [
+            currentIncentive.key[0],
+            walletAddress,
+            0,
+          ]);
+
+        const stakeCalldata =
+          uniswapV3StakerContract.interface.encodeFunctionData('stakeToken', [
+            currentIncentive.key,
+            tokenId,
+          ]);
+
+        await tx('Harvesting...', 'Harvested!', () =>
+          uniswapV3StakerContract.multicall([
+            unstakeCalldata,
+            claimRewardCalldata,
+            stakeCalldata,
+          ])
+        );
+        next();
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setIsWorking(null);
+      }
+    },
+    [tokenId, currentIncentive.key, walletAddress, uniswapV3StakerContract, tx]
+  );
+
+  const claim = useCallback(
+    async (next: () => void) => {
+      if (!walletAddress || !uniswapV3StakerContract || !currentIncentive.key)
+        return;
+
+      try {
+        setIsWorking('Claiming...');
+
+        await tx('Claiming...', 'Claimed!', () =>
+          uniswapV3StakerContract.claimReward(
+            currentIncentive.key[0],
+            walletAddress,
+            0
+          )
+        );
+        next();
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setIsWorking(null);
+      }
+    },
+    [currentIncentive.key, walletAddress, uniswapV3StakerContract, tx]
   );
 
   const stake = useCallback(
@@ -149,34 +231,6 @@ export function useV3Staking(tokenId: number | undefined) {
     [tokenId, currentIncentive.key, uniswapV3StakerContract, tx, walletAddress]
   );
 
-  const claim = useCallback(
-    async (next: () => void) => {
-      if (!walletAddress || !uniswapV3StakerContract || !currentIncentive.key)
-        return;
-
-      try {
-        setIsWorking('Claiming...');
-        const reward = await uniswapV3StakerContract.rewards(
-          currentIncentive.key[0],
-          walletAddress
-        );
-        await tx('Claiming...', 'Claimed!', () =>
-          uniswapV3StakerContract.claimReward(
-            currentIncentive.key[0],
-            walletAddress,
-            reward
-          )
-        );
-        next();
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        setIsWorking(null);
-      }
-    },
-    [currentIncentive.key, walletAddress, uniswapV3StakerContract, tx]
-  );
-
   const withdraw = useCallback(
     async (next: () => void) => {
       if (!tokenId || !walletAddress || !uniswapV3StakerContract) return;
@@ -196,5 +250,14 @@ export function useV3Staking(tokenId: number | undefined) {
     [tokenId, walletAddress, uniswapV3StakerContract, tx]
   );
 
-  return { isWorking, approve, transfer, stake, unstake, claim, withdraw };
+  return {
+    isWorking,
+    transfer,
+    stake,
+    unstake,
+    claim,
+    claimUnstakeStake,
+    exit,
+    withdraw,
+  };
 }

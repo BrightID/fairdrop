@@ -31,8 +31,6 @@ export const ERC20TokensProvider: FC<{ children: ReactNode }> = ({
 
   const uniV2LpToken = useTokenInfo(uniswapV2LpAddress);
 
-  console.log('uniV2LpToken', uniV2LpToken);
-
   return (
     <ERC20TokenContext.Provider
       value={{

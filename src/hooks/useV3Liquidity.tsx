@@ -28,6 +28,12 @@ export function useV3Liquidity() {
     useContracts();
   const { network, walletAddress } = useWallet();
   const [nftPositions, setNftPositions] = useState<LiquidityPosition[]>([]);
+  const [stakedPositions, setStakedPositions] = useState<LiquidityPosition[]>(
+    []
+  );
+  const [unstakedPositions, setUnstakedPositions] = useState<
+    LiquidityPosition[]
+  >([]);
 
   const [loadingNftPositions, setLoadingNftPositions] = useState(false);
 
@@ -135,16 +141,7 @@ export function useV3Liquidity() {
 
       let staked = stakedPosition.numberOfStakes;
       let reward = BigNumber.from(0);
-      try {
-        // check rewards
-        const [rewardNumber] = await uniswapV3StakerContract.getRewardInfo(
-          currentIncentive.key,
-          tokenId
-        );
-        reward = BigNumber.from(rewardNumber.toString());
-      } catch {
-        console.log('no fetch reward for ', tokenId.toString());
-      }
+
       return { approvedAddress, owner, reward, staked, tokenId };
     };
 
@@ -167,9 +164,22 @@ export function useV3Liquidity() {
           return { ...position, uri };
         };
 
-        setNftPositions(
-          await Promise.all(allPositions.flat().map(downloadURI))
+        const allPositionsWithURI = await Promise.all(
+          allPositions.flat().map(downloadURI)
         );
+
+        setNftPositions(allPositionsWithURI);
+
+        const stakedPositions = allPositionsWithURI.filter(
+          (position) => position.staked
+        );
+
+        const unstakedPositions = allPositionsWithURI.filter(
+          (position) => !position.staked
+        );
+
+        setStakedPositions(stakedPositions);
+        setUnstakedPositions(unstakedPositions);
 
         setLoadingNftPositions(false);
       } catch (e) {
@@ -189,6 +199,8 @@ export function useV3Liquidity() {
 
   return {
     nftPositions,
+    stakedPositions,
+    unstakedPositions,
     currentIncentive,
     loadingNftPositions,
     checkForNftPositions,

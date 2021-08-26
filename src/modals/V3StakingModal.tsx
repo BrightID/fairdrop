@@ -35,7 +35,7 @@ interface V3StakingModalProps {
   position: LiquidityPosition | null;
 }
 
-const STEPS = ['Approve', 'Stake', 'Stake'];
+const STEPS = ['Stake', 'Stake'];
 
 const STARTS_WITH = 'data:application/json;base64,';
 
@@ -47,7 +47,7 @@ const V3StakingModal: FC = () => {
   // const { nft } = useParams();
 
   const { uniswapV3StakerContract } = useContracts();
-  const { wallet, onboardApi, walletAddress, signer, network } = useWallet();
+  const { walletAddress, network } = useWallet();
 
   const [activeStep, setActiveStep] = useState<number>(0);
 
@@ -61,9 +61,7 @@ const V3StakingModal: FC = () => {
 
   const { approvedAddress, owner, staked, tokenId } = positionSelected || {};
 
-  const { isWorking, approve, transfer, stake } = useV3Staking(
-    tokenId?.toNumber()
-  );
+  const { isWorking, transfer, stake } = useV3Staking(tokenId?.toNumber());
 
   const unstakedPositions = useMemo(
     () =>
@@ -96,22 +94,14 @@ const V3StakingModal: FC = () => {
     )
       return;
     const load = async () => {
-      console.log('checking status of nft approval');
-      const stakerContractIsApproved =
-        approvedAddress.toLowerCase() ===
-        uniswapV3StakerContract.address.toLowerCase();
-
       const nftOwnedByUser = owner === walletAddress;
 
       const nftOwnedByStaker = owner === uniswapV3StakerContract.address;
 
-      if (nftOwnedByUser && stakerContractIsApproved) {
-        console.log('nft not transferred');
-        setActiveStep(1);
-      } else if (!staked && nftOwnedByStaker) {
+      if (!staked && nftOwnedByStaker) {
         console.log('nft staked');
-        setActiveStep(2);
-      } else if (nftOwnedByUser && !stakerContractIsApproved) {
+        setActiveStep(1);
+      } else if (nftOwnedByUser) {
         console.log('nft not approved');
         setActiveStep(0);
       }
@@ -132,15 +122,10 @@ const V3StakingModal: FC = () => {
   const approveOrTransferOrStake = () => {
     switch (activeStep) {
       case 0:
-        return approve(() => {
-          checkForNftPositions();
-          setActiveStep(1);
-        });
-      case 1:
         return transfer(() => {
           history.push('/farms');
         });
-      case 2:
+      case 1:
         return stake(() => {
           history.push('/farms');
         });
