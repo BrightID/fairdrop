@@ -16,6 +16,7 @@ import { FARM } from '../utils/types';
 import { FarmingTitleBox } from './FarmingTitleBox';
 import { FarmingStakedBox } from './FarmingStakedBox';
 import { FarmingHarvestBox } from './FarmingHarvestBox';
+import { FarmingLpBox } from './FarmingLpBox';
 
 interface FarmingBoxProps {
   farm: FARM;
@@ -43,13 +44,7 @@ const FarmingBox = ({ farm }: FarmingBoxProps) => {
           </Box>
 
           <Box className={classes.middleRow}>
-            <Box>
-              <Typography className={classes.subheader}>
-                LP in wallet:
-              </Typography>
-              <Typography>0</Typography>
-            </Box>
-            <Box></Box>
+            <FarmingLpBox farm={farm} />
           </Box>
         </Box>
       </Box>
