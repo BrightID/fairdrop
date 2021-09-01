@@ -6,7 +6,7 @@ import HashDisplay from './HashDisplay';
 import { RegistrationInfo } from '../utils/api';
 
 interface NoClaimProps {
-  address: string;
+  address?: string;
   brightIdLinked: boolean;
   registrationInfo: RegistrationInfo;
 }

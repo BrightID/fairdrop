@@ -5,7 +5,6 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { BigNumber, ethers, utils } from 'ethers';
 import FarmingBox from '../components/FarmingBox';
 import { useWallet } from '../contexts/wallet';
-import { DRAWER_WIDTH } from '../utils/constants';
 
 const FarmsContainer = () => {
   const classes = useStyles();
@@ -64,13 +63,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
     },
     // necessary for content to be below app bar
-    toolbar: theme.mixins.toolbar,
-    content: {
-      [theme.breakpoints.up('sm')]: {
-        width: `calc(100% - ${DRAWER_WIDTH}px)`,
-        marginLeft: DRAWER_WIDTH,
-      },
-    },
+    content: {},
     farmContainer: {
       // borderStyle: 'solid',
     },

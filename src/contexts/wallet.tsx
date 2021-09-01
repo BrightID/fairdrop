@@ -46,6 +46,7 @@ type WalletContextType = {
   changeChainId?: (chainId: number) => any;
   network?: number;
   walletAddress?: string;
+  address?: string;
 };
 export const EthersWalletContext = React.createContext<WalletContextType>({});
 
@@ -61,7 +62,7 @@ export const WalletContext: React.FC<WalletContextProps> = ({ children }) => {
     ethers.providers.Web3Provider | undefined
   >(undefined);
   const [signer, setSigner] = useState<ethers.Signer | undefined>(undefined);
-  const [walletAddress, setWalletAddress] = useState('');
+  const [walletAddress, setWalletAddress] = useState<string>('');
 
   // load wallet if already exists
   useEffect(() => {
@@ -176,6 +177,7 @@ export const WalletContext: React.FC<WalletContextProps> = ({ children }) => {
     network,
     provider,
     walletAddress,
+    address: walletAddress,
     signer,
   };
   return (
@@ -192,8 +194,15 @@ export function useWallet() {
   if (!context) {
     throw new Error('Missing Contracts context');
   }
-  const { wallet, onboardApi, network, provider, walletAddress, signer } =
-    context;
+  const {
+    wallet,
+    onboardApi,
+    network,
+    provider,
+    walletAddress,
+    address,
+    signer,
+  } = context;
 
   return {
     wallet,
@@ -201,6 +210,7 @@ export function useWallet() {
     network,
     provider,
     walletAddress,
+    address,
     signer,
   };
 }

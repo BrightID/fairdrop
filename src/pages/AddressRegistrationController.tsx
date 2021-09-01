@@ -1,25 +1,45 @@
-// import Header from '../components/Header';
-import { Container } from '@material-ui/core';
-import AddressEntryComponent from './AddressEntryPage';
-import AddressRegistrationController, {
-  ContextInfo,
-} from '../components/AddressRegistrationController';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { BigNumber } from 'ethers';
+import { useParams } from 'react-router-dom';
 import {
+  ClaimInfo,
+  getClaimInfo,
   getAddressInfo,
   getRegistrationInfo,
   RegistrationInfo,
 } from '../utils/api';
-import { BigNumber, ethers } from 'ethers';
+import { useWallet } from '../contexts/wallet';
 import { verifyContextId } from 'brightid_sdk';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ChainSelector from '../components/ChainSelector';
 import AddressLinkInfo from '../components/AddressLinkInfo';
 import SubNavBar from '../components/SubNavBar';
+import ActiveClaimController from '../components/ActiveClaimController';
+import NoClaim from '../components/NoClaim';
+import { Container } from '@material-ui/core';
 
-const MainContainer = () => {
-  const classes = useStyles();
-  const [address, setAddress] = useState('');
+interface Params {
+  address?: string;
+}
+
+interface ContextInfoSuccess {
+  app: string;
+  context: string;
+  contextIds: Array<string>;
+  unique: boolean;
+}
+
+interface ContextInfoError {
+  status: number;
+  statusText: string;
+}
+
+export type ContextInfo = ContextInfoSuccess | ContextInfoError;
+
+const AddressRegistrationController = () => {
+  let { address } = useParams<Params>();
+
+  const [claim, setClaim] = useState<ClaimInfo | undefined>(undefined);
+  const [claimLoading, setClaimLoading] = useState(true);
   const [registrationInfoLoading, setRegistrationInfoLoading] = useState(true);
   const [registrationInfo, setRegistrationInfo] = useState<RegistrationInfo>({
     currentRegistrationEnd: 0,
@@ -58,13 +78,14 @@ const MainContainer = () => {
   useEffect(() => {
     const runEffect = async () => {
       try {
-        const addressInfo = await getAddressInfo(address);
+        const addressInfo = await getAddressInfo(address as string);
         setPayoutChainId(addressInfo.chainId);
         setNextAmount(addressInfo.nextAmount);
       } catch (e) {
         console.log(`getAddressInfo failed: ${e}`);
       }
     };
+
     if (address !== '') {
       runEffect();
     }
@@ -75,44 +96,39 @@ const MainContainer = () => {
     const runEffect = async () => {
       setBrightIdLinked(false);
       // Get linked info from real brightId node
-      const contextInfo: ContextInfo = await verifyContextId('Bright', address);
+      const contextInfo: ContextInfo = await verifyContextId(
+        'Bright',
+        address as string
+      );
       console.log(contextInfo);
       if ('contextIds' in contextInfo) {
         // API response includes eth address in lowercase
         setBrightIdLinked(
-          contextInfo.contextIds.includes(address.toLowerCase())
+          contextInfo.contextIds.includes((address as string).toLowerCase())
         );
+      }
+    };
+    if (address !== '') {
+      runEffect();
+    }
+  }, [address]);
+
+  // Look for active claim of address
+  useEffect(() => {
+    const runEffect = async () => {
+      setClaimLoading(true);
+      try {
+        if (address) {
+          const claim = await getClaimInfo(address as string);
+          setClaim(claim);
+          setClaimLoading(false);
+        }
+      } catch (e) {
+        console.log(`Error loading claim info: ${e}`);
       }
     };
     runEffect();
   }, [address]);
-
-  // Get address from location hash
-  const hash = window.location.hash;
-  if (hash.length) {
-    const hashAddress = hash.substr(1);
-    try {
-      const checkedAddress = ethers.utils.getAddress(hashAddress);
-      if (checkedAddress !== address) {
-        console.log(`Setting address from url...`);
-        setAddress(checkedAddress);
-      }
-    } catch (e) {
-      // invalid address. Clear hash
-      window.location.hash = '';
-      setAddress('');
-    }
-  }
-
-  const newAddressHandler = (address?: string) => {
-    if (address) {
-      setAddress(address);
-      window.location.hash = address;
-    } else {
-      window.location.hash = '';
-      setAddress('');
-    }
-  };
 
   const onLinkedBrightId = (isLinked: boolean) => {
     if (isLinked) {
@@ -122,25 +138,12 @@ const MainContainer = () => {
       setBrightIdLinked(false);
     }
   };
-
-  // Only enable change of payout chain or linking of address if we have an upcoming
-  // claim phase
-  const registrationTimeRemaining =
-    registrationInfo.currentRegistrationEnd - Date.now();
-  const timeToNextRegistrationStart =
-    registrationInfo.nextRegistrationStart - Date.now();
-  const timeToNextClaimStart = registrationInfo.nextClaimStart - Date.now();
-  console.log(
-    `Remaining claim/registration time: ${registrationTimeRemaining}`
-  );
-  console.log(`Next registration starts in: ${timeToNextRegistrationStart}`);
-  console.log(`Next claim starts in: ${timeToNextClaimStart}`);
   let subNavBar;
-  // if (address !== '' && timeToNextClaimStart > 0) {
+
   if (address !== '') {
     const chainSelector = (
       <ChainSelector
-        address={address}
+        address={address as string}
         currentChainId={payoutChainId}
         setChainId={setPayoutChainId}
         registrationInfo={registrationInfo}
@@ -148,7 +151,7 @@ const MainContainer = () => {
     );
     const addressLinkInfo = (
       <AddressLinkInfo
-        address={address}
+        address={address as string}
         brightIdLinked={brightIdLinked}
         setBrightIdLinked={onLinkedBrightId}
         registrationInfo={registrationInfo}
@@ -162,43 +165,39 @@ const MainContainer = () => {
     );
   }
 
+  if (claimLoading || registrationInfoLoading) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        Loading claim
+      </div>
+    );
+  }
+
   return (
-    <div className={classes.content}>
-      <Container maxWidth="lg">
-        {address === '' && (
-          // <AddressEntryComponent
-          //   initialValues={{ address }}
-          //   setAddress={newAddressHandler}
-          // />
-          <></>
-        )}
-        {address !== '' && (
-          <AddressRegistrationController
-            registrationInfo={registrationInfo}
-            registrationInfoLoading={registrationInfoLoading}
-            address={address}
-            brightIdLinked={brightIdLinked}
-            nextAmount={nextAmount}
-            payoutChainId={payoutChainId}
-          />
-        )}
-      </Container>
+    <Container maxWidth="lg">
+      {claim ? (
+        <ActiveClaimController
+          claim={claim}
+          payoutChainId={payoutChainId}
+          registrationInfo={registrationInfo}
+          nextAmount={nextAmount}
+        />
+      ) : (
+        <NoClaim
+          address={address}
+          brightIdLinked={brightIdLinked}
+          registrationInfo={registrationInfo}
+        />
+      )}
       {subNavBar}
-    </div>
+    </Container>
   );
 };
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-    },
-    // necessary for content to be below app bar
-    content: {},
-    farmContainer: {
-      // borderStyle: 'solid',
-    },
-  })
-);
-
-export default MainContainer;
+export default AddressRegistrationController;
