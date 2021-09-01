@@ -27,8 +27,6 @@ const FarmingBox = ({ farm }: FarmingBoxProps) => {
 
   const { walletAddress } = useWallet();
 
-  console.log('walletAddress', walletAddress);
-
   return (
     <Paper elevation={2} className={classes.container}>
       <Box className={classes.main}>

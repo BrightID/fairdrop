@@ -4,7 +4,7 @@ import { BigNumber, utils } from 'ethers';
 import { useHistory } from 'react-router-dom';
 import { Button, Box, Fab, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { useV3Liquidity } from '../hooks/useV3Liquidity';
+import { useV3Liquidity } from '../contexts/erc721Nfts';
 import { useWallet } from '../contexts/wallet';
 import { useV2Staking } from '../hooks/useV2Staking';
 import { useContracts } from '../contexts/contracts';
@@ -166,15 +166,15 @@ export const UniswapV3HarvestBox: FC = () => {
   const classes = useStyles();
   const { walletAddress, network } = useWallet();
   const [rewards, setRewards] = useState<string>('0.0');
-  const { stakedPositions, currentIncentive, checkForNftPositions } =
+  const { stakedPositions, currentIncentive, refreshPositions } =
     useV3Liquidity();
   const { uniswapV3StakerContract } = useContracts();
 
-  useEffect(() => {
-    if (walletAddress && network && (network === 1 || network === 4)) {
-      checkForNftPositions();
-    }
-  }, [network, walletAddress, checkForNftPositions]);
+  // useEffect(() => {
+  //   if (walletAddress && network && (network === 1 || network === 4)) {
+  //     refreshPositions();
+  //   }
+  // }, [network, walletAddress, refreshPositions]);
 
   useEffect(() => {
     if (!uniswapV3StakerContract || !walletAddress || !currentIncentive.key)
@@ -189,8 +189,7 @@ export const UniswapV3HarvestBox: FC = () => {
           );
 
         const rewards = await Promise.all(stakedPositions.map(getReward));
-        console.log('stakedPositions', stakedPositions);
-        console.log('rewards', rewards);
+
         const allRewards = rewards.reduce(
           (acc: BigNumber, [reward]) => acc.add(reward),
           BigNumber.from(0)

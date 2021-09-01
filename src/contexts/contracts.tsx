@@ -37,8 +37,6 @@ export const ContractsProvider: FC<{ children: ReactNode }> = ({
 }) => {
   const { network, signer } = useWallet();
 
-  console.log('network', network);
-
   // const token0Address = !network ? null : TOKEN_0_ADDRESS[network];
   // const token1Address = !network ? null : TOKEN_1_ADDRESS[network];
 

@@ -10,8 +10,6 @@ const FarmsContainer = () => {
   const classes = useStyles();
   const { walletAddress, network } = useWallet();
 
-  console.log('network', network);
-
   return (
     <>
       <Container className={classes.content}>
@@ -22,7 +20,7 @@ const FarmsContainer = () => {
               sm={12}
               md={4}
               alignItems={'center'}
-              justify={'center'}
+              justifyContent={'center'}
               className={classes.farmContainer}
               container
             >
@@ -33,7 +31,7 @@ const FarmsContainer = () => {
               sm={12}
               md={4}
               alignItems={'center'}
-              justify={'center'}
+              justifyContent={'center'}
               className={classes.farmContainer}
               container
             >
@@ -44,7 +42,7 @@ const FarmsContainer = () => {
               sm={12}
               md={4}
               alignItems={'center'}
-              justify={'center'}
+              justifyContent={'center'}
               className={classes.farmContainer}
               container
             >

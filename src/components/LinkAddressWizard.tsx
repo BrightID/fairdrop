@@ -130,7 +130,7 @@ const LinkAddressWizard = ({
               item
               container
               direction={'column'}
-              justify={'center'}
+              justifyContent={'center'}
               alignItems={'center'}
               xs={12}
             >
@@ -184,7 +184,7 @@ const LinkAddressWizard = ({
               item
               container
               direction={'column'}
-              justify={'center'}
+              justifyContent={'center'}
               alignItems={'center'}
               xs={12}
             >

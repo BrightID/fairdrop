@@ -26,7 +26,7 @@ import StarBorderIcon from '@material-ui/icons/StarBorder';
 import LaunchIcon from '@material-ui/icons/Launch';
 import { useContracts } from '../contexts/contracts';
 import { useWallet } from '../contexts/wallet';
-import { useV3Liquidity } from '../hooks/useV3Liquidity';
+import { useV3Liquidity } from '../contexts/erc721Nfts';
 import { useV3Staking } from '../hooks/useV3Staking';
 import { LiquidityPosition } from '../utils/types';
 import { isClassExpression } from 'typescript';
@@ -54,24 +54,16 @@ const V3StakingModal: FC = () => {
   const [positionSelected, setPositionSelected] =
     useState<LiquidityPosition | null>(null);
 
-  const { checkForNftPositions, loadingNftPositions, nftPositions } =
-    useV3Liquidity();
-
-  console.log('nftPositions', nftPositions);
+  const {
+    refreshPositions,
+    loadingNftPositions,
+    nftPositions,
+    unstakedPositions,
+  } = useV3Liquidity();
 
   const { approvedAddress, owner, staked, tokenId } = positionSelected || {};
 
   const { isWorking, transfer, stake } = useV3Staking(tokenId?.toNumber());
-
-  const unstakedPositions = useMemo(
-    () =>
-      nftPositions.filter(
-        (position) =>
-          position.owner.toLowerCase() === walletAddress?.toLowerCase() ||
-          position.staked === 0
-      ),
-    [nftPositions, walletAddress]
-  );
 
   const handleClose = () => {
     history.push('/farms');
@@ -80,9 +72,9 @@ const V3StakingModal: FC = () => {
   // check for NFT positions in user's wallet
   useEffect(() => {
     if (walletAddress && network && (network === 1 || network === 4)) {
-      checkForNftPositions();
+      refreshPositions();
     }
-  }, [network, walletAddress, checkForNftPositions]);
+  }, [network, walletAddress, refreshPositions]);
 
   useEffect(() => {
     if (
@@ -171,11 +163,11 @@ const V3StakingModal: FC = () => {
               item
               xs={6}
               alignItems={'center'}
-              justify={'center'}
+              justifyContent={'center'}
               container
             >
               <DisplayNfts
-                nftPositions={unstakedPositions}
+                unstakedPositions={unstakedPositions}
                 setPositionSelected={setPositionSelected}
                 positionSelected={positionSelected}
               />
@@ -184,7 +176,7 @@ const V3StakingModal: FC = () => {
               item
               xs={6}
               alignItems={'center'}
-              justify={'center'}
+              justifyContent={'center'}
               container
             >
               <Box px={4} mb={2} p={5}>
@@ -220,13 +212,13 @@ const Loading = () => {
 };
 
 interface DisplayNftsProps {
-  nftPositions: LiquidityPosition[];
+  unstakedPositions: LiquidityPosition[];
   setPositionSelected: (position: LiquidityPosition | null) => void;
   positionSelected: LiquidityPosition | null;
 }
 
 const DisplayNfts = ({
-  nftPositions,
+  unstakedPositions,
   setPositionSelected,
   positionSelected,
 }: DisplayNftsProps) => {
@@ -250,7 +242,7 @@ const DisplayNfts = ({
     <Box className={classes.nftImageWrapper}>
       <Typography>Select NFT Position to Stake</Typography>
       <ImageList className={classes.imageList} cols={2.5}>
-        {nftPositions.map((nft) => {
+        {unstakedPositions.map((nft) => {
           if (!nft?.tokenId) return <></>;
           const nftData = parseUri(nft.uri);
           const nftExists = !!positionSelected;

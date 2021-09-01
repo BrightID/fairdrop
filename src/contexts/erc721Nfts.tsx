@@ -4,14 +4,15 @@ import {
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
 // import _flatten from 'lodash/flatten';
 // import _orderBy from 'lodash/orderBy';
 import { BigNumber } from 'ethers';
-import { useWallet } from '../contexts/wallet';
-import { useContracts } from '../contexts/contracts';
+import { useWallet } from './wallet';
+import { useContracts } from './contracts';
 // import useTokenInfo from 'hooks/useTokenInfo';
 import { Incentive, LiquidityPosition } from '../utils/types';
 import {
@@ -23,7 +24,18 @@ import {
   INCENTIVE_REFUNDEE_ADDRESS,
 } from '../utils/constants';
 
-export function useV3Liquidity() {
+const ERC721NftContext = createContext<{
+  nftPositions: LiquidityPosition[];
+  stakedPositions: LiquidityPosition[];
+  unstakedPositions: LiquidityPosition[];
+  currentIncentive: { key?: (string | number)[] | null };
+  loadingNftPositions: boolean;
+  refreshPositions: () => any;
+} | null>(null);
+
+export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const { nftManagerPositionsContract, uniswapV3StakerContract } =
     useContracts();
   const { network, walletAddress } = useWallet();
@@ -51,6 +63,13 @@ export function useV3Liquidity() {
     if (!brightAddress || !poolAddress || !incentiveRefundeeAddress)
       return { key: null };
 
+    console.log('incentive key', [
+      brightAddress,
+      poolAddress,
+      INCENTIVE_START_TIME,
+      INCENTIVE_END_TIME,
+      incentiveRefundeeAddress,
+    ]);
     return {
       key: [
         brightAddress,
@@ -83,7 +102,7 @@ export function useV3Liquidity() {
     [wethAddress, brightAddress]
   );
 
-  const checkForNftPositions = useCallback(() => {
+  const refreshPositions = useCallback(() => {
     if (
       !nftManagerPositionsContract ||
       !uniswapV3StakerContract ||
@@ -133,8 +152,6 @@ export function useV3Liquidity() {
 
       const stakedPosition = await uniswapV3StakerContract.deposits(tokenId);
 
-      console.log('stakedPosition', stakedPosition);
-
       // check if owner of staked nft
       if (owner !== walletAddress && stakedPosition.owner !== walletAddress)
         return null;
@@ -146,6 +163,7 @@ export function useV3Liquidity() {
     };
 
     const init = async () => {
+      console.log('checking for NFTs....');
       try {
         setLoadingNftPositions(true);
 
@@ -188,14 +206,64 @@ export function useV3Liquidity() {
       }
     };
 
-    init();
+    return init();
   }, [
     uniswapV3StakerContract,
     nftManagerPositionsContract,
     walletAddress,
     checkForBrightLp,
-    currentIncentive.key,
   ]);
+
+  //initial load of positions
+  useEffect(() => {
+    if (
+      !nftManagerPositionsContract ||
+      !uniswapV3StakerContract ||
+      !walletAddress
+    )
+      return;
+
+    // only check if network is ethereum or rinkeby
+    if (network && (network === 1 || network === 4)) {
+      refreshPositions();
+    }
+  }, [
+    walletAddress,
+    uniswapV3StakerContract,
+    nftManagerPositionsContract,
+    refreshPositions,
+    network,
+  ]);
+
+  return (
+    <ERC721NftContext.Provider
+      value={{
+        nftPositions,
+        stakedPositions,
+        unstakedPositions,
+        currentIncentive,
+        loadingNftPositions,
+        refreshPositions,
+      }}
+    >
+      {children}
+    </ERC721NftContext.Provider>
+  );
+};
+
+export function useV3Liquidity() {
+  const context = useContext(ERC721NftContext);
+  if (!context) {
+    throw new Error('Missing Data context');
+  }
+  const {
+    nftPositions,
+    stakedPositions,
+    unstakedPositions,
+    currentIncentive,
+    loadingNftPositions,
+    refreshPositions,
+  } = context;
 
   return {
     nftPositions,
@@ -203,6 +271,6 @@ export function useV3Liquidity() {
     unstakedPositions,
     currentIncentive,
     loadingNftPositions,
-    checkForNftPositions,
+    refreshPositions,
   };
 }

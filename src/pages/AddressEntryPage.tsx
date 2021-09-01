@@ -41,7 +41,7 @@ const AddressEntryPage = () => {
         md={8}
         direction="row"
         alignItems={'center'}
-        justify={'flex-start'}
+        justifyContent={'flex-start'}
       >
         <Hidden xsDown>
           <Grid item sm={1} md={2} />
@@ -55,7 +55,7 @@ const AddressEntryPage = () => {
         </Grid>
       </Grid>
       <Hidden xsDown>
-        <Grid container item md={4} justify={'center'}>
+        <Grid container item md={4} justifyContent={'center'}>
           <img
             src={airdropLogo}
             width={'80%'}

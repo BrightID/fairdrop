@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { Button, Box, Fab, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useWallet } from '../contexts/wallet';
-import { useV3Liquidity } from '../hooks/useV3Liquidity';
+import { useV3Liquidity } from '../contexts/erc721Nfts';
 import { useERC20Tokens } from '../contexts/erc20Tokens';
 import { useContracts } from '../contexts/contracts';
 import { useStakingRewardsInfo } from '../hooks/useStakingRewardsInfo';
@@ -59,13 +59,13 @@ export const UniswapV3LpBox: FC = () => {
   const classes = useStyles();
   const { walletAddress, network } = useWallet();
 
-  const { checkForNftPositions, unstakedPositions } = useV3Liquidity();
+  const { refreshPositions, unstakedPositions } = useV3Liquidity();
   // check for NFT positions in user's wallet
-  useEffect(() => {
-    if (walletAddress && network && (network === 1 || network === 4)) {
-      checkForNftPositions();
-    }
-  }, [network, walletAddress, checkForNftPositions]);
+  // useEffect(() => {
+  //   if (walletAddress && network && (network === 1 || network === 4)) {
+  //     refreshPositions();
+  //   }
+  // }, [network, walletAddress, refreshPositions]);
 
   return (
     <Box>

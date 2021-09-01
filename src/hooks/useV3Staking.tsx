@@ -3,7 +3,7 @@ import { utils } from 'ethers';
 import { useWallet } from '../contexts/wallet';
 import { useContracts } from '../contexts/contracts';
 import { useNotifications } from '../contexts/notifications';
-import { useV3Liquidity } from './useV3Liquidity';
+import { useV3Liquidity } from '../contexts/erc721Nfts';
 
 const abiEncoder = utils.defaultAbiCoder;
 
@@ -80,7 +80,7 @@ export function useV3Staking(tokenId: number | undefined) {
 
         const claimRewardCalldata =
           uniswapV3StakerContract.interface.encodeFunctionData('claimReward', [
-            currentIncentive.key[0],
+            currentIncentive.key[0] as string,
             walletAddress,
             0,
           ]);
@@ -128,7 +128,7 @@ export function useV3Staking(tokenId: number | undefined) {
 
         const claimRewardCalldata =
           uniswapV3StakerContract.interface.encodeFunctionData('claimReward', [
-            currentIncentive.key[0],
+            currentIncentive.key[0] as string,
             walletAddress,
             0,
           ]);
@@ -166,11 +166,13 @@ export function useV3Staking(tokenId: number | undefined) {
 
         await tx('Claiming...', 'Claimed!', () =>
           uniswapV3StakerContract.claimReward(
+            // @ts-ignore: ts is stupid
             currentIncentive.key[0],
             walletAddress,
             0
           )
         );
+
         next();
       } catch (e) {
         console.warn(e);
@@ -178,7 +180,7 @@ export function useV3Staking(tokenId: number | undefined) {
         setIsWorking(null);
       }
     },
-    [currentIncentive.key, walletAddress, uniswapV3StakerContract, tx]
+    [walletAddress, currentIncentive.key, uniswapV3StakerContract, tx]
   );
 
   const stake = useCallback(

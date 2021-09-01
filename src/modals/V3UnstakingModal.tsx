@@ -25,7 +25,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import LaunchIcon from '@material-ui/icons/Launch';
 import { useContracts } from '../contexts/contracts';
 import { useWallet } from '../contexts/wallet';
-import { useV3Liquidity } from '../hooks/useV3Liquidity';
+import { useV3Liquidity } from '../contexts/erc721Nfts';
 import { useV3Staking } from '../hooks/useV3Staking';
 import { LiquidityPosition } from '../utils/types';
 
@@ -47,7 +47,7 @@ const V3StakingModal: FC = () => {
   const [positionSelected, setPositionSelected] =
     useState<LiquidityPosition | null>(null);
 
-  const { checkForNftPositions, loadingNftPositions, nftPositions } =
+  const { refreshPositions, loadingNftPositions, nftPositions } =
     useV3Liquidity();
 
   console.log('nftPositions', nftPositions);
@@ -73,9 +73,9 @@ const V3StakingModal: FC = () => {
   // check for NFT positions in user's wallet
   useEffect(() => {
     if (walletAddress && network && (network === 1 || network === 4)) {
-      checkForNftPositions();
+      refreshPositions();
     }
-  }, [network, walletAddress, checkForNftPositions]);
+  }, [network, walletAddress, refreshPositions]);
 
   const approveOrTransferOrStake = () => {
     switch (activeStep) {
@@ -125,7 +125,7 @@ const V3StakingModal: FC = () => {
               item
               xs={6}
               alignItems={'center'}
-              justify={'center'}
+              justifyContent={'center'}
               container
             >
               <DisplayNfts
@@ -138,7 +138,7 @@ const V3StakingModal: FC = () => {
               item
               xs={6}
               alignItems={'center'}
-              justify={'center'}
+              justifyContent={'center'}
               container
             >
               <Box px={4} mb={2} p={5}>

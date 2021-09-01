@@ -7,7 +7,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AddRoundedIcon from '@material-ui/icons/AddRounded';
 import RemoveRoundedIcon from '@material-ui/icons/RemoveRounded';
 import { useWallet } from '../contexts/wallet';
-import { useV3Liquidity } from '../hooks/useV3Liquidity';
+import { useV3Liquidity } from '../contexts/erc721Nfts';
 import { useContracts } from '../contexts/contracts';
 import { useStakingRewardsInfo } from '../hooks/useStakingRewardsInfo';
 import { FARM } from '../utils/types';
@@ -135,13 +135,13 @@ export const UniswapV3StakedBox: FC = () => {
   const { walletAddress, network } = useWallet();
   const { uniswapV3StakerContract } = useContracts();
   const history = useHistory();
-  const { checkForNftPositions, stakedPositions } = useV3Liquidity();
+  const { refreshPositions, stakedPositions } = useV3Liquidity();
   // check for NFT positions in user's wallet
-  useEffect(() => {
-    if (walletAddress && network && (network === 1 || network === 4)) {
-      checkForNftPositions();
-    }
-  }, [network, walletAddress, checkForNftPositions]);
+  // useEffect(() => {
+  //   if (walletAddress && network && (network === 1 || network === 4)) {
+  //     refreshPositions();
+  //   }
+  // }, [network, walletAddress, refreshPositions]);
 
   const navToStake = () => {
     history.push('/stake/v3');

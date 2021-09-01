@@ -42,7 +42,7 @@ const NoClaim = ({
         item
         container
         direction={'column'}
-        justify={'center'}
+        justifyContent={'center'}
         xs={12}
         sm={9}
         md={7}

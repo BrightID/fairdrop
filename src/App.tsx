@@ -6,6 +6,7 @@ import { SnackbarProvider } from 'notistack';
 import { WalletContext } from './contexts/wallet';
 import { ContractsProvider } from './contexts/contracts';
 import { ERC20TokensProvider } from './contexts/erc20Tokens';
+import { ERC721NftsProvider } from './contexts/erc721Nfts';
 import { NotificationsProvider } from './contexts/notifications';
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from './theme';
@@ -30,26 +31,28 @@ const App = () => {
       <WalletContext>
         <ContractsProvider>
           <ERC20TokensProvider>
-            <Header />
-            <DrawerLeft />
-            <div className={classes.content}>
-              <SnackbarProvider
-                maxSnack={4}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                content={(key, data) => (
-                  <div>
-                    <Notification id={key} notification={data} />
-                  </div>
-                )}
-              >
-                <NotificationsProvider>
-                  <Routes />
-                </NotificationsProvider>
-              </SnackbarProvider>
-            </div>
+            <ERC721NftsProvider>
+              <Header />
+              <DrawerLeft />
+              <div className={classes.content}>
+                <SnackbarProvider
+                  maxSnack={4}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  content={(key, data) => (
+                    <div>
+                      <Notification id={key} notification={data} />
+                    </div>
+                  )}
+                >
+                  <NotificationsProvider>
+                    <Routes />
+                  </NotificationsProvider>
+                </SnackbarProvider>
+              </div>
+            </ERC721NftsProvider>
           </ERC20TokensProvider>
         </ContractsProvider>
       </WalletContext>

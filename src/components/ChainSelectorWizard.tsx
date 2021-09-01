@@ -143,7 +143,7 @@ const ChainSelectorWizard = ({
             item
             container
             direction={'column'}
-            justify={'center'}
+            justifyContent={'center'}
             alignItems={'center'}
             xs={12}
           >
