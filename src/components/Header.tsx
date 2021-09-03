@@ -22,8 +22,8 @@ import watchAsset from '../utils/watchAsset';
 import { DRAWER_WIDTH } from '../utils/constants';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
+  header: {
+    display: 'flex',
   },
   appBar: {
     background: 'transparent',
@@ -305,7 +305,7 @@ const Header = () => {
   };
 
   return (
-    <div className={classes.root}>
+    <div className={classes.header}>
       <AppBar
         position="sticky"
         color={'transparent'}

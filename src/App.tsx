@@ -1,15 +1,30 @@
-import React from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { useState, FC, useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 import { CssBaseline } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  ThemeProvider,
+} from '@material-ui/core/styles';
+import clsx from 'clsx';
 import { SnackbarProvider } from 'notistack';
-import { WalletContext } from './contexts/wallet';
+import { WalletContext, useWallet } from './contexts/wallet';
 import { ContractsProvider } from './contexts/contracts';
 import { ERC20TokensProvider } from './contexts/erc20Tokens';
 import { ERC721NftsProvider } from './contexts/erc721Nfts';
 import { NotificationsProvider } from './contexts/notifications';
-import { ThemeProvider } from '@material-ui/core/styles';
-import theme from './theme';
+import {
+  baseTheme,
+  ethBackground,
+  fairdropBackground,
+  xdaiBackground,
+} from './theme';
 import MainContainer from './pages/MainContainer';
 import AddressEntryPage from './pages/AddressEntryPage';
 import AddressRegistrationController from './pages/AddressRegistrationController';
@@ -23,35 +38,67 @@ import V2StakingModal from './modals/V2StakingModal';
 import V2UnstakingModal from './modals/V2UnstakingModal';
 import { DRAWER_WIDTH } from './utils/constants';
 
+const BackgroundController: FC = ({ children }) => {
+  const classes = useStyles();
+  const { network } = useWallet();
+  const [background, setBackground] = useState(classes.ethBackground);
+  useEffect(() => {
+    if (!network) return;
+    if (window.location.pathname.startsWith('/airdrop')) {
+      setBackground(classes.fairdropBackground);
+    } else {
+      switch (network) {
+        case 0:
+          setBackground(classes.ethBackground);
+          break;
+        case 4:
+          setBackground(classes.ethBackground);
+          break;
+        case 100:
+          setBackground(classes.xdaiBackground);
+          break;
+      }
+    }
+  }, [
+    network,
+    classes.ethBackground,
+    classes.xdaiBackground,
+    classes.fairdropBackground,
+  ]);
+  return <div className={clsx(classes.root, background)}>{children}</div>;
+};
+
 const App = () => {
   const classes = useStyles();
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={baseTheme}>
       <CssBaseline />
       <WalletContext>
         <ContractsProvider>
           <ERC20TokensProvider>
             <ERC721NftsProvider>
-              <Header />
-              <DrawerLeft />
-              <div className={classes.content}>
-                <SnackbarProvider
-                  maxSnack={4}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  content={(key, data) => (
-                    <div>
-                      <Notification id={key} notification={data} />
-                    </div>
-                  )}
-                >
-                  <NotificationsProvider>
-                    <Routes />
-                  </NotificationsProvider>
-                </SnackbarProvider>
-              </div>
+              <BackgroundController>
+                <Header />
+                <DrawerLeft />
+                <div className={classes.content}>
+                  <SnackbarProvider
+                    maxSnack={4}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    content={(key, data) => (
+                      <div>
+                        <Notification id={key} notification={data} />
+                      </div>
+                    )}
+                  >
+                    <NotificationsProvider>
+                      <Routes />
+                    </NotificationsProvider>
+                  </SnackbarProvider>
+                </div>
+              </BackgroundController>
             </ERC721NftsProvider>
           </ERC20TokensProvider>
         </ContractsProvider>
@@ -82,8 +129,11 @@ const Routes = () => {
         <Route path="/airdrop/:address">
           <AddressRegistrationController />
         </Route>
-        <Route path="/">
+        <Route exact path="/airdrop">
           <AddressEntryPage />
+        </Route>
+        <Route path="/">
+          <Redirect to="/airdrop" />
         </Route>
       </Switch>
     </Router>
@@ -92,6 +142,18 @@ const Routes = () => {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      display: 'flex',
+      flex: '1 0 auto',
+      flexDirection: 'column',
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      overflowY: 'auto',
+    },
+    fairdropBackground,
+    ethBackground,
+    xdaiBackground,
     content: {
       [theme.breakpoints.up('sm')]: {
         width: `calc(100% - ${DRAWER_WIDTH}px)`,
