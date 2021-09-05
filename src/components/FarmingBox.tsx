@@ -17,6 +17,7 @@ import { FarmingTitleBox } from './FarmingTitleBox';
 import { FarmingStakedBox } from './FarmingStakedBox';
 import { FarmingHarvestBox } from './FarmingHarvestBox';
 import { FarmingLpBox } from './FarmingLpBox';
+import { FarmingTotalLiquidityBox } from './FarmingTotalLiquidityBox';
 
 interface FarmingBoxProps {
   farm: FARM;
@@ -46,25 +47,9 @@ const FarmingBox = ({ farm }: FarmingBoxProps) => {
           </Box>
         </Box>
       </Box>
-      <Divider />
-      <Box display="flex" alignItems="center">
-        <Box
-          display={'flex'}
-          alignItems="center"
-          justifyContent="center"
-          width="50%"
-          borderRight={1}
-          borderColor={'rgba(0, 0, 0, 0.12)'}
-          py={1}
-        ></Box>
-        <Box
-          display={'flex'}
-          alignItems="center"
-          justifyContent="center"
-          width="50%"
-        >
-          <Button>Get LP</Button>
-        </Box>
+      {/* <Divider /> */}
+      <Box className={classes.bottomBox} borderTop={1}>
+        <FarmingTotalLiquidityBox farm={farm} />
       </Box>
     </Paper>
   );
@@ -88,8 +73,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexGrow: 1,
       flexDirection: 'column',
-      padding: '24px',
-      paddingBottom: '0px',
     },
     titleBox: {
       display: 'flex',
@@ -101,6 +84,8 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       justifyContent: 'space-evenly',
       flexGrow: 1,
+      paddingLeft: '14px',
+      paddingRight: '14px',
     },
     middleRow: {
       display: 'flex',
@@ -112,6 +97,12 @@ const useStyles = makeStyles((theme: Theme) =>
     subheader: {
       fontWeight: 'bold',
       fontSize: 14,
+    },
+    bottomBox: {
+      display: 'flex',
+      flexDirecion: 'column',
+      justifyContent: 'space-between',
+      marginBottom: '5px',
     },
   })
 );
