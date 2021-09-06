@@ -18,7 +18,7 @@ export const UNISWAP_V3_STAKER: Record<string, string> = {
 };
 
 export const STAKING_REWARDS_CONTRACT: Record<string, string> = {
-  4: '0x947FD45244f389e9F97f36B41F30104211c7e5Fc',
+  4: '0x8eE36E719529Df01CA9F6098e4c637471F184D6D',
   1: '0x947FD45244f389e9F97f36B41F30104211c7e5Fc',
 };
 
