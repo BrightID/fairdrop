@@ -14,7 +14,6 @@ export type Incentive = {
 };
 
 export type LiquidityPosition = {
-  approvedAddress: string;
   owner: string;
   reward: BigNumber;
   staked: number;
