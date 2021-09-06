@@ -4,8 +4,8 @@ export const DRAWER_WIDTH = 160;
 
 export const NETWORK_MAINNET = chainName(1);
 export const NETWORK_RINKEBY = chainName(4);
-export const INCENTIVE_START_TIME = 1629189007;
-export const INCENTIVE_END_TIME = 1630398607;
+export const INCENTIVE_START_TIME = 1630934283; // 1629189007;
+export const INCENTIVE_END_TIME = 1631539083; // 1630398607;
 
 export const NFT_POSITIONS_MANAGER_ADDRESS: Record<string, string> = {
   4: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
@@ -13,8 +13,8 @@ export const NFT_POSITIONS_MANAGER_ADDRESS: Record<string, string> = {
 };
 
 export const UNISWAP_V3_STAKER: Record<string, string> = {
-  4: '0xF504c90B4e2f72F986DFcE07Fb477F69b9A9808A',
-  1: '0xF504c90B4e2f72F986DFcE07Fb477F69b9A9808A',
+  4: '0x1f98407aaB862CdDeF78Ed252D6f557aA5b0f00d',
+  1: '0x1f98407aaB862CdDeF78Ed252D6f557aA5b0f00d',
 };
 
 export const STAKING_REWARDS_CONTRACT: Record<string, string> = {
@@ -28,7 +28,7 @@ export const WETH: Record<string, string> = {
 };
 
 export const BRIGHT: Record<string, string> = {
-  4: '0x28156250e9d4c03334ba00568b63b4b0fd49ce93',
+  4: '0x779ec783bbEec9350B3EfB8BeC775C6379f5E218',
   1: '0x28156250e9d4c03334ba00568b63b4b0fd49ce93',
 };
 
@@ -38,11 +38,11 @@ export const UNISWAP_V2_LP_POOL: Record<string, string> = {
 };
 
 export const UNISWAP_V3_LP_POOL: Record<string, string> = {
-  4: '0x5705ae6e3BF74608543a248b9E87e297d36a2aA9',
+  4: '0x17472be087c2ae35ac8a9fc2a31ff9617ae2609a',
   1: '0x5705ae6e3BF74608543a248b9E87e297d36a2aA9',
 };
 
 export const INCENTIVE_REFUNDEE_ADDRESS: Record<string, string> = {
-  4: '0xdC2681C2cef66649045E3eB2B2bb505D2D1564ba',
+  4: '0x7e3c105c83166737da77942240378e786842eb1d',
   1: '0xdC2681C2cef66649045E3eB2B2bb505D2D1564ba',
 };
