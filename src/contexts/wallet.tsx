@@ -80,6 +80,23 @@ export const WalletContext: React.FC<WalletContextProps> = ({ children }) => {
     }
   }, [walletAddress, onboard]);
 
+  //reset app if network changes
+  useEffect(() => {
+    if (!provider) return;
+
+    provider.on('network', (newNetwork, oldNetwork) => {
+      // When a Provider makes its initial connection, it emits a "network"
+      // event with a null oldNetwork along with the newNetwork. So, if the
+      // oldNetwork exists, it represents a changing network
+      if (oldNetwork) {
+        window.location.reload();
+      }
+    });
+    return () => {
+      provider.off('network');
+    };
+  }, [provider]);
+
   // setup onboard.js
   useEffect(() => {
     const runEffect = async () => {
@@ -102,7 +119,8 @@ export const WalletContext: React.FC<WalletContextProps> = ({ children }) => {
               );
               setWallet(wallet);
               const ethersProvider = new ethers.providers.Web3Provider(
-                wallet.provider
+                wallet.provider,
+                'any'
               );
               setProvider(ethersProvider);
               setSigner(ethersProvider.getSigner());
