@@ -61,7 +61,7 @@ const V3StakingModal: FC = () => {
     unstakedPositions,
   } = useV3Liquidity();
 
-  const { approvedAddress, owner, staked, tokenId } = positionSelected || {};
+  const { owner, staked, tokenId } = positionSelected || {};
 
   const { isWorking, transfer, stake } = useV3Staking(tokenId?.toNumber());
 
@@ -77,13 +77,7 @@ const V3StakingModal: FC = () => {
   }, [network, walletAddress, refreshPositions]);
 
   useEffect(() => {
-    if (
-      !approvedAddress ||
-      !owner ||
-      !tokenId ||
-      !uniswapV3StakerContract ||
-      !walletAddress
-    )
+    if (!owner || !tokenId || !uniswapV3StakerContract || !walletAddress)
       return;
     const load = async () => {
       const nftOwnedByUser = owner === walletAddress;
@@ -100,14 +94,7 @@ const V3StakingModal: FC = () => {
     };
 
     load();
-  }, [
-    approvedAddress,
-    owner,
-    tokenId,
-    uniswapV3StakerContract,
-    walletAddress,
-    staked,
-  ]);
+  }, [owner, tokenId, uniswapV3StakerContract, walletAddress, staked]);
 
   console.log('activeStep', activeStep);
 

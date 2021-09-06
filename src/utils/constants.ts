@@ -1,6 +1,6 @@
 import chainName from './chainName';
 
-export const DRAWER_WIDTH = 160;
+export const DRAWER_WIDTH = 240;
 
 export const NETWORK_MAINNET = chainName(1);
 export const NETWORK_RINKEBY = chainName(4);

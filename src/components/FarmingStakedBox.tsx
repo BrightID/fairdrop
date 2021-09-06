@@ -51,7 +51,7 @@ export const SubsStakedBox: FC = () => {
           <Fab
             onClick={navToUnstake}
             size="small"
-            color="primary"
+            className={classes.fab}
             aria-label="remove"
             disabled={displayBalance === '0.0'}
           >
@@ -60,7 +60,7 @@ export const SubsStakedBox: FC = () => {
           <Fab
             onClick={navToStake}
             size="small"
-            color="primary"
+            className={classes.fab}
             aria-label="add"
             style={{ marginLeft: '10px' }}
           >
@@ -109,7 +109,7 @@ export const HoneyStakedBox: FC = () => {
           <Fab
             onClick={navToUnstake}
             size="small"
-            color="primary"
+            className={classes.fab}
             aria-label="remove"
             disabled={displayBalance === '0.0'}
           >
@@ -118,7 +118,7 @@ export const HoneyStakedBox: FC = () => {
           <Fab
             onClick={navToStake}
             size="small"
-            color="primary"
+            className={classes.fab}
             aria-label="add"
             style={{ marginLeft: '10px' }}
           >
@@ -166,7 +166,7 @@ export const UniswapV3StakedBox: FC = () => {
           <Fab
             onClick={navToUnstake}
             size="small"
-            color="primary"
+            className={classes.fab}
             aria-label="remove"
             disabled={stakedPositions?.length === 0}
           >
@@ -175,7 +175,7 @@ export const UniswapV3StakedBox: FC = () => {
           <Fab
             onClick={navToStake}
             size="small"
-            color="primary"
+            className={classes.fab}
             aria-label="add"
             style={{ marginLeft: '10px' }}
           >
@@ -213,6 +213,9 @@ const useStyles = makeStyles((theme: Theme) =>
     subheader: {
       fontWeight: 'bold',
       fontSize: 14,
+    },
+    fab: {
+      backgroundColor: 'white',
     },
   })
 );

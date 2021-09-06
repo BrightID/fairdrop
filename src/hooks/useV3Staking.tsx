@@ -34,13 +34,14 @@ export function useV3Staking(tokenId: number | undefined) {
           ['address', 'address', 'uint', 'uint', 'address'],
           currentIncentive.key
         );
-        await tx('Staking...', 'Staked!', () =>
-          nftManagerPositionsContract.safeTransferFrom(
-            walletAddress,
-            uniswapV3StakerContract.address,
-            tokenId,
-            data
-          )
+        await tx(
+          'Staking...',
+          'Staked!',
+          () =>
+            nftManagerPositionsContract[
+              'safeTransferFrom(address,address,uint256,bytes)'
+            ](walletAddress, uniswapV3StakerContract.address, tokenId, data)
+          // https://stackoverflow.com/questions/68289806/no-safetransferfrom-function-in-ethers-js-contract-instance
         );
         next();
       } catch (e) {

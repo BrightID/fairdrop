@@ -52,7 +52,7 @@ const V3StakingModal: FC = () => {
 
   console.log('nftPositions', nftPositions);
 
-  const { approvedAddress, owner, staked, tokenId } = positionSelected || {};
+  const { owner, staked, tokenId } = positionSelected || {};
 
   const { isWorking, exit } = useV3Staking(tokenId?.toNumber());
 
