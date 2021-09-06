@@ -7,7 +7,8 @@ import { useWallet } from '../contexts/wallet';
 import { LiquidityPosition } from '../utils/types';
 import { FARM } from '../utils/types';
 import ethLogo from '../images/ethereum_logo.png';
-import brightLogo from '../images/$bright_logo.png';
+import brightLogo from '../images/bright_logo.png';
+import hnysLogo from '../images/hnys.png';
 
 export const SubsTitleBox: FC = () => {
   const classes = useStyles();
@@ -61,7 +62,7 @@ export const HoneyTitleBox: FC = () => {
             <img className={classes.ethLogo} alt="$BRIGHT" src={brightLogo} />
           </Avatar>
           <Avatar className={classes.eth}>
-            <img className={classes.ethLogo} alt="ETH" src={ethLogo} />
+            <img className={classes.ethLogo} alt="HNYS" src={hnysLogo} />
           </Avatar>
         </Box>
         <Box display="flex" flexDirection="column">
@@ -148,26 +149,28 @@ const useStyles = makeStyles((theme: Theme) =>
     chainBox: {
       display: 'flex',
       alignItems: 'center',
-      backgroundColor: 'brown',
+      backgroundColor: '#3B211B',
       color: 'white',
-      paddingTop: '5px',
-      paddingBottom: '5px',
+      paddingTop: '10px',
+      paddingBottom: '10px',
       paddingLeft: '15px',
       paddingRight: '10px',
       borderTopLeftRadius: '24px',
       marginRight: '1px',
+      fontWeight: 'bold',
     },
     dexBox: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'flex-end',
-      backgroundColor: 'orange',
+      backgroundColor: '#FFC918',
       color: 'white',
       flexGrow: 1,
-      paddingTop: '5px',
-      paddingBottom: '5px',
+      paddingTop: '10px',
+      paddingBottom: '10px',
       paddingRight: '15px',
       borderTopRightRadius: '24px',
+      fontWeight: 'bold',
     },
     title: {
       display: 'flex',
