@@ -26,10 +26,23 @@ interface FarmingBoxProps {
 const FarmingBox = ({ farm }: FarmingBoxProps) => {
   const classes = useStyles();
 
-  const { walletAddress } = useWallet();
+  const { network } = useWallet();
+
+  let displayFade = false;
+  if (
+    (farm === 'UNISWAP' || farm === 'SUBS') &&
+    network !== 1 &&
+    network !== 4
+  ) {
+    displayFade = true;
+  }
+  if (farm === 'HONEY' && network !== 100) {
+    displayFade = true;
+  }
 
   return (
     <Paper elevation={2} className={classes.container}>
+      {displayFade && <Box className={classes.faded} />}
       <Box className={classes.main}>
         <Box className={classes.titleBox}>
           <FarmingTitleBox farm={farm} />
@@ -68,6 +81,8 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '90%',
       minHeight: 300,
       overflow: 'hidden',
+      boxSizing: 'border-box',
+      position: 'relative',
     },
     main: {
       display: 'flex',
@@ -103,6 +118,14 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirecion: 'column',
       justifyContent: 'space-between',
       marginBottom: '5px',
+    },
+    faded: {
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      backgroundColor: 'white',
+      opacity: 0.7,
+      zIndex: 10,
     },
   })
 );

@@ -95,9 +95,9 @@ const ActiveClaimController = ({
         // When a Provider makes its initial connection, it emits a "network"
         // event with a null oldNetwork along with the newNetwork. So, if the
         // oldNetwork exists, it represents a changing network
-        if (oldNetwork) {
-          window.location.reload();
-        }
+        // if (oldNetwork) {
+        //   window.location.reload();
+        // }
       });
       try {
         // check if contract is deployed
