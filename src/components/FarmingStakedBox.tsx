@@ -24,7 +24,7 @@ export const SubsStakedBox: FC = () => {
   let displayBalance = '0.0';
 
   if (stakedBalance) {
-    displayBalance = utils.formatUnits(stakedBalance, 18);
+    displayBalance = utils.formatUnits(stakedBalance, 18).slice(0, 12);
   }
 
   const navToStake = () => {
@@ -83,7 +83,7 @@ export const HoneyStakedBox: FC = () => {
   let displayBalance = '0.0';
 
   if (stakedBalance) {
-    displayBalance = utils.formatUnits(stakedBalance, 18);
+    displayBalance = utils.formatUnits(stakedBalance, 18).slice(0, 12);
   }
 
   const navToStake = () => {

@@ -6,7 +6,7 @@ import { useContracts } from '../contexts/contracts';
 import { useNotifications } from '../contexts/notifications';
 import { useERC20Tokens } from '../contexts/erc20Tokens';
 
-const approveValue = new BigNumber(
+const approveValue = BigNumberEthers.from(
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
 );
 

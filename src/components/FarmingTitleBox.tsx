@@ -24,7 +24,7 @@ export const SubsTitleBox: FC = () => {
       </Box>
       <Box className={classes.title} mt={1}>
         <Box>
-          <Avatar className={classes.subs}>SUBS</Avatar>
+          <Avatar className={classes.subs}>DAI</Avatar>
         </Box>
         <Box display="flex" flexDirection="column">
           <Typography variant={'h6'}>SUBS</Typography>

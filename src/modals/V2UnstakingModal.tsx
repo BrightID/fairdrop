@@ -61,6 +61,8 @@ const V2UnstakingModal: FC = () => {
   } catch {}
 
   const { isWorking, exit, withdraw } = useV2Staking();
+  console.log('inputValue', inputValue);
+  console.log('inputBn', inputValue.bn.toString());
 
   useEffect(() => {
     if (!walletAddress || !stakingRewardsContract) return;

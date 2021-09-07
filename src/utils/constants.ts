@@ -33,8 +33,8 @@ export const BRIGHT: Record<string, string> = {
 };
 
 export const UNISWAP_V2_LP_POOL: Record<string, string> = {
-  4: '0x054970C5cd7ff60A43640fE2A411CA9040cdEC0b',
-  1: '0x054970C5cd7ff60A43640fE2A411CA9040cdEC0b',
+  4: '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735',
+  1: '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735',
 };
 
 export const UNISWAP_V3_LP_POOL: Record<string, string> = {

@@ -135,7 +135,7 @@ const V2StakingModal: FC = () => {
       fullWidth={true}
     >
       <DialogTitle>
-        <Typography variant="h6">Stake ETH-BRIGHT LP</Typography>
+        <Typography variant="h6">Stake DAI</Typography>
         <IconButton
           aria-label="close"
           className={classes.closeButton}
@@ -149,7 +149,7 @@ const V2StakingModal: FC = () => {
 
       <DialogContent className={classes.container}>
         <Box className={classes.balanceBox}>
-          {utils.formatUnits(uniV2LpBalance, 18)} ETH-BRIGHT Available
+          {utils.formatUnits(uniV2LpBalance, 18)} DAI Available
         </Box>
         <Box className={classes.inputField}>
           <OutlinedInput
@@ -168,7 +168,7 @@ const V2StakingModal: FC = () => {
             endAdornment={
               <InputAdornment position="end">
                 <Box fontSize={'small'} fontWeight="bold" mr={2}>
-                  ETH-BRIGHT
+                  DAI
                 </Box>
                 <Button
                   aria-label="toggle password visibility"
@@ -193,8 +193,12 @@ const V2StakingModal: FC = () => {
         />
       </DialogContent>
       <DialogActions className={classes.bottom}>
-        <Button href="#" color="primary" endIcon={<LaunchIcon />}>
-          Get BRIGHT / ETH 0.3% Position
+        <Button
+          href="https://app.uniswap.org/#/swap?outputCurrency=0xc7ad46e0b8a400bb3c915120d284aafba8fc4735"
+          color="primary"
+          endIcon={<LaunchIcon />}
+        >
+          Get DAI
         </Button>
       </DialogActions>
     </Dialog>
