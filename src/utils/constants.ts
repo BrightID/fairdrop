@@ -44,5 +44,5 @@ export const UNISWAP_V3_LP_POOL: Record<string, string> = {
 
 export const INCENTIVE_REFUNDEE_ADDRESS: Record<string, string> = {
   4: '0x7e3c105c83166737da77942240378e786842eb1d',
-  1: '0xdC2681C2cef66649045E3eB2B2bb505D2D1564ba',
+  1: '0x693FB04d603D800fA9456a02564bA060dA8939fc',
 };
