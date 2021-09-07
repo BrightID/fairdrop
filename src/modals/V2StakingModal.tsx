@@ -1,6 +1,5 @@
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
-import BigNumber from 'bignumber.js';
-import { utils } from 'ethers';
+import { utils, BigNumber } from 'ethers';
 import clsx from 'clsx';
 import {
   Box,
@@ -27,9 +26,7 @@ import { useERC20Tokens } from '../contexts/erc20Tokens';
 import { useV2Staking } from '../hooks/useV2Staking';
 import { LiquidityPosition } from '../utils/types';
 
-const STEPS = ['Approve', 'Stake', 'Stake'];
-
-const preventDefault = (event: React.SyntheticEvent) => event.preventDefault();
+const e18 = '000000000000000000';
 
 const V2StakingModal: FC = () => {
   const classes = useStyles();
@@ -45,7 +42,7 @@ const V2StakingModal: FC = () => {
     bn: BigNumber;
   }>({
     display: 0,
-    bn: new BigNumber(0),
+    bn: BigNumber.from(0),
   });
 
   const { uniV2LpToken } = useERC20Tokens();
@@ -55,13 +52,12 @@ const V2StakingModal: FC = () => {
   let uniV2LpDisplay = 0;
   let disableConfirm = false;
 
-  if (uniV2LpBalance) {
+  if (BigNumber.isBigNumber(uniV2LpBalance)) {
     try {
       uniV2LpDisplay = Number(utils.formatUnits(uniV2LpBalance, 18));
 
       disableConfirm =
-        inputValue.bn.isZero() ||
-        inputValue.bn.gt(new BigNumber(uniV2LpBalance.toString()));
+        inputValue.bn.isZero() || inputValue.bn.gt(uniV2LpBalance);
     } catch {}
   }
 
@@ -110,7 +106,7 @@ const V2StakingModal: FC = () => {
     try {
       setInputValue({
         display: Number(event.target.value),
-        bn: new BigNumber(`${event.target.value}e+18`),
+        bn: BigNumber.from(`${event.target.value}${e18}`),
       });
     } catch {}
   };
@@ -125,6 +121,8 @@ const V2StakingModal: FC = () => {
       bn: uniV2LpBalance,
     });
   }, [uniV2LpBalance, uniV2LpDisplay]);
+
+  console.log('input', inputValue);
 
   return (
     <Dialog

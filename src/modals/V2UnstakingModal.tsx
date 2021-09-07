@@ -1,6 +1,5 @@
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
-import BigNumber from 'bignumber.js';
-import { utils, BigNumber as BigNumberEthers } from 'ethers';
+import { utils, BigNumber } from 'ethers';
 import clsx from 'clsx';
 import {
   Box,
@@ -27,9 +26,7 @@ import { useV2Staking } from '../hooks/useV2Staking';
 import { LiquidityPosition } from '../utils/types';
 import { isClassExpression } from 'typescript';
 
-const STEPS = ['Approve', 'Stake', 'Stake'];
-
-const preventDefault = (event: React.SyntheticEvent) => event.preventDefault();
+const e18 = '000000000000000000';
 
 const V2UnstakingModal: FC = () => {
   const classes = useStyles();
@@ -40,8 +37,8 @@ const V2UnstakingModal: FC = () => {
   const { stakingRewardsContract } = useContracts();
   const { walletAddress } = useWallet();
 
-  const [stakedBalance, setStakedBalance] = useState<BigNumberEthers>(
-    BigNumberEthers.from(0)
+  const [stakedBalance, setStakedBalance] = useState<BigNumber>(
+    BigNumber.from(0)
   );
 
   const [inputValue, setInputValue] = useState<{
@@ -49,26 +46,24 @@ const V2UnstakingModal: FC = () => {
     bn: BigNumber;
   }>({
     display: 0,
-    bn: new BigNumber(0),
+    bn: BigNumber.from(0),
   });
 
   let disableWithdraw = false;
 
   try {
-    disableWithdraw =
-      inputValue.bn.isZero() ||
-      inputValue.bn.gt(new BigNumber(stakedBalance.toString()));
+    disableWithdraw = inputValue.bn.isZero() || inputValue.bn.gt(stakedBalance);
   } catch {}
 
   const { isWorking, exit, withdraw } = useV2Staking();
-  console.log('inputValue', inputValue);
-  console.log('inputBn', inputValue.bn.toString());
 
   useEffect(() => {
     if (!walletAddress || !stakingRewardsContract) return;
     const load = async () => {
-      const balance = await stakingRewardsContract.balanceOf(walletAddress);
-      setStakedBalance(balance);
+      try {
+        const balance = await stakingRewardsContract.balanceOf(walletAddress);
+        setStakedBalance(balance);
+      } catch {}
     };
     load();
   }, [walletAddress, stakingRewardsContract]);
@@ -98,12 +93,13 @@ const V2UnstakingModal: FC = () => {
     try {
       setInputValue({
         display: Number(event.target.value),
-        bn: new BigNumber(`${event.target.value}e+18`),
+        bn: BigNumber.from(`${event.target.value}${e18}`),
       });
     } catch {
       console.log('there is an error...');
     }
   };
+  console.log('input', inputValue);
 
   const handleMax = useCallback(() => {
     if (!inputRef.current || !stakedBalance) return;
@@ -113,7 +109,7 @@ const V2UnstakingModal: FC = () => {
 
       setInputValue({
         display: Number(utils.formatUnits(stakedBalance, 18)),
-        bn: new BigNumber(stakedBalance.toString()),
+        bn: stakedBalance,
       });
     } catch {}
   }, [stakedBalance]);

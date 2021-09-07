@@ -125,7 +125,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       backgroundColor: 'white',
       opacity: 0.7,
-      zIndex: 10,
+      zIndex: 1,
     },
   })
 );

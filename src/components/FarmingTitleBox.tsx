@@ -192,7 +192,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: theme.spacing(5),
       // boxShadow: '-2px 2px 4px #C4C4C4',
       filter: 'drop-shadow(-2px 2px 4px #C4C4C4)',
-      zIndex: 5,
+      zIndex: 1,
       marginTop: theme.spacing(-2.5),
       marginLeft: theme.spacing(2),
     },
