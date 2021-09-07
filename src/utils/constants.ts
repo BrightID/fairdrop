@@ -29,7 +29,7 @@ export const WETH: Record<string, string> = {
 
 export const BRIGHT: Record<string, string> = {
   4: '0x779ec783bbEec9350B3EfB8BeC775C6379f5E218',
-  1: '0x28156250e9d4c03334ba00568b63b4b0fd49ce93',
+  1: '0x5dd57da40e6866c9fcc34f4b6ddc89f1ba740dfe',
 };
 
 export const UNISWAP_V2_LP_POOL: Record<string, string> = {
