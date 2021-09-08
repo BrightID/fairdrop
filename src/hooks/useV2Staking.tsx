@@ -85,6 +85,7 @@ export function useV2Staking(tokenId?: number) {
 
       try {
         setIsWorking('Unstaking...');
+        console.log('huh', value.lte(stakedBalance));
         if (value.lte(stakedBalance)) {
           await tx('Unstaking...', 'Unstaked!', () =>
             stakingRewardsContract.withdraw(value)

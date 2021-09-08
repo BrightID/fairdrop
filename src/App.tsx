@@ -117,10 +117,10 @@ const Routes = () => {
         <Route path="/unstake/v3">
           <V3UnstakingModal />
         </Route>
-        <Route path="/stake/v2">
+        <Route path="/stake/v2/:farm">
           <V2StakingModal />
         </Route>
-        <Route path="/unstake/v2">
+        <Route path="/unstake/v2/:farm">
           <V2UnstakingModal />
         </Route>
         <Route path="/farms">

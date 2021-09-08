@@ -50,7 +50,7 @@ export const HoneyTitleBox: FC = () => {
     <Box width="100%">
       <Box display="flex" width="100%" border={1} borderColor="white">
         <Box className={classes.chainBox} fontSize="small">
-          ETH
+          XDAI
         </Box>
         <Box className={classes.dexBox} fontSize="small">
           Honeyswap
@@ -202,7 +202,6 @@ const useStyles = makeStyles((theme: Theme) =>
       height: theme.spacing(4),
       // boxShadow: '-2px 2px 4px #C4C4C4',
       filter: 'drop-shadow(-2px 2px 4px #C4C4C4)',
-      zIndex: 1,
     },
     ethLogo: {
       maxWidth: '92%',

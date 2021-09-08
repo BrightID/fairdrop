@@ -11,11 +11,10 @@ import { useV3Liquidity } from '../contexts/erc721Nfts';
 import { useContracts } from '../contexts/contracts';
 import { useStakingRewardsInfo } from '../hooks/useStakingRewardsInfo';
 import { FARM } from '../utils/types';
-import { sleep } from '../utils/promise';
 
 export const SubsStakedBox: FC = () => {
   const classes = useStyles();
-  const { walletAddress } = useWallet();
+  const { walletAddress, onboardApi } = useWallet();
   const history = useHistory();
 
   // put subs token here
@@ -28,20 +27,26 @@ export const SubsStakedBox: FC = () => {
   }
 
   const navToStake = () => {
-    history.push('/stake/v2');
+    history.push('/stake/v2/subs');
   };
   const navToUnstake = () => {
-    history.push('/unstake/v2');
+    history.push('/unstake/v2/subs');
+  };
+  const switchWallet = async () => {
+    const selected = await onboardApi?.walletSelect();
+    if (selected) {
+      await onboardApi?.walletCheck();
+    }
   };
 
   return (
     <>
       <Box>
-        <Typography className={classes.subheader}>Staked LP Tokens</Typography>
+        <Typography className={classes.subheader}>Staked SUBS</Typography>
         {walletAddress ? (
           <Typography>{displayBalance}</Typography>
         ) : (
-          <Button variant={'outlined'} size={'small'}>
+          <Button variant={'outlined'} size={'small'} onClick={switchWallet}>
             Connect Wallet
           </Button>
         )}
@@ -74,7 +79,7 @@ export const SubsStakedBox: FC = () => {
 
 export const HoneyStakedBox: FC = () => {
   const classes = useStyles();
-  const { walletAddress } = useWallet();
+  const { walletAddress, onboardApi } = useWallet();
   const history = useHistory();
 
   // put honey token here
@@ -87,10 +92,16 @@ export const HoneyStakedBox: FC = () => {
   }
 
   const navToStake = () => {
-    history.push('/stake/v2');
+    history.push('/stake/v2/honey');
   };
   const navToUnstake = () => {
-    history.push('/unstake/v2');
+    history.push('/unstake/v2/honey');
+  };
+  const switchWallet = async () => {
+    const selected = await onboardApi?.walletSelect();
+    if (selected) {
+      await onboardApi?.walletCheck();
+    }
   };
   return (
     <>
@@ -99,7 +110,7 @@ export const HoneyStakedBox: FC = () => {
         {walletAddress ? (
           <Typography>{displayBalance}</Typography>
         ) : (
-          <Button variant={'outlined'} size={'small'}>
+          <Button variant={'outlined'} size={'small'} onClick={switchWallet}>
             Connect Wallet
           </Button>
         )}
@@ -132,7 +143,7 @@ export const HoneyStakedBox: FC = () => {
 
 export const UniswapV3StakedBox: FC = () => {
   const classes = useStyles();
-  const { walletAddress, network } = useWallet();
+  const { walletAddress, network, onboardApi } = useWallet();
   const { uniswapV3StakerContract } = useContracts();
   const history = useHistory();
   const { refreshPositions, stakedPositions } = useV3Liquidity();
@@ -149,6 +160,13 @@ export const UniswapV3StakedBox: FC = () => {
   const navToUnstake = () => {
     history.push('/unstake/v3');
   };
+  const switchWallet = async () => {
+    const selected = await onboardApi?.walletSelect();
+    if (selected) {
+      await onboardApi?.walletCheck();
+    }
+  };
+
   return (
     <>
       <Box>
@@ -156,7 +174,7 @@ export const UniswapV3StakedBox: FC = () => {
         {walletAddress ? (
           <Typography>{stakedPositions?.length}</Typography>
         ) : (
-          <Button variant={'outlined'} size={'small'}>
+          <Button variant={'outlined'} size={'small'} onClick={switchWallet}>
             Connect Wallet
           </Button>
         )}

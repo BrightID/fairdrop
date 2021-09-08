@@ -31,7 +31,13 @@ export const SubsLpBox: FC = () => {
         </Box>
       </Box>
       <Box className={classes.lpLinkBox} py={1}>
-        <Link underline="always" className={classes.lpLink}>
+        <Link
+          underline="always"
+          className={classes.lpLink}
+          href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x61CEAc48136d6782DBD83c09f51E23514D12470a"
+          target="_blank"
+          rel="noopener"
+        >
           Get SUBS
         </Link>
       </Box>
@@ -53,7 +59,13 @@ export const HoneyLpBox: FC = () => {
         </Box>
       </Box>
       <Box className={classes.lpLinkBox} py={1}>
-        <Link underline="always" className={classes.lpLink}>
+        <Link
+          underline="always"
+          className={classes.lpLink}
+          href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x61CEAc48136d6782DBD83c09f51E23514D12470a"
+          target="_blank"
+          rel="noopener"
+        >
           Get LP Token
         </Link>
       </Box>
@@ -80,7 +92,13 @@ export const UniswapV3LpBox: FC = () => {
         </Box>
       </Box>
       <Box className={classes.lpLinkBox} py={1}>
-        <Link underline="always" className={classes.lpLink}>
+        <Link
+          underline="always"
+          className={classes.lpLink}
+          href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x61CEAc48136d6782DBD83c09f51E23514D12470a"
+          target="_blank"
+          rel="noopener"
+        >
           Get NFT Position
         </Link>
       </Box>

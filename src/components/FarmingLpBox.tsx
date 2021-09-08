@@ -28,7 +28,7 @@ export const SubsLpBox: FC = () => {
 
   return (
     <Box>
-      <Typography className={classes.subheader}>LP in wallet</Typography>
+      <Typography className={classes.subheader}>SUBS in wallet</Typography>
       <Typography>{displayBalance}</Typography>
     </Box>
   );

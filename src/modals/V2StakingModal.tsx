@@ -17,31 +17,38 @@ import {
 } from '@material-ui/core';
 
 import CloseIcon from '@material-ui/icons/Close';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import LaunchIcon from '@material-ui/icons/Launch';
 import { useContracts } from '../contexts/contracts';
 import { useWallet } from '../contexts/wallet';
 import { useERC20Tokens } from '../contexts/erc20Tokens';
 import { useV2Staking } from '../hooks/useV2Staking';
-import { LiquidityPosition } from '../utils/types';
 
-const e18 = '000000000000000000';
+interface Params {
+  farm: string;
+}
+
+const SUBS = 'SUBS';
+const HONEY = 'BRIGHT-HNY LP';
 
 const V2StakingModal: FC = () => {
   const classes = useStyles();
   const history = useHistory();
   const inputRef = useRef<any>(null);
+  const { farm } = useParams<Params>();
+
+  const stakeToken = farm === 'subs' ? SUBS : HONEY;
 
   const { stakingRewardsContract } = useContracts();
   const { walletAddress } = useWallet();
 
   const [activeStep, setActiveStep] = useState<number>(0);
   const [inputValue, setInputValue] = useState<{
-    display: number;
+    display: string;
     bn: BigNumber;
   }>({
-    display: 0,
+    display: '0.0',
     bn: BigNumber.from(0),
   });
 
@@ -49,15 +56,16 @@ const V2StakingModal: FC = () => {
 
   const uniV2LpBalance = uniV2LpToken?.balance;
 
-  let uniV2LpDisplay = 0;
+  let uniV2LpDisplay = '0.0';
   let disableConfirm = false;
 
   if (BigNumber.isBigNumber(uniV2LpBalance)) {
     try {
-      uniV2LpDisplay = Number(utils.formatUnits(uniV2LpBalance, 18));
+      uniV2LpDisplay = utils.formatUnits(uniV2LpBalance, 18);
 
       disableConfirm =
-        inputValue.bn.isZero() || inputValue.bn.gt(uniV2LpBalance);
+        inputValue.bn.lte(BigNumber.from(0)) ||
+        inputValue.bn.gt(uniV2LpBalance);
     } catch {}
   }
 
@@ -102,13 +110,16 @@ const V2StakingModal: FC = () => {
   }, [inputValue.bn, activeStep, approve, history, stake]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (Number(event.target.value) < 0) return;
+    console.log('input is changing...');
     try {
       setInputValue({
-        display: Number(event.target.value),
-        bn: BigNumber.from(`${event.target.value}${e18}`),
+        display: event.target.value,
+        bn: utils.parseUnits(event.target.value, 18),
       });
-    } catch {}
+    } catch (err) {
+      console.log(err);
+      console.log('there is an error...');
+    }
   };
 
   const handleMax = useCallback(() => {
@@ -133,7 +144,7 @@ const V2StakingModal: FC = () => {
       fullWidth={true}
     >
       <DialogTitle>
-        <Typography variant="h6">Stake DAI</Typography>
+        <Typography variant="h6">Stake {stakeToken}</Typography>
         <IconButton
           aria-label="close"
           className={classes.closeButton}
@@ -147,7 +158,7 @@ const V2StakingModal: FC = () => {
 
       <DialogContent className={classes.container}>
         <Box className={classes.balanceBox}>
-          {utils.formatUnits(uniV2LpBalance, 18)} DAI Available
+          {utils.formatUnits(uniV2LpBalance, 18)} {stakeToken} Available
         </Box>
         <Box className={classes.inputField}>
           <OutlinedInput
@@ -157,16 +168,16 @@ const V2StakingModal: FC = () => {
             type={'number'}
             inputRef={inputRef}
             inputProps={{
-              max: uniV2LpDisplay,
               min: 0,
               step: 0.01,
             }}
+            value={inputValue.display}
             defaultValue={0.0}
             onChange={handleInputChange}
             endAdornment={
               <InputAdornment position="end">
                 <Box fontSize={'small'} fontWeight="bold" mr={2}>
-                  DAI
+                  {stakeToken}
                 </Box>
                 <Button
                   aria-label="toggle password visibility"
@@ -192,11 +203,13 @@ const V2StakingModal: FC = () => {
       </DialogContent>
       <DialogActions className={classes.bottom}>
         <Button
-          href="https://app.uniswap.org/#/swap?outputCurrency=0xc7ad46e0b8a400bb3c915120d284aafba8fc4735"
+          href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x61CEAc48136d6782DBD83c09f51E23514D12470a"
+          target="_blank"
+          rel="noopener"
           color="primary"
           endIcon={<LaunchIcon />}
         >
-          Get DAI
+          Get {stakeToken}
         </Button>
       </DialogActions>
     </Dialog>

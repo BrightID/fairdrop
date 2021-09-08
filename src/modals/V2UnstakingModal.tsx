@@ -16,23 +16,28 @@ import {
 } from '@material-ui/core';
 
 import CloseIcon from '@material-ui/icons/Close';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import { useContracts } from '../contexts/contracts';
 import { useWallet } from '../contexts/wallet';
 import { useERC20Tokens } from '../contexts/erc20Tokens';
 import { useV2Staking } from '../hooks/useV2Staking';
-import { LiquidityPosition } from '../utils/types';
-import { isClassExpression } from 'typescript';
 
-const e18 = '000000000000000000';
+interface Params {
+  farm: string;
+}
+
+const SUBS = 'SUBS';
+const HONEY = 'BRIGHT-HNY LP';
 
 const V2UnstakingModal: FC = () => {
   const classes = useStyles();
   const history = useHistory();
   const inputRef = useRef<any>(null);
-  // const { nft } = useParams();
+  const { farm } = useParams<Params>();
+
+  const stakeToken = farm === 'subs' ? SUBS : HONEY;
 
   const { stakingRewardsContract } = useContracts();
   const { walletAddress } = useWallet();
@@ -42,17 +47,18 @@ const V2UnstakingModal: FC = () => {
   );
 
   const [inputValue, setInputValue] = useState<{
-    display: number;
+    display: string;
     bn: BigNumber;
   }>({
-    display: 0,
+    display: '0.0',
     bn: BigNumber.from(0),
   });
 
   let disableWithdraw = false;
 
   try {
-    disableWithdraw = inputValue.bn.isZero() || inputValue.bn.gt(stakedBalance);
+    disableWithdraw =
+      inputValue.bn.lte(BigNumber.from(0)) || inputValue.bn.gt(stakedBalance);
   } catch {}
 
   const { isWorking, exit, withdraw } = useV2Staking();
@@ -81,38 +87,41 @@ const V2UnstakingModal: FC = () => {
     } catch {}
   }, [inputValue.bn, history, withdraw, disableWithdraw]);
 
-  const exitStake = useCallback(() => {
-    return exit(() => {
-      history.push('/farms');
-    });
-  }, [history, exit]);
-
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log('input is changing...');
-    if (Number(event.target.value) < 0) return;
+
     try {
       setInputValue({
-        display: Number(event.target.value),
-        bn: BigNumber.from(`${event.target.value}${e18}`),
+        display: event.target.value,
+        bn: utils.parseUnits(event.target.value, 18),
       });
-    } catch {
+    } catch (err) {
+      console.log(err);
       console.log('there is an error...');
     }
   };
-  console.log('input', inputValue);
+  console.log('input', inputValue.display);
+  console.log('inputBn', inputValue.bn.toString());
 
   const handleMax = useCallback(() => {
     if (!inputRef.current || !stakedBalance) return;
 
     try {
-      inputRef.current.value = Number(utils.formatUnits(stakedBalance, 18));
+      inputRef.current.value = utils.formatUnits(stakedBalance, 18);
 
       setInputValue({
-        display: Number(utils.formatUnits(stakedBalance, 18)),
+        display: utils.formatUnits(stakedBalance, 18),
         bn: stakedBalance,
       });
     } catch {}
   }, [stakedBalance]);
+
+  const exitStake = useCallback(() => {
+    handleMax();
+    return exit(() => {
+      history.push('/farms');
+    });
+  }, [history, exit, handleMax]);
 
   return (
     <Dialog
@@ -123,7 +132,7 @@ const V2UnstakingModal: FC = () => {
       fullWidth={true}
     >
       <DialogTitle>
-        <Typography variant="h6">Withdraw ETH-BRIGHT LP</Typography>
+        <Typography variant="h6">Withdraw {stakeToken}</Typography>
         <IconButton
           aria-label="close"
           className={classes.closeButton}
@@ -137,7 +146,7 @@ const V2UnstakingModal: FC = () => {
 
       <DialogContent className={classes.container}>
         <Box className={classes.balanceBox}>
-          {utils.formatUnits(stakedBalance, 18)} ETH-BRIGHT Available
+          {utils.formatUnits(stakedBalance, 18)} {stakeToken} Available
         </Box>
         <Box className={classes.inputField}>
           <OutlinedInput
@@ -150,12 +159,13 @@ const V2UnstakingModal: FC = () => {
               min: 0,
               step: 0.01,
             }}
+            value={inputValue.display}
             defaultValue={0.0}
             onChange={handleInputChange}
             endAdornment={
               <InputAdornment position="end">
                 <Box fontSize={'small'} fontWeight="bold" mr={2}>
-                  ETH-BRIGHT
+                  {stakeToken}
                 </Box>
                 <Button
                   aria-label="toggle password visibility"
@@ -200,7 +210,7 @@ const FormButtons = ({
 
   return (
     <Box className={classes.btnContainer} mt={3}>
-      <>
+      <Box display="flex" flexDirection="column">
         <Button
           variant="outlined"
           color="primary"
@@ -208,20 +218,25 @@ const FormButtons = ({
           onClick={withdrawStake}
           disabled={disableWithdraw}
         >
-          Withdraw without claiming
+          Withdraw
         </Button>
+        <Box fontSize="small" mt={1}>
+          (no rewards claimed)
+        </Box>
+      </Box>
+      <Box display="flex" flexDirection="column" alignItems="center" ml={5}>
         <Button
           variant="contained"
           color="primary"
           size="large"
           onClick={exitStake}
-          style={{
-            marginLeft: 50,
-          }}
         >
-          Exit and Claim all rewards
+          Withdraw 100%
         </Button>
-      </>
+        <Box fontSize="small" mt={1}>
+          (with rewards)
+        </Box>
+      </Box>
     </Box>
   );
 };
