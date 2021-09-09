@@ -20,6 +20,7 @@ export const UNISWAP_V3_STAKER: Record<string, string> = {
 export const STAKING_REWARDS_CONTRACT: Record<string, string> = {
   4: '0x8eE36E719529Df01CA9F6098e4c637471F184D6D',
   1: '0x947FD45244f389e9F97f36B41F30104211c7e5Fc',
+  100: '0x5dD57Da40e6866C9FcC34F4b6DDC89F1BA740DfE',
 };
 
 export const WETH: Record<string, string> = {
@@ -30,11 +31,13 @@ export const WETH: Record<string, string> = {
 export const BRIGHT: Record<string, string> = {
   4: '0x779ec783bbEec9350B3EfB8BeC775C6379f5E218',
   1: '0x5dd57da40e6866c9fcc34f4b6ddc89f1ba740dfe',
+  100: '0x83FF60E2f93F8eDD0637Ef669C69D5Fb4f64cA8E',
 };
 
 export const UNISWAP_V2_LP_POOL: Record<string, string> = {
   4: '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735',
   1: '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735',
+  100: '0x0907239acfe1d0cfc7f960fc7651e946bb34a7b0',
 };
 
 export const UNISWAP_V3_LP_POOL: Record<string, string> = {
