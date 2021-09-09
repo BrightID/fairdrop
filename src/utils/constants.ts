@@ -10,11 +10,13 @@ export const INCENTIVE_END_TIME = 1631539083; // 1630398607;
 export const NFT_POSITIONS_MANAGER_ADDRESS: Record<string, string> = {
   4: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
   1: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
+  100: '',
 };
 
 export const UNISWAP_V3_STAKER: Record<string, string> = {
   4: '0x1f98407aaB862CdDeF78Ed252D6f557aA5b0f00d',
   1: '0x1f98407aaB862CdDeF78Ed252D6f557aA5b0f00d',
+  100: '',
 };
 
 export const STAKING_REWARDS_CONTRACT: Record<string, string> = {
@@ -26,6 +28,13 @@ export const STAKING_REWARDS_CONTRACT: Record<string, string> = {
 export const WETH: Record<string, string> = {
   4: '0xc778417E063141139Fce010982780140Aa0cD5Ab',
   1: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+  100: '',
+};
+
+export const HNY: Record<string, string> = {
+  4: '',
+  1: '',
+  100: '0x71850b7e9ee3f13ab46d67167341e4bdc905eef9',
 };
 
 export const BRIGHT: Record<string, string> = {
@@ -34,18 +43,26 @@ export const BRIGHT: Record<string, string> = {
   100: '0x83FF60E2f93F8eDD0637Ef669C69D5Fb4f64cA8E',
 };
 
-export const UNISWAP_V2_LP_POOL: Record<string, string> = {
+export const SUBS: Record<string, string> = {
   4: '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735',
-  1: '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735',
+  1: '0x61CEAc48136d6782DBD83c09f51E23514D12470a',
+  100: '',
+};
+
+export const HONEYSWAP_LP_POOL: Record<string, string> = {
+  4: '',
+  1: '',
   100: '0x0907239acfe1d0cfc7f960fc7651e946bb34a7b0',
 };
 
 export const UNISWAP_V3_LP_POOL: Record<string, string> = {
   4: '0x17472be087c2ae35ac8a9fc2a31ff9617ae2609a',
   1: '0x5705ae6e3BF74608543a248b9E87e297d36a2aA9',
+  100: '',
 };
 
 export const INCENTIVE_REFUNDEE_ADDRESS: Record<string, string> = {
   4: '0x7e3c105c83166737da77942240378e786842eb1d',
   1: '0x693FB04d603D800fA9456a02564bA060dA8939fc',
+  100: '',
 };

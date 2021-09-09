@@ -17,9 +17,9 @@ export const SubsLpBox: FC = () => {
   const { walletAddress } = useWallet();
 
   // put subs token here
-  const { uniV2LpToken } = useERC20Tokens();
+  const { subsToken } = useERC20Tokens();
 
-  const uniV2LpBalance = uniV2LpToken?.balance;
+  const uniV2LpBalance = subsToken?.balance;
 
   let displayBalance = '0.0';
   if (uniV2LpBalance) {
@@ -39,9 +39,9 @@ export const HoneyLpBox: FC = () => {
   const { walletAddress } = useWallet();
 
   // put honey token here
-  const { uniV2LpToken } = useERC20Tokens();
+  const { honeyswapLpToken } = useERC20Tokens();
 
-  const uniV2LpBalance = uniV2LpToken?.balance;
+  const uniV2LpBalance = honeyswapLpToken?.balance;
 
   let displayBalance = '0.0';
   if (uniV2LpBalance) {

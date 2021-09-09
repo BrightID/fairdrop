@@ -17,13 +17,15 @@ export function useStakingRewardsInfo(tokenAddress: string | null) {
     if (!contract || !walletAddress) return;
 
     const onStakedBalanceChange = async (address: string) => {
-      if (address.toLowerCase() === walletAddress.toLowerCase()) {
-        await sleep(500);
-        const stakedBalance = await contract.balanceOf(walletAddress);
-        setStakedBalance(stakedBalance);
-        // also update rewards
-        onRewardsBalanceChange(address);
-      }
+      try {
+        if (address.toLowerCase() === walletAddress.toLowerCase()) {
+          await sleep(500);
+          const stakedBalance = await contract.balanceOf(walletAddress);
+          setStakedBalance(stakedBalance);
+          // also update rewards
+          onRewardsBalanceChange(address);
+        }
+      } catch {}
     };
 
     const onRewardsBalanceChange = async (address: string) => {

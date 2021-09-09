@@ -38,7 +38,10 @@ const V2StakingModal: FC = () => {
   const inputRef = useRef<any>(null);
   const { farm } = useParams<Params>();
 
-  const stakeToken = farm === 'subs' ? SUBS : HONEY;
+  const { honeyswapLpToken, subsToken } = useERC20Tokens();
+
+  const stakeToken = farm === 'subs' ? subsToken : honeyswapLpToken;
+  const stakeTokenName = farm === 'subs' ? SUBS : HONEY;
   const getLPURL =
     farm === 'subs'
       ? 'https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x61CEAc48136d6782DBD83c09f51E23514D12470a'
@@ -56,20 +59,18 @@ const V2StakingModal: FC = () => {
     bn: BigNumber.from(0),
   });
 
-  const { uniV2LpToken } = useERC20Tokens();
+  const stakeTokenBalance = stakeToken?.balance;
 
-  const uniV2LpBalance = uniV2LpToken?.balance;
-
-  let uniV2LpDisplay = '0.0';
+  let stakeTokenDisplay = '0.0';
   let disableConfirm = false;
 
-  if (BigNumber.isBigNumber(uniV2LpBalance)) {
+  if (BigNumber.isBigNumber(stakeTokenBalance)) {
     try {
-      uniV2LpDisplay = utils.formatUnits(uniV2LpBalance, 18);
+      stakeTokenDisplay = utils.formatUnits(stakeTokenBalance, 18);
 
       disableConfirm =
         inputValue.bn.lte(BigNumber.from(0)) ||
-        inputValue.bn.gt(uniV2LpBalance);
+        inputValue.bn.gt(stakeTokenBalance);
     } catch {}
   }
 
@@ -80,9 +81,9 @@ const V2StakingModal: FC = () => {
   };
 
   useEffect(() => {
-    if (!uniV2LpToken || !stakingRewardsContract || !walletAddress) return;
+    if (!stakeToken || !stakingRewardsContract || !walletAddress) return;
     const load = async () => {
-      const stakerAllowance = await uniV2LpToken.contract?.allowance(
+      const stakerAllowance = await stakeToken.contract?.allowance(
         walletAddress,
         stakingRewardsContract?.address
       );
@@ -95,7 +96,7 @@ const V2StakingModal: FC = () => {
     };
 
     load();
-  }, [uniV2LpToken, stakingRewardsContract, walletAddress]);
+  }, [stakeToken, stakingRewardsContract, walletAddress]);
 
   const approveOrTransferOrStake = useCallback(() => {
     switch (activeStep) {
@@ -127,15 +128,15 @@ const V2StakingModal: FC = () => {
   };
 
   const handleMax = useCallback(() => {
-    if (!inputRef.current || !uniV2LpBalance) return;
+    if (!inputRef.current || !stakeTokenBalance) return;
 
-    inputRef.current.value = uniV2LpDisplay;
+    inputRef.current.value = stakeTokenDisplay;
 
     setInputValue({
-      display: uniV2LpDisplay,
-      bn: uniV2LpBalance,
+      display: stakeTokenDisplay,
+      bn: stakeTokenBalance,
     });
-  }, [uniV2LpBalance, uniV2LpDisplay]);
+  }, [stakeTokenBalance, stakeTokenDisplay]);
 
   console.log('input', inputValue);
 
@@ -148,7 +149,7 @@ const V2StakingModal: FC = () => {
       fullWidth={true}
     >
       <DialogTitle>
-        <Typography variant="h6">Stake {stakeToken}</Typography>
+        <Typography variant="h6">Stake {stakeTokenName}</Typography>
         <IconButton
           aria-label="close"
           className={classes.closeButton}
@@ -162,7 +163,7 @@ const V2StakingModal: FC = () => {
 
       <DialogContent className={classes.container}>
         <Box className={classes.balanceBox}>
-          {utils.formatUnits(uniV2LpBalance, 18)} {stakeToken} Available
+          {utils.formatUnits(stakeTokenBalance, 18)} {stakeTokenName} Available
         </Box>
         <Box className={classes.inputField}>
           <OutlinedInput
@@ -181,7 +182,7 @@ const V2StakingModal: FC = () => {
             endAdornment={
               <InputAdornment position="end">
                 <Box fontSize={'small'} fontWeight="bold" mr={2}>
-                  {stakeToken}
+                  {stakeTokenName}
                 </Box>
                 <Button
                   aria-label="toggle password visibility"
@@ -213,7 +214,7 @@ const V2StakingModal: FC = () => {
           color="primary"
           endIcon={<LaunchIcon />}
         >
-          Get {stakeToken}
+          Get {stakeTokenName}
         </Button>
       </DialogActions>
     </Dialog>

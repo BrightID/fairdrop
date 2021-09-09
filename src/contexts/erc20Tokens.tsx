@@ -9,13 +9,13 @@ import {
 } from 'react';
 
 import { useWallet } from '../contexts/wallet';
-import { BRIGHT, UNISWAP_V2_LP_POOL } from '../utils/constants';
+import { BRIGHT, SUBS, HONEYSWAP_LP_POOL } from '../utils/constants';
 import { useTokenInfo } from '../hooks/useTokenInfo';
 
 const ERC20TokenContext = createContext<{
   brightToken: any;
-  // subsToken: any;
-  uniV2LpToken: any;
+  subsToken: any;
+  honeyswapLpToken: any;
 } | null>(null);
 
 export const ERC20TokensProvider: FC<{ children: ReactNode }> = ({
@@ -25,17 +25,22 @@ export const ERC20TokensProvider: FC<{ children: ReactNode }> = ({
 
   const brightAddress = !network ? null : BRIGHT[network];
 
-  const uniswapV2LpAddress = !network ? null : UNISWAP_V2_LP_POOL[network];
+  const subsAddress = !network ? null : SUBS[network];
+
+  const honeyswapLpAddress = !network ? null : HONEYSWAP_LP_POOL[network];
 
   const brightToken = useTokenInfo(brightAddress);
 
-  const uniV2LpToken = useTokenInfo(uniswapV2LpAddress);
+  const subsToken = useTokenInfo(subsAddress);
+
+  const honeyswapLpToken = useTokenInfo(honeyswapLpAddress);
 
   return (
     <ERC20TokenContext.Provider
       value={{
         brightToken,
-        uniV2LpToken,
+        honeyswapLpToken,
+        subsToken,
       }}
     >
       {children}
@@ -48,10 +53,11 @@ export function useERC20Tokens() {
   if (!context) {
     throw new Error('Missing Data context');
   }
-  const { brightToken, uniV2LpToken } = context;
+  const { brightToken, honeyswapLpToken, subsToken } = context;
 
   return {
     brightToken,
-    uniV2LpToken,
+    honeyswapLpToken,
+    subsToken,
   };
 }

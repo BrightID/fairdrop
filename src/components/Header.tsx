@@ -131,9 +131,12 @@ const Header = () => {
         console.log(
           `Transfer from ${from} to ${to} value: ${value.toString()}`
         );
-        token.balanceOf(walletAddress).then((newBalance) => {
-          setBalance(newBalance);
-        });
+        token
+          .balanceOf(walletAddress)
+          .then((newBalance) => {
+            setBalance(newBalance);
+          })
+          .catch();
       };
       const inFilter = token.filters.Transfer(null, walletAddress, null);
       const outFilter = token.filters.Transfer(walletAddress, null, null);

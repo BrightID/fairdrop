@@ -12,9 +12,13 @@ import { useContracts } from '../contexts/contracts';
 import { useStakingRewardsInfo } from '../hooks/useStakingRewardsInfo';
 import { FARM } from '../utils/types';
 
+const ETH = 1;
+const RINKEBY = 4;
+const XDAI = 100;
+
 export const SubsStakedBox: FC = () => {
   const classes = useStyles();
-  const { walletAddress, onboardApi } = useWallet();
+  const { walletAddress, onboardApi, network } = useWallet();
   const history = useHistory();
 
   // put subs token here
@@ -22,7 +26,7 @@ export const SubsStakedBox: FC = () => {
 
   let displayBalance = '0.0';
 
-  if (stakedBalance) {
+  if (stakedBalance && (network === ETH || network === RINKEBY)) {
     displayBalance = utils.formatUnits(stakedBalance, 18).slice(0, 12);
   }
 
@@ -79,7 +83,7 @@ export const SubsStakedBox: FC = () => {
 
 export const HoneyStakedBox: FC = () => {
   const classes = useStyles();
-  const { walletAddress, onboardApi } = useWallet();
+  const { walletAddress, onboardApi, network } = useWallet();
   const history = useHistory();
 
   // put honey token here
@@ -87,7 +91,7 @@ export const HoneyStakedBox: FC = () => {
 
   let displayBalance = '0.0';
 
-  if (stakedBalance) {
+  if (stakedBalance && network === XDAI) {
     displayBalance = utils.formatUnits(stakedBalance, 18).slice(0, 12);
   }
 

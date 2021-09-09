@@ -13,17 +13,17 @@ import { FARM } from '../utils/types';
 
 const INTERVAL = 30000;
 
+const XDAI = 100;
+
 export const SubsHarvestBox: FC = () => {
   const classes = useStyles();
-  const { walletAddress } = useWallet();
+  const { walletAddress, network } = useWallet();
   const { stakingRewardsContract } = useContracts();
   const { isWorking, harvest } = useV2Staking();
   const [rewardBalance, setRewardBalance] = useState<string>('0.0');
-  const [event, setEvent] = useState<number>(0);
 
   const checkForRewards = useCallback(() => {
-    if (!walletAddress || !stakingRewardsContract) return;
-    console.log('event', event);
+    if (!walletAddress || !stakingRewardsContract || network === XDAI) return;
 
     const load = async () => {
       try {
@@ -32,7 +32,7 @@ export const SubsHarvestBox: FC = () => {
       } catch {}
     };
     load();
-  }, [walletAddress, stakingRewardsContract, event]);
+  }, [walletAddress, stakingRewardsContract, network]);
 
   const handleHarvest = useCallback(() => {
     return harvest(() => {
@@ -55,7 +55,7 @@ export const SubsHarvestBox: FC = () => {
 
     const updateEvent = (address: string) => {
       if (address.toLowerCase() === walletAddress.toLowerCase()) {
-        setEvent((e) => e + 1);
+        checkForRewards();
       }
     };
     const subscribe = () => {
@@ -71,7 +71,7 @@ export const SubsHarvestBox: FC = () => {
       };
     };
     return subscribe();
-  }, [walletAddress, stakingRewardsContract]);
+  }, [walletAddress, stakingRewardsContract, checkForRewards]);
 
   return (
     <>
@@ -90,15 +90,14 @@ export const SubsHarvestBox: FC = () => {
 
 export const HoneyHarvestBox: FC = () => {
   const classes = useStyles();
-  const { walletAddress } = useWallet();
+  const { walletAddress, network } = useWallet();
   const { stakingRewardsContract } = useContracts();
   const { isWorking, harvest } = useV2Staking();
   const [rewardBalance, setRewardBalance] = useState<string>('0');
-  const [event, setEvent] = useState<number>(0);
 
   const checkForRewards = useCallback(() => {
-    if (!walletAddress || !stakingRewardsContract) return;
-    console.log('event', event);
+    if (!walletAddress || !stakingRewardsContract || network !== XDAI) return;
+
     const load = async () => {
       try {
         const balance = await stakingRewardsContract.earned(walletAddress);
@@ -106,7 +105,7 @@ export const HoneyHarvestBox: FC = () => {
       } catch {}
     };
     load();
-  }, [walletAddress, stakingRewardsContract, event]);
+  }, [walletAddress, stakingRewardsContract, network]);
 
   const handleHarvest = useCallback(() => {
     return harvest(() => {
@@ -129,11 +128,10 @@ export const HoneyHarvestBox: FC = () => {
 
     const updateEvent = (address: string) => {
       if (address.toLowerCase() === walletAddress.toLowerCase()) {
-        setEvent((e) => e + 1);
+        checkForRewards();
       }
     };
     const subscribe = () => {
-      if (!stakingRewardsContract) return () => {};
       const stakeEvent = stakingRewardsContract.filters.Staked();
       const withdrawnEvent = stakingRewardsContract.filters.Withdrawn();
       stakingRewardsContract.on(stakeEvent, updateEvent);
@@ -145,7 +143,7 @@ export const HoneyHarvestBox: FC = () => {
       };
     };
     return subscribe();
-  }, [walletAddress, stakingRewardsContract]);
+  }, [walletAddress, stakingRewardsContract, checkForRewards]);
 
   return (
     <>
@@ -164,7 +162,7 @@ export const HoneyHarvestBox: FC = () => {
 
 export const UniswapV3HarvestBox: FC = () => {
   const classes = useStyles();
-  const { walletAddress, network } = useWallet();
+  const { walletAddress } = useWallet();
   const [rewards, setRewards] = useState<string>('0.0');
   const { stakedPositions, currentIncentive, refreshPositions } =
     useV3Liquidity();

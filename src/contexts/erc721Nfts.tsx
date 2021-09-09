@@ -112,57 +112,64 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
 
     const loadPositions = async (owner: string) => {
       // get number of tokens owned by address
-      const noOfPositions = await nftManagerPositionsContract.balanceOf(owner);
+      try {
+        const noOfPositions = await nftManagerPositionsContract.balanceOf(
+          owner
+        );
 
-      // construct multicall to get all tokenIDs
+        // construct multicall to get all tokenIDs
 
-      const tokenIdsCalldata: Array<string> = new Array(
-        noOfPositions.toNumber()
-      )
-        .fill(0)
-        .map((_, i) =>
+        const tokenIdsCalldata: Array<string> = new Array(
+          noOfPositions.toNumber()
+        )
+          .fill(0)
+          .map((_, i) =>
+            nftManagerPositionsContract.interface.encodeFunctionData(
+              'tokenOfOwnerByIndex',
+              [owner, i]
+            )
+          );
+
+        const tokenIdsResults =
+          await nftManagerPositionsContract.callStatic.multicall(
+            tokenIdsCalldata
+          );
+
+        // return list of tokenId big numbers
+        const tokenIds = tokenIdsResults
+          .map((result: any) =>
+            nftManagerPositionsContract.interface.decodeFunctionResult(
+              'tokenOfOwnerByIndex',
+              result
+            )
+          )
+          .filter((tokenId: any) => Array.isArray(tokenId))
+          .map(([tokenId]: any) => tokenId);
+
+        // construst position call data
+        const positionCallData = tokenIds.map((tokenId: any) =>
           nftManagerPositionsContract.interface.encodeFunctionData(
-            'tokenOfOwnerByIndex',
-            [owner, i]
+            'positions',
+            [tokenId]
           )
         );
 
-      const tokenIdsResults =
-        await nftManagerPositionsContract.callStatic.multicall(
-          tokenIdsCalldata
-        );
+        const encodedPositions =
+          await nftManagerPositionsContract.callStatic.multicall(
+            positionCallData
+          );
 
-      // return list of tokenId big numbers
-      const tokenIds = tokenIdsResults
-        .map((result: any) =>
-          nftManagerPositionsContract.interface.decodeFunctionResult(
-            'tokenOfOwnerByIndex',
-            result
+        // return Bright / Eth positions owned by user
+        const positions = await Promise.all(
+          encodedPositions.map((encodedPosition: any, i: number) =>
+            filterPositions(owner, encodedPosition, tokenIds[i])
           )
-        )
-        .filter((tokenId: any) => Array.isArray(tokenId))
-        .map(([tokenId]: any) => tokenId);
-
-      // construst position call data
-      const positionCallData = tokenIds.map((tokenId: any) =>
-        nftManagerPositionsContract.interface.encodeFunctionData('positions', [
-          tokenId,
-        ])
-      );
-
-      const encodedPositions =
-        await nftManagerPositionsContract.callStatic.multicall(
-          positionCallData
         );
 
-      // return Bright / Eth positions owned by user
-      const positions = await Promise.all(
-        encodedPositions.map((encodedPosition: any, i: number) =>
-          filterPositions(owner, encodedPosition, tokenIds[i])
-        )
-      );
-
-      return positions.filter((p: any) => p);
+        return positions.filter((p: any) => p);
+      } catch {
+        return [];
+      }
     };
 
     const filterPositions = async (
@@ -170,36 +177,40 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
       encodedPosition: any,
       tokenId: any
     ): Promise<any | null> => {
-      const { token0, token1, liquidity, fee } =
-        nftManagerPositionsContract.interface.decodeFunctionResult(
-          'positions',
-          encodedPosition
-        );
+      try {
+        const { token0, token1, liquidity, fee } =
+          nftManagerPositionsContract.interface.decodeFunctionResult(
+            'positions',
+            encodedPosition
+          );
 
-      // check for liquidity
-      if (liquidity.isZero()) {
+        // check for liquidity
+        if (liquidity.isZero()) {
+          return null;
+        }
+
+        // check for Bright / ETH pair
+        if (!checkForBrightLp(token0, token1)) {
+          return null;
+        }
+        // check if fee is 0.3%
+        if (fee !== 3000) {
+          return null;
+        }
+
+        const stakedPosition = await uniswapV3StakerContract.deposits(tokenId);
+
+        // check if owner of staked nft
+        if (owner !== walletAddress && stakedPosition.owner !== walletAddress)
+          return null;
+
+        let staked = stakedPosition.numberOfStakes;
+        let reward = BigNumber.from(0);
+
+        return { owner, reward, staked, tokenId };
+      } catch {
         return null;
       }
-
-      // check for Bright / ETH pair
-      if (!checkForBrightLp(token0, token1)) {
-        return null;
-      }
-      // check if fee is 0.3%
-      if (fee !== 3000) {
-        return null;
-      }
-
-      const stakedPosition = await uniswapV3StakerContract.deposits(tokenId);
-
-      // check if owner of staked nft
-      if (owner !== walletAddress && stakedPosition.owner !== walletAddress)
-        return null;
-
-      let staked = stakedPosition.numberOfStakes;
-      let reward = BigNumber.from(0);
-
-      return { owner, reward, staked, tokenId };
     };
 
     const init = async () => {

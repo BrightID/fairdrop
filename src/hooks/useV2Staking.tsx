@@ -13,18 +13,20 @@ export function useV2Staking(tokenId?: number) {
   const { tx } = useNotifications();
   const { walletAddress } = useWallet();
   const { stakingRewardsContract } = useContracts();
-  const { uniV2LpToken } = useERC20Tokens();
+  const { honeyswapLpToken, subsToken } = useERC20Tokens();
+
+  const stakeToken = honeyswapLpToken || subsToken;
 
   const [isWorking, setIsWorking] = useState<string | null>(null);
 
   const approve = useCallback(
     async (next: () => void) => {
-      if (!(uniV2LpToken?.contract && stakingRewardsContract)) return;
+      if (!(stakeToken?.contract && stakingRewardsContract)) return;
 
       try {
         setIsWorking('Approving...');
         await tx('Approving...', 'Approved!', () =>
-          uniV2LpToken?.contract.approve(
+          stakeToken?.contract.approve(
             stakingRewardsContract.address,
             approveValue
           )
@@ -36,16 +38,16 @@ export function useV2Staking(tokenId?: number) {
         setIsWorking(null);
       }
     },
-    [stakingRewardsContract, uniV2LpToken, tx]
+    [stakingRewardsContract, stakeToken, tx]
   );
 
   const stake = useCallback(
     async (value: BigNumber, next: () => void) => {
       if (
-        !uniV2LpToken?.contract ||
+        !stakeToken?.contract ||
         !stakingRewardsContract ||
         !walletAddress ||
-        !uniV2LpToken?.balance ||
+        !stakeToken?.balance ||
         value.isZero()
       )
         return;
@@ -53,13 +55,13 @@ export function useV2Staking(tokenId?: number) {
       try {
         console.log('trying here');
         setIsWorking('Staking...');
-        const stakerAllowance = await uniV2LpToken.contract?.allowance(
+        const stakerAllowance = await stakeToken.contract?.allowance(
           walletAddress,
           stakingRewardsContract.address
         );
 
         // check if allowance is greater and value to stake is less than balance
-        if (stakerAllowance.gte(value) && value.lte(uniV2LpToken.balance)) {
+        if (stakerAllowance.gte(value) && value.lte(stakeToken.balance)) {
           await tx('Staking...', 'Staked!', () =>
             stakingRewardsContract.stake(value)
           );
@@ -72,20 +74,19 @@ export function useV2Staking(tokenId?: number) {
         setIsWorking(null);
       }
     },
-    [uniV2LpToken, stakingRewardsContract, tx, walletAddress]
+    [stakeToken, stakingRewardsContract, tx, walletAddress]
   );
 
   const withdraw = useCallback(
     async (value: BigNumber, next: () => void) => {
       if (!stakingRewardsContract || !walletAddress || value.isZero()) return;
 
-      const stakedBalance = await stakingRewardsContract.balanceOf(
-        walletAddress
-      );
-
       try {
         setIsWorking('Unstaking...');
-        console.log('huh', value.lte(stakedBalance));
+        const stakedBalance = await stakingRewardsContract.balanceOf(
+          walletAddress
+        );
+
         if (value.lte(stakedBalance)) {
           await tx('Unstaking...', 'Unstaked!', () =>
             stakingRewardsContract.withdraw(value)

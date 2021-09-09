@@ -12,7 +12,6 @@ import {
   NFT_POSITIONS_MANAGER_ADDRESS,
   UNISWAP_V3_STAKER,
   STAKING_REWARDS_CONTRACT,
-  UNISWAP_V2_LP_POOL,
 } from '../utils/constants';
 import { useWallet } from '../contexts/wallet';
 // import useTokenInfo from 'hooks/useTokenInfo';
