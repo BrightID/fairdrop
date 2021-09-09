@@ -62,7 +62,7 @@ export const HoneyLpBox: FC = () => {
         <Link
           underline="always"
           className={classes.lpLink}
-          href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x61CEAc48136d6782DBD83c09f51E23514D12470a"
+          href="https://app.honeyswap.org/#/add/0x71850b7E9Ee3f13Ab46d67167341E4bDc905Eef9/0x83FF60E2f93F8eDD0637Ef669C69D5Fb4f64cA8E"
           target="_blank"
           rel="noopener"
         >
