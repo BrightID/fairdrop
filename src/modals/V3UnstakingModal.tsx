@@ -33,8 +33,6 @@ const STEPS = ['Unstake'];
 
 const STARTS_WITH = 'data:application/json;base64,';
 
-const preventDefault = (event: React.SyntheticEvent) => event.preventDefault();
-
 const V3StakingModal: FC = () => {
   const classes = useStyles();
   const history = useHistory();
@@ -46,29 +44,30 @@ const V3StakingModal: FC = () => {
 
   const [positionSelected, setPositionSelected] =
     useState<LiquidityPosition | null>(null);
+  const [initialSelected, setInitialSelected] = useState(false);
 
-  const { refreshPositions, loadingNftPositions, nftPositions } =
-    useV3Liquidity();
+  const {
+    refreshPositions,
+    loadingNftPositions,
+    nftPositions,
+    stakedPositions,
+  } = useV3Liquidity();
 
-  console.log('nftPositions', nftPositions);
-
-  const { owner, staked, tokenId } = positionSelected || {};
+  const { tokenId } = positionSelected || {};
 
   const { isWorking, exit } = useV3Staking(tokenId?.toNumber());
-
-  const stakedPositions = useMemo(
-    () =>
-      nftPositions.filter(
-        (position) =>
-          position.owner.toLowerCase() ===
-          uniswapV3StakerContract?.address.toLowerCase()
-      ),
-    [nftPositions, uniswapV3StakerContract]
-  );
 
   const handleClose = () => {
     history.push('/farms');
   };
+
+  // select position automatically
+  useEffect(() => {
+    if (stakedPositions?.length > 1 && !positionSelected && !initialSelected) {
+      setPositionSelected(stakedPositions[0]);
+      setInitialSelected(true);
+    }
+  }, [stakedPositions, positionSelected, initialSelected]);
 
   // check for NFT positions in user's wallet
   useEffect(() => {
@@ -104,7 +103,7 @@ const V3StakingModal: FC = () => {
       fullWidth={true}
     >
       <DialogTitle>
-        <Typography variant="h6">Unstake Uniswap V3 position</Typography>
+        <Typography variant="h6">Unstake BRIGHT-ETH 0.3% position</Typography>
         <IconButton
           aria-label="close"
           className={classes.closeButton}
@@ -120,39 +119,27 @@ const V3StakingModal: FC = () => {
         {loading && <Loading />}
         {noOwnedPositions && <NoUserPositions />}
         {displayStaking && (
-          <Grid container>
-            <Grid
-              item
-              xs={6}
-              alignItems={'center'}
-              justifyContent={'center'}
-              container
-            >
-              <DisplayNfts
-                nftPositions={stakedPositions}
-                setPositionSelected={setPositionSelected}
-                positionSelected={positionSelected}
-              />
-            </Grid>
-            <Grid
-              item
-              xs={6}
-              alignItems={'center'}
-              justifyContent={'center'}
-              container
-            >
-              <Box px={4} mb={2} p={5}>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  onClick={approveOrTransferOrStake}
-                  disabled={!positionSelected}
-                >
-                  {isWorking ? isWorking : STEPS[activeStep]}
-                </Button>
-              </Box>
-            </Grid>
-          </Grid>
+          <>
+            <Box mt={2} mb={2}>
+              Select NFT Position to Stake
+            </Box>
+            <DisplayNfts
+              nftPositions={stakedPositions}
+              setPositionSelected={setPositionSelected}
+              positionSelected={positionSelected}
+            />
+
+            <Box mt={2} mb={2}>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={approveOrTransferOrStake}
+                disabled={!positionSelected}
+              >
+                {isWorking ? isWorking : STEPS[activeStep]}
+              </Button>
+            </Box>
+          </>
         )}
       </DialogContent>
       <DialogActions className={classes.bottom}>
@@ -201,45 +188,41 @@ const DisplayNfts = ({
   };
 
   return (
-    <Box className={classes.nftImageWrapper}>
-      <Typography>Select NFT Position to Stake</Typography>
-      <ImageList className={classes.imageList} cols={2.5}>
-        {nftPositions.map((nft) => {
-          if (!nft?.tokenId) return <></>;
-          const nftData = parseUri(nft.uri);
-          const nftExists = !!positionSelected;
-          const isSelected =
-            nftExists &&
-            positionSelected?.tokenId.toString() === nft.tokenId.toString();
+    <ImageList className={classes.imageList} cols={2.5}>
+      {nftPositions.map((nft) => {
+        if (!nft?.tokenId) return <></>;
+        const nftData = parseUri(nft.uri);
+        const nftExists = !!positionSelected;
+        const isSelected =
+          nftExists &&
+          positionSelected?.tokenId.toString() === nft.tokenId.toString();
 
-          const buttonClasses = clsx(
-            classes.nftButton,
-            isSelected && classes.nftSelected,
-            !nftExists && classes.opacityHover
-          );
+        const buttonClasses = clsx(
+          classes.nftButton,
+          isSelected && classes.nftSelected,
+          !nftExists && classes.opacityHover
+        );
 
-          return (
-            <ImageListItem key={nft.tokenId.toString()}>
-              <ButtonBase
-                focusRipple
-                className={buttonClasses}
-                focusVisibleClassName={classes.focusVisible}
-                onClick={selectNft(nft)}
-              >
-                <img
-                  className={classes.nftImage}
-                  src={nftData.image}
-                  alt={'nft position'}
-                />
-                {nftExists && !isSelected && (
-                  <span className={classes.imageBackdrop} />
-                )}
-              </ButtonBase>
-            </ImageListItem>
-          );
-        })}
-      </ImageList>
-    </Box>
+        return (
+          <ImageListItem
+            className={classes.imageListItem}
+            key={nft.tokenId.toString()}
+            onClick={selectNft(nft)}
+          >
+            <Box className={buttonClasses}>
+              <img
+                className={classes.nftImage}
+                src={nftData.image}
+                alt={'nft position'}
+              />
+              {nftExists && !isSelected && (
+                <span className={classes.imageBackdrop} />
+              )}
+            </Box>
+          </ImageListItem>
+        );
+      })}
+    </ImageList>
   );
 };
 
@@ -285,14 +268,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
-    nftImageWrapper: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      // flexWrap: 'wrap',
-      justifyContent: 'center',
-      overflow: 'hidden',
-    },
+
     imageList: {
       display: 'flex',
       justifyContent: 'center',
@@ -300,11 +276,24 @@ const useStyles = makeStyles((theme: Theme) =>
       flexWrap: 'nowrap',
       // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
       transform: 'translateZ(0)',
-      padding: '2px',
+      padding: 5,
+      height: 200,
+      width: '80%',
+    },
+    imageListItem: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 15,
+      height: '100%',
+      maxHeight: '100%',
     },
     nftButton: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
       borderRadius: 15,
-      padding: 3,
+      cursor: 'pointer',
       '&:hover, &$focusVisible': {
         zIndex: 1,
         '& $imageBackdrop': {
@@ -312,9 +301,14 @@ const useStyles = makeStyles((theme: Theme) =>
         },
       },
       transition: theme.transitions.create('opacity'),
+      maxHeight: '100%',
     },
     nftImage: {
-      width: '100%',
+      height: 180,
+      objectFit: 'contain',
+      width: '95%',
+      marginLeft: 1,
+      marginRight: 1,
     },
     nftSelected: {
       backgroundColor: theme.palette.primary.main,
