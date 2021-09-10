@@ -11,6 +11,7 @@ import { useV3Liquidity } from '../contexts/erc721Nfts';
 import { useContracts } from '../contexts/contracts';
 import { useStakingRewardsInfo } from '../hooks/useStakingRewardsInfo';
 import { FARM } from '../utils/types';
+import { useERC20Tokens } from '../contexts/erc20Tokens';
 
 const ETH = 1;
 const RINKEBY = 4;
@@ -23,11 +24,22 @@ export const SubsStakedBox: FC = () => {
 
   // put subs token here
   const { stakedBalance } = useStakingRewardsInfo('');
+  const { subsToken } = useERC20Tokens();
 
   let displayBalance = '0.0';
 
   if (stakedBalance && (network === ETH || network === RINKEBY)) {
-    displayBalance = utils.formatUnits(stakedBalance, 18).slice(0, 12);
+    if (subsToken.decimals) {
+      displayBalance = utils
+        .formatUnits(stakedBalance, subsToken.decimals)
+        .slice(0, 12);
+    } else {
+      // manually remove trailing ".0" when token has 0 decimals. This is
+      // fixed with ethers 5.2.x, but we are on 5.1
+      displayBalance = utils
+        .formatUnits(stakedBalance, subsToken.decimals)
+        .split('.')[0];
+    }
   }
 
   const navToStake = () => {
