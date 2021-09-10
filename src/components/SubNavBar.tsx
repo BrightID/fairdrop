@@ -54,7 +54,7 @@ interface SubNavBarProps {
 
 const SubNavBar = ({ chainSelector, addressLinker }: SubNavBarProps) => {
   const classes = useStyles();
-  const [value, setValue] = useState<number | false>(false);
+  const [value, setValue] = useState<number>(0);
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
