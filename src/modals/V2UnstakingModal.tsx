@@ -37,7 +37,10 @@ const V2UnstakingModal: FC = () => {
   const inputRef = useRef<any>(null);
   const { farm } = useParams<Params>();
 
-  const stakeToken = farm === 'subs' ? SUBS : HONEY;
+  const { honeyswapLpToken, subsToken } = useERC20Tokens();
+
+  const stakeTokenName = farm === 'subs' ? SUBS : HONEY;
+  const stakeToken = farm === 'subs' ? subsToken : honeyswapLpToken;
 
   const { stakingRewardsContract } = useContracts();
   const { walletAddress } = useWallet();
@@ -93,7 +96,7 @@ const V2UnstakingModal: FC = () => {
     try {
       setInputValue({
         display: event.target.value,
-        bn: utils.parseUnits(event.target.value, 18),
+        bn: utils.parseUnits(event.target.value, stakeToken.decimals),
       });
     } catch (err) {
       console.log(err);
@@ -107,10 +110,13 @@ const V2UnstakingModal: FC = () => {
     if (!inputRef.current || !stakedBalance) return;
 
     try {
-      inputRef.current.value = utils.formatUnits(stakedBalance, 18);
+      inputRef.current.value = utils.formatUnits(
+        stakedBalance,
+        stakeToken.decimals
+      );
 
       setInputValue({
-        display: utils.formatUnits(stakedBalance, 18),
+        display: utils.formatUnits(stakedBalance, stakeToken.decimals),
         bn: stakedBalance,
       });
     } catch {}
@@ -132,7 +138,7 @@ const V2UnstakingModal: FC = () => {
       fullWidth={true}
     >
       <DialogTitle>
-        <Typography variant="h6">Withdraw {stakeToken}</Typography>
+        <Typography variant="h6">Withdraw {stakeTokenName}</Typography>
         <IconButton
           aria-label="close"
           className={classes.closeButton}
@@ -146,7 +152,8 @@ const V2UnstakingModal: FC = () => {
 
       <DialogContent className={classes.container}>
         <Box className={classes.balanceBox}>
-          {utils.formatUnits(stakedBalance, 18)} {stakeToken} Available
+          {utils.formatUnits(stakedBalance, stakeToken.decimals)}{' '}
+          {stakeTokenName} Available
         </Box>
         <Box className={classes.inputField}>
           <OutlinedInput
@@ -157,7 +164,7 @@ const V2UnstakingModal: FC = () => {
             inputRef={inputRef}
             inputProps={{
               min: 0,
-              step: 0.01,
+              step: stakeToken.decimals ? 0.01 : 1,
             }}
             value={inputValue.display}
             defaultValue={0.0}
@@ -165,7 +172,7 @@ const V2UnstakingModal: FC = () => {
             endAdornment={
               <InputAdornment position="end">
                 <Box fontSize={'small'} fontWeight="bold" mr={2}>
-                  {stakeToken}
+                  {stakeTokenName}
                 </Box>
                 <Button
                   aria-label="toggle password visibility"

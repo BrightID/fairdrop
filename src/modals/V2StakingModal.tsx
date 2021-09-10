@@ -55,7 +55,7 @@ const V2StakingModal: FC = () => {
     display: string;
     bn: BigNumber;
   }>({
-    display: '0.0',
+    display: '0',
     bn: BigNumber.from(0),
   });
 
@@ -66,7 +66,15 @@ const V2StakingModal: FC = () => {
 
   if (BigNumber.isBigNumber(stakeTokenBalance)) {
     try {
-      stakeTokenDisplay = utils.formatUnits(stakeTokenBalance, 18);
+      stakeTokenDisplay = utils.formatUnits(
+        stakeTokenBalance,
+        stakeToken.decimals
+      );
+      // manually remove trailing ".0" when token has 0 decimals. This is
+      // fixed with ethers 5.2.x, but we are on 5.1
+      if (stakeToken.decimals === 0) {
+        stakeTokenDisplay = stakeTokenDisplay.split('.')[0];
+      }
 
       disableConfirm =
         inputValue.bn.lte(BigNumber.from(0)) ||
@@ -115,11 +123,11 @@ const V2StakingModal: FC = () => {
   }, [inputValue.bn, activeStep, approve, history, stake]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('input is changing...');
+    console.log(`input is changing: ${event.target.value}`);
     try {
       setInputValue({
         display: event.target.value,
-        bn: utils.parseUnits(event.target.value, 18),
+        bn: utils.parseUnits(event.target.value, stakeToken.decimals),
       });
     } catch (err) {
       console.log(err);
@@ -163,7 +171,16 @@ const V2StakingModal: FC = () => {
 
       <DialogContent className={classes.container}>
         <Box className={classes.balanceBox}>
-          {utils.formatUnits(stakeTokenBalance, 18)} {stakeTokenName} Available
+          {
+            // manually remove trailing ".0" when token has 0 decimals. This is
+            // fixed with ethers 5.2.x, but we are on 5.1
+            stakeToken.decimals
+              ? utils.formatUnits(stakeTokenBalance, stakeToken.decimals)
+              : utils
+                  .formatUnits(stakeTokenBalance, stakeToken.decimals)
+                  .split('.')[0]
+          }{' '}
+          {stakeTokenName} Available
         </Box>
         <Box className={classes.inputField}>
           <OutlinedInput
@@ -174,7 +191,7 @@ const V2StakingModal: FC = () => {
             inputRef={inputRef}
             inputProps={{
               min: 0,
-              step: 0.01,
+              step: stakeToken.decimals ? 0.01 : 1,
             }}
             value={inputValue.display}
             defaultValue={0.0}

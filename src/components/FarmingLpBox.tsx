@@ -14,16 +14,19 @@ import { sleep } from '../utils/promise';
 
 export const SubsLpBox: FC = () => {
   const classes = useStyles();
-  const { walletAddress } = useWallet();
 
   // put subs token here
   const { subsToken } = useERC20Tokens();
 
   const uniV2LpBalance = subsToken?.balance;
 
-  let displayBalance = '0.0';
+  let displayBalance = '0';
+
   if (uniV2LpBalance) {
-    displayBalance = utils.formatUnits(uniV2LpBalance, 18);
+    // manually remove trailing ".0". This is fixed with ethers 5.2.x, but we are on 5.1
+    displayBalance = utils
+      .formatUnits(uniV2LpBalance, subsToken.decimals)
+      .split('.')[0];
   }
 
   return (
@@ -36,7 +39,6 @@ export const SubsLpBox: FC = () => {
 
 export const HoneyLpBox: FC = () => {
   const classes = useStyles();
-  const { walletAddress } = useWallet();
 
   // put honey token here
   const { honeyswapLpToken } = useERC20Tokens();
@@ -45,7 +47,10 @@ export const HoneyLpBox: FC = () => {
 
   let displayBalance = '0.0';
   if (uniV2LpBalance) {
-    displayBalance = utils.formatUnits(uniV2LpBalance, 18);
+    displayBalance = utils.formatUnits(
+      uniV2LpBalance,
+      honeyswapLpToken.decimals
+    );
   }
   return (
     <Box>

@@ -29,21 +29,10 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: 'none',
     borderTop: '1px solid lightgrey',
     borderBottom: '1px solid lightgrey',
-    marginBottom: theme.spacing(6),
+    marginBottom: theme.spacing(0),
     marginTop: theme.spacing(3),
   },
   tabRoot: {
-    textTransform: 'none',
-    fontWeight: 'bold',
-    color: 'black',
-    [theme.breakpoints.up('sm')]: {
-      marginTop: theme.spacing(2),
-      marginBottom: theme.spacing(2),
-      maxWidth: 'unset',
-    },
-  },
-  tabRootRightAligned: {
-    marginLeft: 'auto',
     textTransform: 'none',
     fontWeight: 'bold',
     color: 'black',
@@ -65,7 +54,7 @@ interface SubNavBarProps {
 
 const SubNavBar = ({ chainSelector, addressLinker }: SubNavBarProps) => {
   const classes = useStyles();
-  const [value, setValue] = useState<number | false>(false);
+  const [value, setValue] = useState<number>(0);
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -92,7 +81,7 @@ const SubNavBar = ({ chainSelector, addressLinker }: SubNavBarProps) => {
             label="Claim on XDai"
             classes={{
               selected: classes.selectedTab,
-              root: classes.tabRootRightAligned,
+              root: classes.tabRoot,
             }}
           />
           <Tab
@@ -104,14 +93,12 @@ const SubNavBar = ({ chainSelector, addressLinker }: SubNavBarProps) => {
           />
         </Tabs>
       </AppBar>
-      <Container maxWidth="lg">
-        <TabPanel index={0} value={value}>
-          {chainSelector}
-        </TabPanel>
-        <TabPanel index={1} value={value}>
-          {addressLinker}
-        </TabPanel>
-      </Container>
+      <TabPanel index={0} value={value}>
+        {chainSelector}
+      </TabPanel>
+      <TabPanel index={1} value={value}>
+        {addressLinker}
+      </TabPanel>
     </>
   );
 };
