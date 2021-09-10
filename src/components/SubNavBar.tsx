@@ -42,17 +42,6 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: 'unset',
     },
   },
-  tabRootRightAligned: {
-    marginLeft: 'auto',
-    textTransform: 'none',
-    fontWeight: 'bold',
-    color: 'black',
-    [theme.breakpoints.up('sm')]: {
-      marginTop: theme.spacing(2),
-      marginBottom: theme.spacing(2),
-      maxWidth: 'unset',
-    },
-  },
   selectedTab: {
     color: 'rgba(182, 75, 50, 1)',
   },
@@ -92,7 +81,7 @@ const SubNavBar = ({ chainSelector, addressLinker }: SubNavBarProps) => {
             label="Claim on XDai"
             classes={{
               selected: classes.selectedTab,
-              root: classes.tabRootRightAligned,
+              root: classes.tabRoot,
             }}
           />
           <Tab
