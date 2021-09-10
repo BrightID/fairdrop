@@ -232,27 +232,24 @@ const DisplayNfts = ({
           positionSelected?.tokenId.toString() === nft.tokenId.toString();
 
         const buttonClasses = clsx(
-          classes.nftButton,
-          isSelected && classes.nftSelected,
+          classes.imageListItem,
           !nftExists && classes.opacityHover
         );
 
         return (
           <ImageListItem
-            className={classes.imageListItem}
+            className={buttonClasses}
             key={nft.tokenId.toString()}
             onClick={selectNft(nft)}
           >
-            <Box className={buttonClasses}>
-              <img
-                className={classes.nftImage}
-                src={nftData.image}
-                alt={'nft position'}
-              />
-              {nftExists && !isSelected && (
-                <span className={classes.imageBackdrop} />
-              )}
-            </Box>
+            <img
+              className={classes.nftImage}
+              src={nftData.image}
+              alt={'nft position'}
+            />
+            {nftExists && !isSelected && (
+              <span className={classes.imageBackdrop} />
+            )}
           </ImageListItem>
         );
       })}
@@ -315,13 +312,7 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       borderRadius: 15,
       height: '100%',
-      maxHeight: '100%',
-    },
-    nftButton: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 15,
+      maxHeight: 200,
       cursor: 'pointer',
       '&:hover, &$focusVisible': {
         zIndex: 1,
@@ -330,7 +321,9 @@ const useStyles = makeStyles((theme: Theme) =>
         },
       },
       transition: theme.transitions.create('opacity'),
-      maxHeight: '100%',
+      [theme.breakpoints.up('sm')]: {
+        maxWidth: '30%',
+      },
     },
     nftImage: {
       height: 180,
@@ -338,9 +331,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '95%',
       marginLeft: 1,
       marginRight: 1,
-    },
-    nftSelected: {
-      backgroundColor: theme.palette.primary.main,
+      maxHeight: '100%',
     },
     opacityHover: {
       '&:hover, &$focusVisible': {
