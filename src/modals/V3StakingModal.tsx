@@ -98,18 +98,14 @@ const V3StakingModal: FC = () => {
       const nftOwnedByStaker = owner === uniswapV3StakerContract.address;
 
       if (!staked && nftOwnedByStaker) {
-        console.log('nft staked');
         setActiveStep(1);
       } else if (nftOwnedByUser) {
-        console.log('nft not approved');
         setActiveStep(0);
       }
     };
 
     load();
   }, [owner, tokenId, uniswapV3StakerContract, walletAddress, staked]);
-
-  console.log('activeStep', activeStep);
 
   const approveOrTransferOrStake = () => {
     switch (activeStep) {

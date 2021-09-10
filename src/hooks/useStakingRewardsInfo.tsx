@@ -19,7 +19,7 @@ export function useStakingRewardsInfo(tokenAddress: string | null) {
     const onStakedBalanceChange = async (address: string) => {
       try {
         if (address.toLowerCase() === walletAddress.toLowerCase()) {
-          await sleep(500);
+          // await sleep(500);
           const stakedBalance = await contract.balanceOf(walletAddress);
           setStakedBalance(stakedBalance);
           // also update rewards

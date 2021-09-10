@@ -10,7 +10,6 @@ import { useERC20Tokens } from '../contexts/erc20Tokens';
 import { useContracts } from '../contexts/contracts';
 import { useStakingRewardsInfo } from '../hooks/useStakingRewardsInfo';
 import { FARM } from '../utils/types';
-import { sleep } from '../utils/promise';
 
 export const SubsLpBox: FC = () => {
   const classes = useStyles();

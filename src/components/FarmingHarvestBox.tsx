@@ -121,7 +121,7 @@ export const HoneyHarvestBox: FC = () => {
   const { walletAddress, network } = useWallet();
   const { stakingRewardsContract } = useContracts();
   const { isWorking, harvest } = useV2Staking();
-  const [rewardBalance, setRewardBalance] = useState<string>('0');
+  const [rewardBalance, setRewardBalance] = useState<string>('0.0');
 
   const checkForRewards = useCallback(() => {
     if (!walletAddress || !stakingRewardsContract || network !== XDAI) return;
@@ -154,11 +154,18 @@ export const HoneyHarvestBox: FC = () => {
     const interval = setInterval(() => {
       checkForRewards();
     }, INTERVAL);
+    // always check for rewards initially
     checkForRewards();
     return () => {
       clearInterval(interval);
     };
-  }, [walletAddress, stakingRewardsContract, network, checkForRewards]);
+  }, [
+    walletAddress,
+    stakingRewardsContract,
+    network,
+    checkForRewards,
+    rewardBalance,
+  ]);
 
   useEffect(() => {
     if (!walletAddress || !stakingRewardsContract) return;
@@ -283,12 +290,6 @@ export const UniswapV3HarvestBox: FC = () => {
     claimUnstakeStake,
   ]);
 
-  // useEffect(() => {
-  //   if (walletAddress && network && (network === 1 || network === 4)) {
-  //     refreshPositions();
-  //   }
-  // }, [network, walletAddress, refreshPositions]);
-
   useEffect(() => {
     if (
       !walletAddress ||
@@ -297,9 +298,13 @@ export const UniswapV3HarvestBox: FC = () => {
       !currentIncentive.key
     )
       return;
+
     const interval = setInterval(() => {
-      checkForRewards();
+      if (stakedPositions.length > 0) {
+        checkForRewards();
+      }
     }, INTERVAL);
+
     checkForRewards();
     return () => {
       clearInterval(interval);
@@ -310,6 +315,7 @@ export const UniswapV3HarvestBox: FC = () => {
     network,
     checkForRewards,
     currentIncentive.key,
+    stakedPositions,
   ]);
 
   useEffect(() => {
@@ -322,23 +328,27 @@ export const UniswapV3HarvestBox: FC = () => {
     )
       return;
 
-    //  const updateEvent = (address: string) => {
-    //    if (address.toLowerCase() === walletAddress.toLowerCase()) {
-    //      checkForRewards();
-    //    }
-    //  };
-    //  const subscribe = () => {
-    //    const stakeEvent = uniswapV3StakerContract.filters.Staked();
-    //    const withdrawnEvent = uniswapV3StakerContract.filters.Withdrawn();
-    //    uniswapV3StakerContract.on(stakeEvent, updateEvent);
-    //    uniswapV3StakerContract.on(withdrawnEvent, updateEvent);
+    const handleTransfer = (_1: any, address1: string, address2: string) => {
+      if (
+        address1.toLowerCase() === walletAddress.toLowerCase() ||
+        address2.toLowerCase() === walletAddress.toLowerCase()
+      ) {
+        checkForRewards();
+      }
+    };
 
-    //    return () => {
-    //      uniswapV3StakerContract.off(stakeEvent, updateEvent);
-    //      uniswapV3StakerContract.off(withdrawnEvent, updateEvent);
-    //    };
-    //  };
-    //  return subscribe();
+    const subscribe = () => {
+      const transferEvent =
+        uniswapV3StakerContract.filters.DepositTransferred();
+
+      uniswapV3StakerContract.on(transferEvent, handleTransfer);
+      // const rewardEvent = uniswapV3StakerContract.filters.RewardClaimed();
+
+      return () => {
+        uniswapV3StakerContract.off(transferEvent, handleTransfer);
+      };
+    };
+    return subscribe();
   }, [
     stakedPositions,
     uniswapV3StakerContract,

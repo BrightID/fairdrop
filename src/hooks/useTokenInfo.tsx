@@ -23,7 +23,7 @@ export function useTokenInfo(tokenAddress: string | null) {
 
     const onBalanceChange = async (from: string, to: string) => {
       if (from === walletAddress || to === walletAddress) {
-        await sleep(500);
+        // await sleep(500);
         setBalance(BigNumber.from(await contract.balanceOf(walletAddress)));
       }
     };

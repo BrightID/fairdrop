@@ -9,21 +9,25 @@ const approveValue = BigNumber.from(
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
 );
 
+const ETH = 1;
+const RINKEBY = 4;
+const XDAI = 100;
+
 export function useV2Staking(tokenId?: number) {
   const { tx } = useNotifications();
-  const { walletAddress } = useWallet();
+  const { walletAddress, network } = useWallet();
   const { stakingRewardsContract } = useContracts();
   const { honeyswapLpToken, subsToken } = useERC20Tokens();
 
-  const stakeToken = honeyswapLpToken || subsToken;
+  const stakeToken = network === XDAI ? honeyswapLpToken : subsToken;
 
   const [isWorking, setIsWorking] = useState<string | null>(null);
 
   const approve = useCallback(
     async (next: () => void) => {
-      if (!(stakeToken?.contract && stakingRewardsContract)) return;
-
       try {
+        if (!(stakeToken?.contract && stakingRewardsContract)) return;
+
         setIsWorking('Approving...');
         await tx('Approving...', 'Approved!', () =>
           stakeToken?.contract.approve(
@@ -44,16 +48,16 @@ export function useV2Staking(tokenId?: number) {
 
   const stake = useCallback(
     async (value: BigNumber, next: () => void) => {
-      if (
-        !stakeToken?.contract ||
-        !stakingRewardsContract ||
-        !walletAddress ||
-        !stakeToken?.balance ||
-        value.isZero()
-      )
-        return;
-
       try {
+        if (
+          !stakeToken?.contract ||
+          !stakingRewardsContract ||
+          !walletAddress ||
+          !stakeToken?.balance ||
+          value.isZero()
+        )
+          return;
+
         console.log('trying here');
         setIsWorking('Staking...');
         const stakerAllowance = await stakeToken.contract?.allowance(
@@ -81,9 +85,9 @@ export function useV2Staking(tokenId?: number) {
 
   const withdraw = useCallback(
     async (value: BigNumber, next: () => void) => {
-      if (!stakingRewardsContract || !walletAddress || value.isZero()) return;
-
       try {
+        if (!stakingRewardsContract || !walletAddress || value.isZero()) return;
+
         setIsWorking('Unstaking...');
         const stakedBalance = await stakingRewardsContract.balanceOf(
           walletAddress
@@ -127,8 +131,9 @@ export function useV2Staking(tokenId?: number) {
 
   const harvest = useCallback(
     async (next: () => void) => {
-      if (!stakingRewardsContract || !walletAddress) return;
       try {
+        if (!stakingRewardsContract || !walletAddress) return;
+
         setIsWorking('Harvesting...');
 
         await tx('Harvesting...', 'Harvested!', () =>

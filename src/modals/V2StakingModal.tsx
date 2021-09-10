@@ -123,7 +123,6 @@ const V2StakingModal: FC = () => {
   }, [inputValue.bn, activeStep, approve, history, stake]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(`input is changing: ${event.target.value}`);
     try {
       setInputValue({
         display: event.target.value,

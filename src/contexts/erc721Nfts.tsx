@@ -284,6 +284,43 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
     refreshPositions,
     network,
   ]);
+  // handle nft events
+  useEffect(() => {
+    if (
+      !nftManagerPositionsContract ||
+      !uniswapV3StakerContract ||
+      !walletAddress
+    )
+      return;
+
+    const handleTransfer = (_1: any, address1: any, address2: string) => {
+      console.log('handling transfer', _1, address1, address2);
+      if (
+        address1.toLowerCase() === walletAddress.toLowerCase() ||
+        address2.toLowerCase() === walletAddress.toLowerCase()
+      ) {
+        refreshPositions();
+      }
+    };
+
+    const subscribe = () => {
+      const transferEvent =
+        uniswapV3StakerContract.filters.DepositTransferred();
+
+      uniswapV3StakerContract.on(transferEvent, handleTransfer);
+
+      return () => {
+        uniswapV3StakerContract.off(transferEvent, handleTransfer);
+      };
+    };
+
+    return subscribe();
+  }, [
+    nftManagerPositionsContract,
+    uniswapV3StakerContract,
+    walletAddress,
+    refreshPositions,
+  ]);
 
   return (
     <ERC721NftContext.Provider
