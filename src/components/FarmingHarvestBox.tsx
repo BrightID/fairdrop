@@ -7,12 +7,15 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useV3Liquidity } from '../contexts/erc721Nfts';
 import { useWallet } from '../contexts/wallet';
 import { useV2Staking } from '../hooks/useV2Staking';
+import { useV3Staking } from '../hooks/useV3Staking';
 import { useContracts } from '../contexts/contracts';
 import { LiquidityPosition } from '../utils/types';
 import { FARM } from '../utils/types';
 
-const INTERVAL = 30000;
+const INTERVAL = 5000;
 
+const ETH = 1;
+const RINKEBY = 4;
 const XDAI = 100;
 
 export const SubsHarvestBox: FC = () => {
@@ -23,7 +26,12 @@ export const SubsHarvestBox: FC = () => {
   const [rewardBalance, setRewardBalance] = useState<string>('0.0');
 
   const checkForRewards = useCallback(() => {
-    if (!walletAddress || !stakingRewardsContract || network === XDAI) return;
+    if (
+      !walletAddress ||
+      !stakingRewardsContract ||
+      (network !== ETH && network !== RINKEBY)
+    )
+      return;
 
     const load = async () => {
       try {
@@ -35,12 +43,32 @@ export const SubsHarvestBox: FC = () => {
   }, [walletAddress, stakingRewardsContract, network]);
 
   const handleHarvest = useCallback(() => {
+    // extra check
+    if (
+      !walletAddress ||
+      !stakingRewardsContract ||
+      (network !== ETH && network !== RINKEBY)
+    )
+      return;
     return harvest(() => {
       checkForRewards();
     });
-  }, [checkForRewards, harvest]);
+  }, [
+    checkForRewards,
+    harvest,
+    walletAddress,
+    stakingRewardsContract,
+    network,
+  ]);
 
   useEffect(() => {
+    // extra check
+    if (
+      !walletAddress ||
+      !stakingRewardsContract ||
+      (network !== ETH && network !== RINKEBY)
+    )
+      return;
     const interval = setInterval(() => {
       checkForRewards();
     }, INTERVAL);
@@ -48,7 +76,7 @@ export const SubsHarvestBox: FC = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [checkForRewards]);
+  }, [checkForRewards, network, stakingRewardsContract, walletAddress]);
 
   useEffect(() => {
     if (!walletAddress || !stakingRewardsContract) return;
@@ -108,12 +136,21 @@ export const HoneyHarvestBox: FC = () => {
   }, [walletAddress, stakingRewardsContract, network]);
 
   const handleHarvest = useCallback(() => {
+    // extra check
+    if (!walletAddress || !stakingRewardsContract || network !== XDAI) return;
     return harvest(() => {
       checkForRewards();
     });
-  }, [checkForRewards, harvest]);
+  }, [
+    checkForRewards,
+    harvest,
+    walletAddress,
+    stakingRewardsContract,
+    network,
+  ]);
 
   useEffect(() => {
+    if (!walletAddress || !stakingRewardsContract || network !== XDAI) return;
     const interval = setInterval(() => {
       checkForRewards();
     }, INTERVAL);
@@ -121,7 +158,7 @@ export const HoneyHarvestBox: FC = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [checkForRewards]);
+  }, [walletAddress, stakingRewardsContract, network, checkForRewards]);
 
   useEffect(() => {
     if (!walletAddress || !stakingRewardsContract) return;
@@ -162,24 +199,30 @@ export const HoneyHarvestBox: FC = () => {
 
 export const UniswapV3HarvestBox: FC = () => {
   const classes = useStyles();
-  const { walletAddress } = useWallet();
-  const [rewards, setRewards] = useState<string>('0.0');
+  const { walletAddress, network } = useWallet();
+  const [rewardBalance, setRewardBalance] = useState<{
+    display: string;
+    bn: BigNumber;
+  }>({
+    display: '0.0',
+    bn: BigNumber.from(0),
+  });
   const { stakedPositions, currentIncentive, refreshPositions } =
     useV3Liquidity();
   const { uniswapV3StakerContract } = useContracts();
+  const { claim, claimUnstakeStake } = useV3Staking(1);
 
-  // useEffect(() => {
-  //   if (walletAddress && network && (network === 1 || network === 4)) {
-  //     refreshPositions();
-  //   }
-  // }, [network, walletAddress, refreshPositions]);
-
-  useEffect(() => {
-    if (!uniswapV3StakerContract || !walletAddress || !currentIncentive.key)
+  const checkForRewards = useCallback(() => {
+    if (
+      !walletAddress ||
+      !uniswapV3StakerContract ||
+      (network !== ETH && network !== RINKEBY) ||
+      !currentIncentive.key
+    )
       return;
+
     const load = async () => {
       try {
-        // check rewards
         const getReward = (p: LiquidityPosition) =>
           uniswapV3StakerContract.getRewardInfo(
             currentIncentive.key,
@@ -192,26 +235,129 @@ export const UniswapV3HarvestBox: FC = () => {
           (acc: BigNumber, [reward]) => acc.add(reward),
           BigNumber.from(0)
         );
-        setRewards(utils.formatUnits(allRewards, 18).slice(0, 12));
+        setRewardBalance({
+          display: utils.formatUnits(allRewards, 18).slice(0, 12),
+          bn: allRewards,
+        });
       } catch {}
     };
-
     load();
+  }, [
+    walletAddress,
+    uniswapV3StakerContract,
+    network,
+    currentIncentive.key,
+    stakedPositions,
+  ]);
+
+  const handleHarvest = useCallback(() => {
+    if (
+      !walletAddress ||
+      !uniswapV3StakerContract ||
+      (network !== ETH && network !== RINKEBY) ||
+      !currentIncentive.key
+    )
+      return;
+
+    // claim rewards without unstaking, might be gas intensive
+    if (stakedPositions.length > 0) {
+      return claimUnstakeStake(() => {
+        checkForRewards();
+      });
+    }
+    // claim rewards if user unstaked independently
+    if (stakedPositions.length === 0 && !rewardBalance.bn.isZero()) {
+      return claim(() => {
+        checkForRewards();
+      });
+    }
+  }, [
+    walletAddress,
+    uniswapV3StakerContract,
+    network,
+    currentIncentive.key,
+    checkForRewards,
+    claim,
+    stakedPositions,
+    rewardBalance,
+    claimUnstakeStake,
+  ]);
+
+  // useEffect(() => {
+  //   if (walletAddress && network && (network === 1 || network === 4)) {
+  //     refreshPositions();
+  //   }
+  // }, [network, walletAddress, refreshPositions]);
+
+  useEffect(() => {
+    if (
+      !walletAddress ||
+      !uniswapV3StakerContract ||
+      (network !== ETH && network !== RINKEBY) ||
+      !currentIncentive.key
+    )
+      return;
+    const interval = setInterval(() => {
+      checkForRewards();
+    }, INTERVAL);
+    checkForRewards();
+    return () => {
+      clearInterval(interval);
+    };
+  }, [
+    walletAddress,
+    uniswapV3StakerContract,
+    network,
+    checkForRewards,
+    currentIncentive.key,
+  ]);
+
+  useEffect(() => {
+    // extra check
+    if (
+      !walletAddress ||
+      !uniswapV3StakerContract ||
+      (network !== ETH && network !== RINKEBY) ||
+      !currentIncentive.key
+    )
+      return;
+
+    //  const updateEvent = (address: string) => {
+    //    if (address.toLowerCase() === walletAddress.toLowerCase()) {
+    //      checkForRewards();
+    //    }
+    //  };
+    //  const subscribe = () => {
+    //    const stakeEvent = uniswapV3StakerContract.filters.Staked();
+    //    const withdrawnEvent = uniswapV3StakerContract.filters.Withdrawn();
+    //    uniswapV3StakerContract.on(stakeEvent, updateEvent);
+    //    uniswapV3StakerContract.on(withdrawnEvent, updateEvent);
+
+    //    return () => {
+    //      uniswapV3StakerContract.off(stakeEvent, updateEvent);
+    //      uniswapV3StakerContract.off(withdrawnEvent, updateEvent);
+    //    };
+    //  };
+    //  return subscribe();
   }, [
     stakedPositions,
     uniswapV3StakerContract,
     walletAddress,
     currentIncentive.key,
+    network,
+    checkForRewards,
   ]);
 
   return (
     <>
       <Box>
         <Typography className={classes.subheader}>$BRIGHT Earned:</Typography>
-        <Typography>{rewards}</Typography>
+        <Typography>{rewardBalance.display}</Typography>
       </Box>
       <Box>
-        <Button variant={'contained'}>Harvest</Button>
+        <Button variant={'contained'} onClick={handleHarvest}>
+          Harvest
+        </Button>
       </Box>
     </>
   );

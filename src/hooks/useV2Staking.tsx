@@ -34,6 +34,7 @@ export function useV2Staking(tokenId?: number) {
         next();
       } catch (e) {
         console.warn(e);
+        setIsWorking(null);
       } finally {
         setIsWorking(null);
       }
@@ -70,6 +71,7 @@ export function useV2Staking(tokenId?: number) {
         next();
       } catch (e) {
         console.warn(e);
+        setIsWorking(null);
       } finally {
         setIsWorking(null);
       }
@@ -95,6 +97,7 @@ export function useV2Staking(tokenId?: number) {
         next();
       } catch (e) {
         console.warn(e);
+        setIsWorking(null);
       } finally {
         setIsWorking(null);
       }
@@ -114,6 +117,7 @@ export function useV2Staking(tokenId?: number) {
         next();
       } catch (e) {
         console.warn(e);
+        setIsWorking(null);
       } finally {
         setIsWorking(null);
       }
@@ -133,6 +137,7 @@ export function useV2Staking(tokenId?: number) {
         next();
       } catch (e) {
         console.warn(e);
+        setIsWorking(null);
       } finally {
         setIsWorking(null);
       }

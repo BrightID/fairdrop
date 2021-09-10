@@ -214,7 +214,6 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
     };
 
     const init = async () => {
-      console.log('checking for NFTs....');
       try {
         setLoadingNftPositions(true);
 

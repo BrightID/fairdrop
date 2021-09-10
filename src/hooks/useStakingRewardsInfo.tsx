@@ -37,7 +37,6 @@ export function useStakingRewardsInfo(tokenAddress: string | null) {
 
     const load = async () => {
       if (!contract || !walletAddress) return;
-      console.log('loading Staked Balance');
       try {
         const stakedBalance = await contract.balanceOf(walletAddress);
         setStakedBalance(stakedBalance);
