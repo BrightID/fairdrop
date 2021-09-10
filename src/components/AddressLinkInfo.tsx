@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Box, Button, Grid, Hidden, Typography } from '@material-ui/core';
+import {
+  AppBar,
+  Box,
+  Button,
+  Grid,
+  Hidden,
+  Link,
+  Typography,
+} from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import LinkAddressWizard from './LinkAddressWizard';
 import linkAddress from '../images/linkAddress.svg';
@@ -102,6 +110,30 @@ const AddressLinkInfo = ({
   } else {
     return (
       <>
+        <AppBar
+          position={'sticky'}
+          className={classNames.socialRecoveryNotification}
+        >
+          <Box textAlign={'center'}>
+            <Typography
+              className={classNames.socialRecoveryNotificationText}
+              variant={'subtitle1'}
+            >
+              Set up SOCIAL RECOVERY before linking your BrightID to get MORE
+              $BRIGHT!
+              <Link
+                className={classNames.learnMoreBtnLink}
+                href={
+                  'https://brightid.gitbook.io/brightid/setting-up-social-recovery'
+                }
+                target={'_blank'}
+              >
+                <Box className={classNames.learnMoreBtnArrow}></Box>
+                Terms and Conditions
+              </Link>
+            </Typography>
+          </Box>
+        </AppBar>
         <Grid container spacing={10} alignItems={'center'}>
           <Grid item container direction={'column'} xs={12} sm={9} md={6}>
             <Typography
@@ -190,6 +222,32 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up('sm')]: {
         marginLeft: theme.spacing(3),
       },
+    },
+    socialRecoveryNotification: {
+      background: 'rgb(237, 27, 36)',
+      paddingTop: theme.spacing(2),
+      paddingBottom: theme.spacing(2),
+    },
+    socialRecoveryNotificationText: {
+      color: 'white',
+    },
+    learnMoreBtnLink: {
+      display: 'inline-block',
+      marginLeft: theme.spacing(2),
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(1),
+      backgroundColor: theme.palette.common.white,
+      color: 'rgb(237, 27, 36)',
+    },
+    learnMoreBtnArrow: {
+      border: theme.palette.common.white,
+      background: theme.palette.common.white,
+      borderWidth: 0,
+      display: 'inline-block',
+      transform: 'rotate(135deg)',
+      padding: theme.spacing(1),
+      marginLeft: theme.spacing(-2),
+      marginRight: theme.spacing(0),
     },
   })
 );

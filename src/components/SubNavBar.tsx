@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: 'none',
     borderTop: '1px solid lightgrey',
     borderBottom: '1px solid lightgrey',
-    marginBottom: theme.spacing(6),
+    marginBottom: theme.spacing(0),
     marginTop: theme.spacing(3),
   },
   tabRoot: {
@@ -104,14 +104,12 @@ const SubNavBar = ({ chainSelector, addressLinker }: SubNavBarProps) => {
           />
         </Tabs>
       </AppBar>
-      <Container maxWidth="lg">
-        <TabPanel index={0} value={value}>
-          {chainSelector}
-        </TabPanel>
-        <TabPanel index={1} value={value}>
-          {addressLinker}
-        </TabPanel>
-      </Container>
+      <TabPanel index={0} value={value}>
+        {chainSelector}
+      </TabPanel>
+      <TabPanel index={1} value={value}>
+        {addressLinker}
+      </TabPanel>
     </>
   );
 };
