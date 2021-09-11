@@ -23,7 +23,7 @@ export const SubsStakedBox: FC = () => {
   const history = useHistory();
 
   // put subs token here
-  const { stakedBalance } = useStakingRewardsInfo('');
+  const { stakedBalance } = useStakingRewardsInfo();
   const { subsToken } = useERC20Tokens();
 
   let displayBalance = '0.0';
@@ -99,7 +99,7 @@ export const HoneyStakedBox: FC = () => {
   const history = useHistory();
 
   // put honey token here
-  const { stakedBalance } = useStakingRewardsInfo('');
+  const { stakedBalance } = useStakingRewardsInfo();
 
   let displayBalance = '0.0';
 

@@ -2,7 +2,6 @@ import { useState, useMemo, useEffect } from 'react';
 import { Contract, BigNumber } from 'ethers';
 import ERC20_CONTRACT_ABI from '../abis/erc20.json';
 import { useWallet } from '../contexts/wallet';
-import { sleep } from '../utils/promise';
 
 export function useTokenInfo(tokenAddress: string | null) {
   const [balance, setBalance] = useState(BigNumber.from('0'));
@@ -10,7 +9,7 @@ export function useTokenInfo(tokenAddress: string | null) {
   const [symbol, setSymbol] = useState<string | null>(null);
   const { walletAddress, signer } = useWallet();
 
-  const contract = useMemo(
+  const erc20Contract = useMemo(
     () =>
       signer &&
       tokenAddress &&
@@ -19,21 +18,22 @@ export function useTokenInfo(tokenAddress: string | null) {
   );
 
   useEffect(() => {
-    if (!(contract && walletAddress)) return;
+    if (!erc20Contract || !walletAddress) return;
 
     const onBalanceChange = async (from: string, to: string) => {
       if (from === walletAddress || to === walletAddress) {
-        // await sleep(500);
-        setBalance(BigNumber.from(await contract.balanceOf(walletAddress)));
+        setBalance(
+          BigNumber.from(await erc20Contract.balanceOf(walletAddress))
+        );
       }
     };
 
     const load = async () => {
-      if (!(contract && walletAddress)) return;
+      if (!(erc20Contract && walletAddress)) return;
       const [decimals, symbol, balance] = await Promise.all([
-        contract.decimals(),
-        contract.symbol(),
-        contract.balanceOf(walletAddress),
+        erc20Contract.decimals(),
+        erc20Contract.symbol(),
+        erc20Contract.balanceOf(walletAddress),
       ]);
       setDecimals(decimals);
       setSymbol(symbol);
@@ -41,21 +41,21 @@ export function useTokenInfo(tokenAddress: string | null) {
     };
 
     const subscribe = () => {
-      if (!contract) return () => {};
-      const transferEvent = contract.filters.Transfer();
-      contract.on(transferEvent, onBalanceChange);
+      if (!erc20Contract) return () => {};
+      const transferEvent = erc20Contract.filters.Transfer();
+      erc20Contract.on(transferEvent, onBalanceChange);
       return () => {
-        contract.off(transferEvent, onBalanceChange);
+        erc20Contract.off(transferEvent, onBalanceChange);
       };
     };
 
     load();
     return subscribe();
-  }, [contract, walletAddress]);
+  }, [erc20Contract, walletAddress]);
 
   return {
     balance,
-    contract,
+    contract: erc20Contract,
     decimals,
     symbol,
   };

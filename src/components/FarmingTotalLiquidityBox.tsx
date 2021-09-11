@@ -1,6 +1,6 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
-import { BigNumber as BigNumberEthers, utils } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { useHistory } from 'react-router-dom';
 import { Button, Box, Fab, Typography, Link } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -11,8 +11,33 @@ import { useContracts } from '../contexts/contracts';
 import { useStakingRewardsInfo } from '../hooks/useStakingRewardsInfo';
 import { FARM } from '../utils/types';
 
+const SUBS_PRICE = 2;
+
 export const SubsLpBox: FC = () => {
   const classes = useStyles();
+  const { totalLiquidity } = useStakingRewardsInfo();
+  const { subsToken } = useERC20Tokens();
+
+  console.log(
+    'totalLiquiditySubs',
+    utils.formatUnits(totalLiquidity, subsToken.decimals)
+  );
+  let displayPrice = '0.00';
+
+  try {
+    if (totalLiquidity && subsToken) {
+      let dollarValue = utils
+        .formatUnits(
+          totalLiquidity.mul(BigNumber.from(SUBS_PRICE)),
+          subsToken.decimals
+        )
+        .split('.');
+
+      displayPrice = utils.commify(
+        dollarValue[0] + '.' + dollarValue[1].slice(0, 2)
+      );
+    }
+  } catch {}
 
   return (
     <>
@@ -26,7 +51,7 @@ export const SubsLpBox: FC = () => {
           <Box fontSize={12} fontWeight="bold">
             Total Liquidity
           </Box>
-          <Box fontSize={12}>$125,271</Box>
+          <Box fontSize={12}>${displayPrice}</Box>
         </Box>
       </Box>
       <Box className={classes.lpLinkBox} py={1}>

@@ -2,72 +2,101 @@ import { useState, useMemo, useEffect } from 'react';
 import { BigNumber } from 'ethers';
 import { useWallet } from '../contexts/wallet';
 import { useContracts } from '../contexts/contracts';
-import { sleep } from '../utils/promise';
+import { useERC20Tokens } from '../contexts/erc20Tokens';
 
-export function useStakingRewardsInfo(tokenAddress: string | null) {
+const ETH = 1;
+const RINKEBY = 4;
+const XDAI = 100;
+
+export function useStakingRewardsInfo() {
   const [stakedBalance, setStakedBalance] = useState(BigNumber.from('0'));
   const [rewardsBalance, setRewardsBalance] = useState(BigNumber.from('0'));
-  const { walletAddress } = useWallet();
-  const { stakingRewardsContract } = useContracts();
+  const [totalLiquidity, setTotalLiquidity] = useState(BigNumber.from('0'));
 
+  const { walletAddress, network } = useWallet();
+  const { stakingRewardsContract } = useContracts();
+  const { honeyswapLpToken, subsToken } = useERC20Tokens();
+
+  const token = network === XDAI ? honeyswapLpToken : subsToken;
   // TODO check for different staking rewards contracts for subs vs honey
-  const contract = stakingRewardsContract;
 
   useEffect(() => {
-    if (!contract || !walletAddress) return;
+    if (!stakingRewardsContract || !walletAddress || !token) return;
+    console.log('token', token);
 
     const onStakedBalanceChange = async (address: string) => {
       try {
+        // update staked balance
         if (address.toLowerCase() === walletAddress.toLowerCase()) {
-          // await sleep(500);
-          const stakedBalance = await contract.balanceOf(walletAddress);
+          const stakedBalance = await stakingRewardsContract.balanceOf(
+            walletAddress
+          );
           setStakedBalance(stakedBalance);
           // also update rewards
           onRewardsBalanceChange(address);
         }
+        // update total liquidty
+        const totalBalance = await token.contract.balanceOf(
+          stakingRewardsContract.address
+        );
+
+        setTotalLiquidity(totalBalance);
       } catch {}
     };
 
     const onRewardsBalanceChange = async (address: string) => {
       if (address.toLowerCase() === walletAddress.toLowerCase()) {
-        const rewardsBalance = await contract.earned(walletAddress);
+        const rewardsBalance = await stakingRewardsContract.earned(
+          walletAddress
+        );
         setRewardsBalance(rewardsBalance);
       }
     };
 
     const load = async () => {
-      if (!contract || !walletAddress) return;
+      if (!stakingRewardsContract || !walletAddress) return;
       try {
-        const stakedBalance = await contract.balanceOf(walletAddress);
+        const stakedBalance = await stakingRewardsContract.balanceOf(
+          walletAddress
+        );
         setStakedBalance(stakedBalance);
 
-        const rewardsBalance = await contract.earned(walletAddress);
+        const rewardsBalance = await stakingRewardsContract.earned(
+          walletAddress
+        );
         setRewardsBalance(rewardsBalance);
+
+        const totalBalance = await token.contract.balanceOf(
+          stakingRewardsContract.address
+        );
+
+        setTotalLiquidity(totalBalance);
       } catch {}
     };
 
     const subscribe = () => {
-      if (!contract) return () => {};
-      const stakeEvent = contract.filters.Staked();
-      const withdrawnEvent = contract.filters.Withdrawn();
-      const rewardEvent = contract.filters.RewardPaid();
-      contract.on(stakeEvent, onStakedBalanceChange);
-      contract.on(withdrawnEvent, onStakedBalanceChange);
-      contract.on(rewardEvent, onRewardsBalanceChange);
+      if (!stakingRewardsContract) return () => {};
+      const stakeEvent = stakingRewardsContract.filters.Staked();
+      const withdrawnEvent = stakingRewardsContract.filters.Withdrawn();
+      const rewardEvent = stakingRewardsContract.filters.RewardPaid();
+      stakingRewardsContract.on(stakeEvent, onStakedBalanceChange);
+      stakingRewardsContract.on(withdrawnEvent, onStakedBalanceChange);
+      stakingRewardsContract.on(rewardEvent, onRewardsBalanceChange);
       return () => {
-        contract.off(stakeEvent, onStakedBalanceChange);
-        contract.off(withdrawnEvent, onStakedBalanceChange);
-        contract.off(rewardEvent, onRewardsBalanceChange);
+        stakingRewardsContract.off(stakeEvent, onStakedBalanceChange);
+        stakingRewardsContract.off(withdrawnEvent, onStakedBalanceChange);
+        stakingRewardsContract.off(rewardEvent, onRewardsBalanceChange);
       };
     };
 
     load();
     return subscribe();
-  }, [contract, walletAddress]);
+  }, [stakingRewardsContract, walletAddress, token]);
 
   return {
     stakedBalance,
     rewardsBalance,
+    totalLiquidity,
   };
 }
 
