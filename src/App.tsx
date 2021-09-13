@@ -38,6 +38,8 @@ import V3UnstakingModal from './modals/V3UnstakingModal';
 import V2StakingModal from './modals/V2StakingModal';
 import V2UnstakingModal from './modals/V2UnstakingModal';
 import { DRAWER_WIDTH } from './utils/constants';
+import VideoPage from './components/VideoPage';
+import { CookiesProvider, useCookies } from 'react-cookie';
 
 const BackgroundController: FC = ({ children }) => {
   const classes = useStyles();
@@ -83,29 +85,31 @@ const App = () => {
         <ContractsProvider>
           <ERC20TokensProvider>
             <ERC721NftsProvider>
-              <Router>
-                <BackgroundController>
-                  <Header />
-                  <div className={classes.content}>
-                    <SnackbarProvider
-                      maxSnack={4}
-                      anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                      }}
-                      content={(key, data) => (
-                        <div>
-                          <Notification id={key} notification={data} />
-                        </div>
-                      )}
-                    >
-                      <NotificationsProvider>
-                        <Routes />
-                      </NotificationsProvider>
-                    </SnackbarProvider>
-                  </div>
-                </BackgroundController>
-              </Router>
+              <CookiesProvider>
+                <Router>
+                  <BackgroundController>
+                    <Header />
+                    <div className={classes.content}>
+                      <SnackbarProvider
+                        maxSnack={4}
+                        anchorOrigin={{
+                          vertical: 'top',
+                          horizontal: 'right',
+                        }}
+                        content={(key, data) => (
+                          <div>
+                            <Notification id={key} notification={data} />
+                          </div>
+                        )}
+                      >
+                        <NotificationsProvider>
+                          <Routes />
+                        </NotificationsProvider>
+                      </SnackbarProvider>
+                    </div>
+                  </BackgroundController>
+                </Router>
+              </CookiesProvider>
             </ERC721NftsProvider>
           </ERC20TokensProvider>
         </ContractsProvider>
@@ -115,6 +119,7 @@ const App = () => {
 };
 
 const Routes = () => {
+  const [cookies, _] = useCookies();
   return (
     <Switch>
       <Route path="/stake/v3">
@@ -130,16 +135,16 @@ const Routes = () => {
         <V2UnstakingModal />
       </Route>
       <Route path="/farms">
-        <FarmsContainer />
+        {cookies.videoWatched ? <FarmsContainer /> : <Redirect to="/" />}
       </Route>
       <Route path="/airdrop/:address">
         <AddressRegistrationController />
       </Route>
       <Route exact path="/airdrop">
-        <AddressEntryPage />
+        {cookies.videoWatched ? <AddressEntryPage /> : <Redirect to="/" />}
       </Route>
       <Route path="/">
-        <Redirect to="/airdrop" />
+        <VideoPage />
       </Route>
     </Switch>
   );

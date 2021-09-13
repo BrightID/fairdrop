@@ -21,13 +21,12 @@ import { ERC20, ERC20__factory } from '../typechain';
 import { getTokenAddress } from '../utils/api';
 import { BigNumber, utils } from 'ethers';
 import watchAsset from '../utils/watchAsset';
-import { DRAWER_WIDTH } from '../utils/constants';
-import farmsIcon from '../images/farms_icon.svg';
-import farm from '../images/farm.svg';
 import sideLogo from '../images/side_logo.svg';
 import brightLogo from '../images/bright_logo.png';
 import airdrop_btn from '../images/airdrop_btn.svg';
+import dao_btn from '../images/dao_btn.svg';
 import { useHistory } from 'react-router';
+import { useCookies } from 'react-cookie';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -82,6 +81,7 @@ const Header = () => {
   const [token, setToken] = useState<ERC20 | undefined>(undefined);
   const [balance, setBalance] = useState<BigNumber | undefined>();
   const [buttonLabel, setButtonLabel] = useState('Connect Wallet');
+  const [cookies, _] = useCookies();
 
   // get token contract
   useEffect(() => {
@@ -236,8 +236,10 @@ const Header = () => {
   };
 
   const handleHome = () => {
-    // routerHistory.push('/');
+    routerHistory.push('/');
   };
+
+  const videoWatched = cookies.videoWatched === '1';
 
   const buildAppbarButtons = () => {
     if (xsDisplay) {
@@ -283,10 +285,18 @@ const Header = () => {
       // buttons inside appbar
       return (
         <>
-          <Button className={classes.navLink} onClick={handleHome}>
-            <img src={brightLogo} alt="bright" width={25} />
+          <Button
+            className={classes.navLink}
+            onClick={handleHome}
+            startIcon={<img src={brightLogo} alt={'home icon'} />}
+          >
+            Home
           </Button>
-          <Button className={classes.navLink} onClick={handleNavAirdrop}>
+          <Button
+            className={classes.navLink}
+            onClick={handleNavAirdrop}
+            disabled={!videoWatched}
+          >
             <img
               src={airdrop_btn}
               alt="airdrop"
@@ -294,10 +304,29 @@ const Header = () => {
               width="100%"
             />
           </Button>
-          <Button className={classes.navLink} onClick={handleNavFarms}>
+          <Button
+            className={classes.navLink}
+            onClick={handleNavFarms}
+            disabled={!videoWatched}
+          >
             <img
               src={sideLogo}
               alt="farm"
+              style={{ objectFit: 'contain' }}
+              width="100%"
+            />
+          </Button>
+          <Button
+            className={classes.navLink}
+            href={
+              'https://gardens-xdai.1hive.org/#/garden/0x1e2d5fb385e2eae45bd42357e426507a63597397'
+            }
+            target={'_blank'}
+            rel={'noopener, noreferrer'}
+          >
+            <img
+              src={dao_btn}
+              alt="dao"
               style={{ objectFit: 'contain' }}
               width="100%"
             />

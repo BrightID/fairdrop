@@ -51,29 +51,6 @@ const AddressEntryPage = () => {
           </Grid>
         </Hidden>
       </Grid>
-      <Divider className={classNames.divider} />
-      <Grid
-        container
-        alignItems={'center'}
-        className={classNames.videoContainer}
-        justifyContent={'center'}
-        spacing={3}
-      >
-        <Grid item md={8} sm={10} xs={12} className={classNames.videoHeader}>
-          <Typography variant={'h3'}>What is $BRIGHT?</Typography>
-        </Grid>
-        <Grid item md={8} sm={10} xs={12}>
-          <Box className={classNames.videoBox}>
-            <iframe
-              className={classNames.video}
-              src="https://www.youtube.com/embed/KUe8tRX7xFc"
-              allow="autoplay; encrypted-media"
-              allowFullScreen
-              frameBorder="0"
-            />
-          </Box>
-        </Grid>
-      </Grid>
     </Container>
   );
 };
