@@ -239,7 +239,7 @@ const Header = () => {
     routerHistory.push('/');
   };
 
-  const videoWatched = cookies.videoWatched === '1';
+  if (cookies.videoWatched !== '1') return null;
 
   const buildAppbarButtons = () => {
     if (xsDisplay) {
@@ -292,11 +292,7 @@ const Header = () => {
           >
             Home
           </Button>
-          <Button
-            className={classes.navLink}
-            onClick={handleNavAirdrop}
-            disabled={!videoWatched}
-          >
+          <Button className={classes.navLink} onClick={handleNavAirdrop}>
             <img
               src={airdrop_btn}
               alt="airdrop"
@@ -304,11 +300,7 @@ const Header = () => {
               width="100%"
             />
           </Button>
-          <Button
-            className={classes.navLink}
-            onClick={handleNavFarms}
-            disabled={!videoWatched}
-          >
+          <Button className={classes.navLink} onClick={handleNavFarms}>
             <img
               src={sideLogo}
               alt="farm"
