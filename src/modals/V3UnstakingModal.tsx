@@ -121,7 +121,7 @@ const V3StakingModal: FC = () => {
         {displayStaking && (
           <>
             <Box mt={2} mb={2}>
-              Select NFT Position to Stake
+              Select NFT Position to Unstake
             </Box>
             <DisplayNfts
               nftPositions={stakedPositions}

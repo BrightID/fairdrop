@@ -82,14 +82,14 @@ export const SubsHarvestBox: FC = () => {
     if (!walletAddress || !stakingRewardsContract) return;
 
     const updateEvent = (address: string) => {
-      if (address.toLowerCase() === walletAddress.toLowerCase()) {
-        checkForRewards();
-      }
+      checkForRewards();
     };
+
     const subscribe = () => {
       if (!stakingRewardsContract) return () => {};
-      const stakeEvent = stakingRewardsContract.filters.Staked();
-      const withdrawnEvent = stakingRewardsContract.filters.Withdrawn();
+      const stakeEvent = stakingRewardsContract.filters.Staked(walletAddress);
+      const withdrawnEvent =
+        stakingRewardsContract.filters.Withdrawn(walletAddress);
       stakingRewardsContract.on(stakeEvent, updateEvent);
       stakingRewardsContract.on(withdrawnEvent, updateEvent);
 
@@ -171,13 +171,12 @@ export const HoneyHarvestBox: FC = () => {
     if (!walletAddress || !stakingRewardsContract) return;
 
     const updateEvent = (address: string) => {
-      if (address.toLowerCase() === walletAddress.toLowerCase()) {
-        checkForRewards();
-      }
+      checkForRewards();
     };
     const subscribe = () => {
-      const stakeEvent = stakingRewardsContract.filters.Staked();
-      const withdrawnEvent = stakingRewardsContract.filters.Withdrawn();
+      const stakeEvent = stakingRewardsContract.filters.Staked(walletAddress);
+      const withdrawnEvent =
+        stakingRewardsContract.filters.Withdrawn(walletAddress);
       stakingRewardsContract.on(stakeEvent, updateEvent);
       stakingRewardsContract.on(withdrawnEvent, updateEvent);
 
@@ -329,23 +328,27 @@ export const UniswapV3HarvestBox: FC = () => {
       return;
 
     const handleTransfer = (_1: any, address1: string, address2: string) => {
-      if (
-        address1.toLowerCase() === walletAddress.toLowerCase() ||
-        address2.toLowerCase() === walletAddress.toLowerCase()
-      ) {
-        checkForRewards();
-      }
+      checkForRewards();
     };
 
     const subscribe = () => {
-      const transferEvent =
-        uniswapV3StakerContract.filters.DepositTransferred();
-
-      uniswapV3StakerContract.on(transferEvent, handleTransfer);
+      const inTransfer = uniswapV3StakerContract.filters.DepositTransferred(
+        null,
+        walletAddress,
+        null
+      );
+      const outTransfer = uniswapV3StakerContract.filters.DepositTransferred(
+        null,
+        null,
+        walletAddress
+      );
+      uniswapV3StakerContract.on(inTransfer, handleTransfer);
+      uniswapV3StakerContract.on(outTransfer, handleTransfer);
       // const rewardEvent = uniswapV3StakerContract.filters.RewardClaimed();
 
       return () => {
-        uniswapV3StakerContract.off(transferEvent, handleTransfer);
+        uniswapV3StakerContract.off(inTransfer, handleTransfer);
+        uniswapV3StakerContract.off(outTransfer, handleTransfer);
       };
     };
     return subscribe();

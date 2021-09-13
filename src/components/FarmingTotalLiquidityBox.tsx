@@ -11,8 +11,6 @@ import { useContracts } from '../contexts/contracts';
 import { useStakingRewardsInfo } from '../hooks/useStakingRewardsInfo';
 import { FARM } from '../utils/types';
 
-const SUBS_PRICE = 2;
-
 export const SubsLpBox: FC = () => {
   const classes = useStyles();
   const { totalLiquidity } = useStakingRewardsInfo();
@@ -22,20 +20,15 @@ export const SubsLpBox: FC = () => {
     'totalLiquiditySubs',
     utils.formatUnits(totalLiquidity, subsToken.decimals)
   );
-  let displayPrice = '0.00';
+  let displayPrice = '0';
 
   try {
     if (totalLiquidity && subsToken) {
-      let dollarValue = utils
-        .formatUnits(
-          totalLiquidity.mul(BigNumber.from(SUBS_PRICE)),
-          subsToken.decimals
-        )
-        .split('.');
+      displayPrice = utils
+        .formatUnits(totalLiquidity, subsToken.decimals)
+        .split('.')[0];
 
-      displayPrice = utils.commify(
-        dollarValue[0] + '.' + dollarValue[1].slice(0, 2)
-      );
+      displayPrice = utils.commify(displayPrice);
     }
   } catch {}
 
@@ -51,7 +44,7 @@ export const SubsLpBox: FC = () => {
           <Box fontSize={12} fontWeight="bold">
             Total Liquidity
           </Box>
-          <Box fontSize={12}>${displayPrice}</Box>
+          <Box fontSize={12}>{displayPrice} SUBS</Box>
         </Box>
       </Box>
       <Box className={classes.lpLinkBox} py={1}>
@@ -162,14 +155,15 @@ const useStyles = makeStyles((theme: Theme) =>
     totalLiquidityBox: {
       display: 'flex',
       flexDirection: 'column',
-      width: '50%',
-      alignItems: 'center',
+      width: '55%',
+      alignItems: 'flex-start',
       justifyContent: 'flex-start',
+      marginLeft: '5%',
     },
     lpLinkBox: {
       display: 'flex',
       flexDirection: 'column',
-      width: '50%',
+      width: '40%',
       alignItems: 'center',
       justifyContent: 'flex-start',
     },

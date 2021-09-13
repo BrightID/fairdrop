@@ -26,21 +26,15 @@ export const SubsStakedBox: FC = () => {
   const { stakedBalance } = useStakingRewardsInfo();
   const { subsToken } = useERC20Tokens();
 
-  let displayBalance = '0.0';
+  let displayBalance = '0';
 
-  if (stakedBalance && (network === ETH || network === RINKEBY)) {
-    if (subsToken.decimals) {
-      displayBalance = utils
-        .formatUnits(stakedBalance, subsToken.decimals)
-        .slice(0, 12);
-    } else {
-      // manually remove trailing ".0" when token has 0 decimals. This is
-      // fixed with ethers 5.2.x, but we are on 5.1
+  try {
+    if (stakedBalance && (network === ETH || network === RINKEBY)) {
       displayBalance = utils
         .formatUnits(stakedBalance, subsToken.decimals)
         .split('.')[0];
     }
-  }
+  } catch {}
 
   const navToStake = () => {
     history.push('/stake/v2/subs');

@@ -295,22 +295,27 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
 
     const handleTransfer = (_1: any, address1: any, address2: string) => {
       console.log('handling transfer', _1, address1, address2);
-      if (
-        address1.toLowerCase() === walletAddress.toLowerCase() ||
-        address2.toLowerCase() === walletAddress.toLowerCase()
-      ) {
-        refreshPositions();
-      }
+
+      refreshPositions();
     };
 
     const subscribe = () => {
-      const transferEvent =
-        uniswapV3StakerContract.filters.DepositTransferred();
-
-      uniswapV3StakerContract.on(transferEvent, handleTransfer);
+      const inTransfer = uniswapV3StakerContract.filters.DepositTransferred(
+        null,
+        walletAddress,
+        null
+      );
+      const outTransfer = uniswapV3StakerContract.filters.DepositTransferred(
+        null,
+        null,
+        walletAddress
+      );
+      uniswapV3StakerContract.on(inTransfer, handleTransfer);
+      uniswapV3StakerContract.on(outTransfer, handleTransfer);
 
       return () => {
-        uniswapV3StakerContract.off(transferEvent, handleTransfer);
+        uniswapV3StakerContract.off(inTransfer, handleTransfer);
+        uniswapV3StakerContract.off(outTransfer, handleTransfer);
       };
     };
 

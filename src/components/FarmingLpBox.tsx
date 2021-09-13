@@ -21,12 +21,15 @@ export const SubsLpBox: FC = () => {
 
   let displayBalance = '0';
 
-  if (uniV2LpBalance) {
-    // manually remove trailing ".0". This is fixed with ethers 5.2.x, but we are on 5.1
-    displayBalance = utils
-      .formatUnits(uniV2LpBalance, subsToken.decimals)
-      .split('.')[0];
-  }
+  try {
+    if (uniV2LpBalance) {
+      // manually remove trailing ".0". This is fixed with ethers 5.2.x, but we are on 5.1
+      displayBalance = utils
+        .formatUnits(uniV2LpBalance, subsToken.decimals)
+        .split('.')[0];
+      displayBalance = utils.commify(displayBalance);
+    }
+  } catch {}
 
   return (
     <Box>
@@ -45,12 +48,15 @@ export const HoneyLpBox: FC = () => {
   const uniV2LpBalance = honeyswapLpToken?.balance;
 
   let displayBalance = '0.0';
-  if (uniV2LpBalance) {
-    displayBalance = utils.formatUnits(
-      uniV2LpBalance,
-      honeyswapLpToken.decimals
-    );
-  }
+  try {
+    if (uniV2LpBalance) {
+      displayBalance = utils.formatUnits(
+        uniV2LpBalance,
+        honeyswapLpToken.decimals
+      );
+    }
+  } catch {}
+
   return (
     <Box>
       <Typography className={classes.subheader}>LP in wallet</Typography>
@@ -63,13 +69,7 @@ export const UniswapV3LpBox: FC = () => {
   const classes = useStyles();
   const { walletAddress, network } = useWallet();
 
-  const { refreshPositions, unstakedPositions } = useV3Liquidity();
-  // check for NFT positions in user's wallet
-  // useEffect(() => {
-  //   if (walletAddress && network && (network === 1 || network === 4)) {
-  //     refreshPositions();
-  //   }
-  // }, [network, walletAddress, refreshPositions]);
+  const { unstakedPositions } = useV3Liquidity();
 
   return (
     <Box>

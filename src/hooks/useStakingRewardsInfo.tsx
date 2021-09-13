@@ -78,7 +78,8 @@ export function useStakingRewardsInfo() {
       if (!stakingRewardsContract) return () => {};
       const stakeEvent = stakingRewardsContract.filters.Staked();
       const withdrawnEvent = stakingRewardsContract.filters.Withdrawn();
-      const rewardEvent = stakingRewardsContract.filters.RewardPaid();
+      const rewardEvent =
+        stakingRewardsContract.filters.RewardPaid(walletAddress);
       stakingRewardsContract.on(stakeEvent, onStakedBalanceChange);
       stakingRewardsContract.on(withdrawnEvent, onStakedBalanceChange);
       stakingRewardsContract.on(rewardEvent, onRewardsBalanceChange);

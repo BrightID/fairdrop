@@ -92,7 +92,7 @@ export const UniswapV3TitleBox: FC = () => {
           ETH
         </Box>
         <Box className={classes.dexBox} fontSize="small">
-          Uniswap V3
+          Uniswap V3 0.3%
         </Box>
       </Box>
       <Box className={classes.title} mt={1}>
