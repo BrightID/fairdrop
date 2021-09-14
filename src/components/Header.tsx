@@ -383,7 +383,7 @@ const Header = () => {
         color={'transparent'}
         className={classes.appBar}
       >
-        <Toolbar>{buildAppbarButtons()}</Toolbar>
+        <Toolbar variant="dense">{buildAppbarButtons()}</Toolbar>
       </AppBar>
     </div>
   );

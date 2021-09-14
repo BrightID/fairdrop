@@ -86,6 +86,10 @@ export const fairdropBackground = {
   background: 'linear-gradient(70deg, #FFFFFF 50%, #ED7A5D 200%)',
 };
 
+export const homeBackground = {
+  background: 'linear-gradient(230deg, #FFFFFF 70%, #ED7A5D 150%)',
+};
+
 export const xdaiBackground = {
   background: 'linear-gradient(180deg, #FEF7E3 0%, #AEB4BA 100%)',
 };

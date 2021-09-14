@@ -24,20 +24,18 @@ import {
   baseTheme,
   ethBackground,
   fairdropBackground,
+  homeBackground,
   xdaiBackground,
 } from './theme';
-import MainContainer from './pages/MainContainer';
 import AddressEntryPage from './pages/AddressEntryPage';
 import AddressRegistrationController from './pages/AddressRegistrationController';
 import FarmsContainer from './pages/FarmsContainer';
 import Header from './components/Header';
 import Notification from './components/Notification';
-import DrawerLeft from './components/DrawerLeft';
 import V3StakingModal from './modals/V3StakingModal';
 import V3UnstakingModal from './modals/V3UnstakingModal';
 import V2StakingModal from './modals/V2StakingModal';
 import V2UnstakingModal from './modals/V2UnstakingModal';
-import { DRAWER_WIDTH } from './utils/constants';
 import VideoPage from './components/VideoPage';
 import { CookiesProvider, useCookies } from 'react-cookie';
 
@@ -47,9 +45,10 @@ const BackgroundController: FC = ({ children }) => {
   const { pathname } = useLocation();
   const [background, setBackground] = useState(classes.ethBackground);
   useEffect(() => {
-    if (!network) return;
     if (pathname.startsWith('/airdrop')) {
       setBackground(classes.fairdropBackground);
+    } else if (pathname === '/') {
+      setBackground(classes.homeBackground);
     } else {
       switch (network) {
         case 0:
@@ -162,6 +161,7 @@ const useStyles = makeStyles((theme: Theme) =>
       overflowY: 'auto',
     },
     fairdropBackground,
+    homeBackground,
     ethBackground,
     xdaiBackground,
     content: {},

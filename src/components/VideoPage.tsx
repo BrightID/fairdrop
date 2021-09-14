@@ -32,10 +32,10 @@ const VideoPage = () => {
         alignItems={'center'}
         className={classNames.videoContainer}
         justifyContent={'center'}
-        spacing={3}
+        spacing={2}
       >
         <Grid item md={10} sm={11} xs={12} className={classNames.videoHeader}>
-          <Typography variant={'h3'}>
+          <Typography variant={'h4'}>
             Please watch this video about {brightToken} and {brightDAO}
           </Typography>
         </Grid>
@@ -54,7 +54,7 @@ const VideoPage = () => {
         </Grid>
         <Grid item md={11} sm={12} xs={12}>
           <Typography
-            variant={'h4'}
+            variant={'h5'}
             className={classNames.centered}
             gutterBottom={true}
           >
@@ -67,7 +67,7 @@ const VideoPage = () => {
             </Link>{' '}
             about $BRIGHT and Bright DAO
           </Typography>
-          <Typography variant={'h5'} className={classNames.centered}>
+          <Typography variant={'h6'} className={classNames.centered}>
             I've seen the video. Now take me to the{' '}
             <Link href={'#'} onClick={videoWatched}>
               Fairdrop
@@ -82,8 +82,8 @@ const VideoPage = () => {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     videoContainer: {
-      padding: theme.spacing(3),
-      paddingTop: theme.spacing(5),
+      padding: theme.spacing(2),
+      paddingTop: theme.spacing(1),
     },
     videoHeader: {
       textAlign: 'center',
