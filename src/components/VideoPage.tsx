@@ -36,7 +36,7 @@ const VideoPage = () => {
       >
         <Grid item md={10} sm={11} xs={12} className={classNames.videoHeader}>
           <Typography variant={'h3'}>
-            Please watch this video about {brightToken} and the {brightDAO}
+            Please watch this video about {brightToken} and {brightDAO}
           </Typography>
         </Grid>
         <Grid item md={11} sm={12} xs={12}>
@@ -53,15 +53,19 @@ const VideoPage = () => {
           </Box>
         </Grid>
         <Grid item md={11} sm={12} xs={12}>
-          <Typography variant={'h4'} className={classNames.centered}>
-            Learn more about <Link href={'#'}>$Bright</Link>
-          </Typography>
           <Typography
             variant={'h4'}
             className={classNames.centered}
             gutterBottom={true}
           >
-            Learn more about <Link href={'#'}>Bright DAO</Link>
+            <Link
+              href={'https://brightid.gitbook.io/bright/what-is-bright/'}
+              rel={'noreferrer noopener'}
+              target={'_blank'}
+            >
+              Learn more
+            </Link>{' '}
+            about $BRIGHT and Bright DAO
           </Typography>
           <Typography variant={'h5'} className={classNames.centered}>
             I've seen the video. Now take me to the{' '}

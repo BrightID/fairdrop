@@ -203,11 +203,6 @@ const Header = () => {
     }
   };
 
-  const changeAddressFromMenu = () => {
-    setAnchorEl(null);
-    // changeAddress();
-  };
-
   const watchAssetHandler = async () => {
     if (token && wallet && wallet.provider) {
       console.log(`Adding token...`);
@@ -228,14 +223,17 @@ const Header = () => {
   };
 
   const handleNavAirdrop = () => {
+    setAnchorEl(null);
     routerHistory.push('/airdrop');
   };
 
   const handleNavFarms = () => {
+    setAnchorEl(null);
     routerHistory.push('/farms');
   };
 
   const handleHome = () => {
+    setAnchorEl(null);
     routerHistory.push('/');
   };
 
@@ -243,7 +241,7 @@ const Header = () => {
 
   const buildAppbarButtons = () => {
     if (xsDisplay) {
-      // only small menu button to the right
+      // only small menu button to the left
       return (
         <>
           <IconButton color={'primary'} onClick={handleOpenMenu}>
@@ -264,12 +262,21 @@ const Header = () => {
             open={openMenu}
             onClose={handleCloseMenu}
           >
-            <MenuItem onClick={switchWallet}>{buttonLabel}</MenuItem>
-            {walletAddress && (
-              <MenuItem onClick={changeAddressFromMenu}>
-                <HashDisplay hash={walletAddress} type={'address'} />
-              </MenuItem>
-            )}
+            <MenuItem onClick={handleHome}>Home</MenuItem>
+            <MenuItem onClick={handleNavAirdrop}>$BRIGHT Airdrop</MenuItem>
+            <MenuItem onClick={handleNavFarms}>$BRIGHT Farm</MenuItem>
+            <MenuItem
+              component={'a'}
+              href={
+                'https://gardens-xdai.1hive.org/#/garden/0x1e2d5fb385e2eae45bd42357e426507a63597397'
+              }
+              target={'_blank'}
+              rel={'noopener, noreferrer'}
+              onClick={handleCloseMenu}
+            >
+              $BRIGHT DAO
+            </MenuItem>
+            <MenuItem onClick={switchWallet}>Wallet: {buttonLabel}</MenuItem>
             {balance && (
               <MenuItem>
                 <Typography>{`${utils.formatUnits(
