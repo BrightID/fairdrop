@@ -4,6 +4,7 @@ import {
   Switch,
   Route,
   Redirect,
+  useLocation,
 } from 'react-router-dom';
 import { CssBaseline } from '@material-ui/core';
 import {
@@ -37,18 +38,24 @@ import V3UnstakingModal from './modals/V3UnstakingModal';
 import V2StakingModal from './modals/V2StakingModal';
 import V2UnstakingModal from './modals/V2UnstakingModal';
 import { DRAWER_WIDTH } from './utils/constants';
+import VideoPage from './components/VideoPage';
+import { CookiesProvider, useCookies } from 'react-cookie';
 
 const BackgroundController: FC = ({ children }) => {
   const classes = useStyles();
   const { network } = useWallet();
+  const { pathname } = useLocation();
   const [background, setBackground] = useState(classes.ethBackground);
   useEffect(() => {
     if (!network) return;
-    if (window.location.pathname.startsWith('/airdrop')) {
+    if (pathname.startsWith('/airdrop')) {
       setBackground(classes.fairdropBackground);
     } else {
       switch (network) {
         case 0:
+          setBackground(classes.ethBackground);
+          break;
+        case 1:
           setBackground(classes.ethBackground);
           break;
         case 4:
@@ -60,6 +67,7 @@ const BackgroundController: FC = ({ children }) => {
       }
     }
   }, [
+    pathname,
     network,
     classes.ethBackground,
     classes.xdaiBackground,
@@ -77,28 +85,31 @@ const App = () => {
         <ContractsProvider>
           <ERC20TokensProvider>
             <ERC721NftsProvider>
-              <BackgroundController>
-                <Header />
-                <DrawerLeft />
-                <div className={classes.content}>
-                  <SnackbarProvider
-                    maxSnack={4}
-                    anchorOrigin={{
-                      vertical: 'top',
-                      horizontal: 'right',
-                    }}
-                    content={(key, data) => (
-                      <div>
-                        <Notification id={key} notification={data} />
-                      </div>
-                    )}
-                  >
-                    <NotificationsProvider>
-                      <Routes />
-                    </NotificationsProvider>
-                  </SnackbarProvider>
-                </div>
-              </BackgroundController>
+              <CookiesProvider>
+                <Router>
+                  <BackgroundController>
+                    <Header />
+                    <div className={classes.content}>
+                      <SnackbarProvider
+                        maxSnack={4}
+                        anchorOrigin={{
+                          vertical: 'top',
+                          horizontal: 'right',
+                        }}
+                        content={(key, data) => (
+                          <div>
+                            <Notification id={key} notification={data} />
+                          </div>
+                        )}
+                      >
+                        <NotificationsProvider>
+                          <Routes />
+                        </NotificationsProvider>
+                      </SnackbarProvider>
+                    </div>
+                  </BackgroundController>
+                </Router>
+              </CookiesProvider>
             </ERC721NftsProvider>
           </ERC20TokensProvider>
         </ContractsProvider>
@@ -108,35 +119,34 @@ const App = () => {
 };
 
 const Routes = () => {
+  const [cookies, _] = useCookies();
   return (
-    <Router>
-      <Switch>
-        <Route path="/stake/v3">
-          <V3StakingModal />
-        </Route>
-        <Route path="/unstake/v3">
-          <V3UnstakingModal />
-        </Route>
-        <Route path="/stake/v2/:farm">
-          <V2StakingModal />
-        </Route>
-        <Route path="/unstake/v2/:farm">
-          <V2UnstakingModal />
-        </Route>
-        <Route path="/farms">
-          <FarmsContainer />
-        </Route>
-        <Route path="/airdrop/:address">
-          <AddressRegistrationController />
-        </Route>
-        <Route exact path="/airdrop">
-          <AddressEntryPage />
-        </Route>
-        <Route path="/">
-          <Redirect to="/airdrop" />
-        </Route>
-      </Switch>
-    </Router>
+    <Switch>
+      <Route path="/stake/v3">
+        <V3StakingModal />
+      </Route>
+      <Route path="/unstake/v3">
+        <V3UnstakingModal />
+      </Route>
+      <Route path="/stake/v2/:farm">
+        <V2StakingModal />
+      </Route>
+      <Route path="/unstake/v2/:farm">
+        <V2UnstakingModal />
+      </Route>
+      <Route path="/farms">
+        {cookies.videoWatched ? <FarmsContainer /> : <Redirect to="/" />}
+      </Route>
+      <Route path="/airdrop/:address">
+        <AddressRegistrationController />
+      </Route>
+      <Route exact path="/airdrop">
+        {cookies.videoWatched ? <AddressEntryPage /> : <Redirect to="/" />}
+      </Route>
+      <Route path="/">
+        <VideoPage />
+      </Route>
+    </Switch>
   );
 };
 
@@ -154,12 +164,7 @@ const useStyles = makeStyles((theme: Theme) =>
     fairdropBackground,
     ethBackground,
     xdaiBackground,
-    content: {
-      [theme.breakpoints.up('sm')]: {
-        width: `calc(100% - ${DRAWER_WIDTH}px)`,
-        marginLeft: DRAWER_WIDTH,
-      },
-    },
+    content: {},
   })
 );
 

@@ -9,6 +9,8 @@ import { useWallet } from '../contexts/wallet';
 import HashDisplay from './HashDisplay';
 import MenuIcon from '@material-ui/icons/Menu';
 import {
+  Box,
+  Divider,
   IconButton,
   Menu,
   MenuItem,
@@ -19,7 +21,12 @@ import { ERC20, ERC20__factory } from '../typechain';
 import { getTokenAddress } from '../utils/api';
 import { BigNumber, utils } from 'ethers';
 import watchAsset from '../utils/watchAsset';
-import { DRAWER_WIDTH } from '../utils/constants';
+import sideLogo from '../images/side_logo.svg';
+import brightLogo from '../images/bright_logo.png';
+import airdrop_btn from '../images/airdrop_btn.svg';
+import dao_btn from '../images/dao_btn.svg';
+import { useHistory } from 'react-router';
+import { useCookies } from 'react-cookie';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -29,15 +36,12 @@ const useStyles = makeStyles((theme) => ({
     background: 'transparent',
     boxShadow: 'none',
     marginBottom: theme.spacing(6),
-    [theme.breakpoints.up('sm')]: {
-      width: `calc(100% - ${DRAWER_WIDTH}px)`,
-      marginLeft: DRAWER_WIDTH,
-    },
   },
   menuButton: {
     marginRight: theme.spacing(2),
   },
-  title: {
+  title: {},
+  divider: {
     flexGrow: 1,
   },
   changeWalletBtn: {
@@ -59,6 +63,9 @@ const useStyles = makeStyles((theme) => ({
       paddingRight: theme.spacing(3),
     },
   },
+  navLink: {
+    marginLeft: theme.spacing(1),
+  },
 }));
 
 const Header = () => {
@@ -67,12 +74,14 @@ const Header = () => {
   const [popupAnchorEl, setPopupAnchorEl] = React.useState<null | HTMLElement>(
     null
   );
+  const routerHistory = useHistory();
   const { wallet, network, provider, onboardApi, walletAddress } = useWallet();
   const theme = useTheme();
   const xsDisplay = useMediaQuery(theme.breakpoints.down('xs'));
   const [token, setToken] = useState<ERC20 | undefined>(undefined);
   const [balance, setBalance] = useState<BigNumber | undefined>();
   const [buttonLabel, setButtonLabel] = useState('Connect Wallet');
+  const [cookies, _] = useCookies();
 
   // get token contract
   useEffect(() => {
@@ -218,6 +227,20 @@ const Header = () => {
     handleClosePopup();
   };
 
+  const handleNavAirdrop = () => {
+    routerHistory.push('/airdrop');
+  };
+
+  const handleNavFarms = () => {
+    routerHistory.push('/farms');
+  };
+
+  const handleHome = () => {
+    routerHistory.push('/');
+  };
+
+  if (cookies.videoWatched !== '1') return null;
+
   const buildAppbarButtons = () => {
     if (xsDisplay) {
       // only small menu button to the right
@@ -262,6 +285,45 @@ const Header = () => {
       // buttons inside appbar
       return (
         <>
+          <Button
+            className={classes.navLink}
+            onClick={handleHome}
+            startIcon={<img src={brightLogo} alt={'home icon'} />}
+          >
+            Home
+          </Button>
+          <Button className={classes.navLink} onClick={handleNavAirdrop}>
+            <img
+              src={airdrop_btn}
+              alt="airdrop"
+              style={{ objectFit: 'contain' }}
+              width="100%"
+            />
+          </Button>
+          <Button className={classes.navLink} onClick={handleNavFarms}>
+            <img
+              src={sideLogo}
+              alt="farm"
+              style={{ objectFit: 'contain' }}
+              width="100%"
+            />
+          </Button>
+          <Button
+            className={classes.navLink}
+            href={
+              'https://gardens-xdai.1hive.org/#/garden/0x1e2d5fb385e2eae45bd42357e426507a63597397'
+            }
+            target={'_blank'}
+            rel={'noopener, noreferrer'}
+          >
+            <img
+              src={dao_btn}
+              alt="dao"
+              style={{ objectFit: 'contain' }}
+              width="100%"
+            />
+          </Button>
+          <Box className={classes.divider}></Box>
           {balance && (
             <>
               <Button
@@ -314,14 +376,7 @@ const Header = () => {
         color={'transparent'}
         className={classes.appBar}
       >
-        <Toolbar>
-          <Typography
-            variant="h6"
-            className={classes.title}
-            color={'primary'}
-          ></Typography>
-          {buildAppbarButtons()}
-        </Toolbar>
+        <Toolbar>{buildAppbarButtons()}</Toolbar>
       </AppBar>
     </div>
   );
