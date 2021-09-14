@@ -27,6 +27,7 @@ import airdrop_btn from '../images/airdrop_btn.svg';
 import dao_btn from '../images/dao_btn.svg';
 import { useHistory } from 'react-router';
 import { useCookies } from 'react-cookie';
+import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -75,6 +76,7 @@ const Header = () => {
     null
   );
   const routerHistory = useHistory();
+  const { pathname } = useLocation();
   const { wallet, network, provider, onboardApi, walletAddress } = useWallet();
   const theme = useTheme();
   const xsDisplay = useMediaQuery(theme.breakpoints.down('xs'));
@@ -237,7 +239,9 @@ const Header = () => {
     routerHistory.push('/');
   };
 
-  if (cookies.videoWatched !== '1') return null;
+  // On the homepage the header should be hidden unless the videoWatched cookie is set.
+  // Deep links should always work regardless of cookie
+  if (pathname === '/' && cookies.videoWatched !== '1') return null;
 
   const buildAppbarButtons = () => {
     if (xsDisplay) {

@@ -134,13 +134,13 @@ const Routes = () => {
         <V2UnstakingModal />
       </Route>
       <Route path="/farms">
-        {cookies.videoWatched ? <FarmsContainer /> : <Redirect to="/" />}
+        <FarmsContainer />
       </Route>
       <Route path="/airdrop/:address">
         <AddressRegistrationController />
       </Route>
       <Route exact path="/airdrop">
-        {cookies.videoWatched ? <AddressEntryPage /> : <Redirect to="/" />}
+        <AddressEntryPage />
       </Route>
       <Route path="/">
         <VideoPage />
