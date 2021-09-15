@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -6,7 +6,6 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Popover from '@material-ui/core/Popover';
 import { useWallet } from '../contexts/wallet';
-import HashDisplay from './HashDisplay';
 import MenuIcon from '@material-ui/icons/Menu';
 import {
   Box,
@@ -21,10 +20,10 @@ import { ERC20, ERC20__factory } from '../typechain';
 import { getTokenAddress } from '../utils/api';
 import { BigNumber, utils } from 'ethers';
 import watchAsset from '../utils/watchAsset';
-import sideLogo from '../images/side_logo.svg';
-import brightLogo from '../images/bright_logo.png';
-import airdrop_btn from '../images/airdrop_btn.svg';
-import dao_btn from '../images/dao_btn.svg';
+import header_home from '../images/header_home.svg';
+import header_farm from '../images/header_farm.svg';
+import header_fairdrop from '../images/header_fairdrop.svg';
+import header_dao from '../images/header_dao.svg';
 import { useHistory } from 'react-router';
 import { useCookies } from 'react-cookie';
 import { useLocation } from 'react-router-dom';
@@ -296,16 +295,17 @@ const Header = () => {
       // buttons inside appbar
       return (
         <>
-          <Button
-            className={classes.navLink}
-            onClick={handleHome}
-            startIcon={<img src={brightLogo} alt={'home icon'} />}
-          >
-            Home
+          <Button className={classes.navLink} onClick={handleHome}>
+            <img
+              src={header_home}
+              alt="airdrop"
+              style={{ objectFit: 'contain' }}
+              width="100%"
+            />
           </Button>
           <Button className={classes.navLink} onClick={handleNavAirdrop}>
             <img
-              src={airdrop_btn}
+              src={header_fairdrop}
               alt="airdrop"
               style={{ objectFit: 'contain' }}
               width="100%"
@@ -313,7 +313,7 @@ const Header = () => {
           </Button>
           <Button className={classes.navLink} onClick={handleNavFarms}>
             <img
-              src={sideLogo}
+              src={header_farm}
               alt="farm"
               style={{ objectFit: 'contain' }}
               width="100%"
@@ -328,7 +328,7 @@ const Header = () => {
             rel={'noopener, noreferrer'}
           >
             <img
-              src={dao_btn}
+              src={header_dao}
               alt="dao"
               style={{ objectFit: 'contain' }}
               width="100%"
