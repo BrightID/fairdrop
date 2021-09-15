@@ -177,7 +177,12 @@ const V3StakingModal: FC = () => {
         )}
       </DialogContent>
       <DialogActions className={classes.bottom}>
-        <Button href="#" color="primary" endIcon={<LaunchIcon />}>
+        <Button
+          href="https://app.uniswap.org/#/add/ETH/0x5dD57Da40e6866C9FcC34F4b6DDC89F1BA740DfE/3000"
+          color="primary"
+          endIcon={<LaunchIcon />}
+          target={'_blank'}
+        >
           Get BRIGHT / ETH 0.3% Position
         </Button>
       </DialogActions>
