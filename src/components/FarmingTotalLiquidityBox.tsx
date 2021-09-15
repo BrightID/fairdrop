@@ -112,7 +112,7 @@ export const UniswapV3LpBox: FC = () => {
         <Link
           underline="always"
           className={classes.lpLink}
-          href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x61CEAc48136d6782DBD83c09f51E23514D12470a"
+          href="https://app.uniswap.org/#/add/ETH/0x5dD57Da40e6866C9FcC34F4b6DDC89F1BA740DfE/3000"
           target="_blank"
           rel="noopener"
         >
