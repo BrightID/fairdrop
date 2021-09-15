@@ -4,8 +4,8 @@ export const DRAWER_WIDTH = 240;
 
 export const NETWORK_MAINNET = chainName(1);
 export const NETWORK_RINKEBY = chainName(4);
-export const INCENTIVE_START_TIME = 1630934283; // 1629189007;
-export const INCENTIVE_END_TIME = 1631539083; // 1630398607;
+export const INCENTIVE_START_TIME = 1631811600;
+export const INCENTIVE_END_TIME = 1637085600;
 
 export const NFT_POSITIONS_MANAGER_ADDRESS: Record<string, string> = {
   4: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
