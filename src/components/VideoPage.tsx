@@ -42,7 +42,7 @@ const VideoPage = () => {
             </Box>
           </Typography>
         </Grid>
-        <Grid item md={11} sm={12} xs={12}>
+        <Grid item md={10} sm={11} xs={12}>
           <Box className={classNames.videoBorder}>
             <Box className={classNames.videoBox}>
               <iframe
