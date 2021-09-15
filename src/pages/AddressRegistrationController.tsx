@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BigNumber } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { useParams } from 'react-router-dom';
 import {
   ClaimInfo,
@@ -16,6 +16,7 @@ import SubNavBar from '../components/SubNavBar';
 import ActiveClaimController from '../components/ActiveClaimController';
 import NoClaim from '../components/NoClaim';
 import { Container } from '@material-ui/core';
+import { useHistory } from 'react-router';
 
 interface Params {
   address?: string;
@@ -36,8 +37,8 @@ interface ContextInfoError {
 export type ContextInfo = ContextInfoSuccess | ContextInfoError;
 
 const AddressRegistrationController = () => {
-  let { address } = useParams<Params>();
-
+  const { address: rawAddress } = useParams<Params>();
+  const history = useHistory();
   const [claim, setClaim] = useState<ClaimInfo | undefined>(undefined);
   const [claimLoading, setClaimLoading] = useState(true);
   const [registrationInfoLoading, setRegistrationInfoLoading] = useState(true);
@@ -49,6 +50,24 @@ const AddressRegistrationController = () => {
   const [payoutChainId, setPayoutChainId] = useState(0);
   const [nextAmount, setNextAmount] = useState(BigNumber.from(0));
   const [brightIdLinked, setBrightIdLinked] = useState(false);
+  const [address, setAddress] = useState('');
+
+  // check if address from params is valid
+  useEffect(() => {
+    if (rawAddress) {
+      try {
+        const checkedAddress = ethers.utils.getAddress(rawAddress);
+        if (checkedAddress !== address) {
+          console.log(`Got new address from route params...`);
+          setAddress(checkedAddress);
+        }
+      } catch (e) {
+        // invalid address. Go back to address entry page
+        history.push('/airdrop');
+        setAddress('');
+      }
+    }
+  }, [rawAddress]);
 
   // Get info about registration phases from backend
   useEffect(() => {
