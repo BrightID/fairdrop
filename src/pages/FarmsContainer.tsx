@@ -21,12 +21,16 @@ const FarmsContainer = () => {
           <Typography variant={'h2'} color={'secondary'}>
             Farms
           </Typography>
-          <Box fontSize={30} color={'secondary.main'}>
-            Stake and earn
-          </Box>
           <Box fontSize={30} mt={3}>
-            <Link color={'secondary'} underline="always">
-              See how does this work
+            <Link
+              href={
+                'https://brightid.gitbook.io/brightid/bright/getting-bright/farming/'
+              }
+              target={'_blank'}
+              color={'secondary'}
+              underline="always"
+            >
+              How does this work?
             </Link>
           </Box>
         </Box>
