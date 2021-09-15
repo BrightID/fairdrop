@@ -36,7 +36,10 @@ const VideoPage = () => {
       >
         <Grid item md={10} sm={11} xs={12} className={classNames.videoHeader}>
           <Typography variant={'h4'}>
-            Please watch this video about {brightToken} and {brightDAO}
+            Please watch this video about{' '}
+            <Box component={'span'} className={classNames.noWrap}>
+              {brightToken} and {brightDAO}
+            </Box>
           </Typography>
         </Grid>
         <Grid item md={11} sm={12} xs={12}>
@@ -90,6 +93,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     centered: {
       textAlign: 'center',
+    },
+    noWrap: {
+      whiteSpace: 'nowrap',
     },
     videoBorder: {
       backgroundColor: theme.palette.common.white,
