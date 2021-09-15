@@ -34,7 +34,7 @@ const VideoPage = () => {
         justifyContent={'center'}
         spacing={2}
       >
-        <Grid item md={10} sm={11} xs={12} className={classNames.videoHeader}>
+        <Grid item md={11} sm={12} xs={12} className={classNames.videoHeader}>
           <Typography variant={'h4'}>
             Please watch this video about{' '}
             <Box component={'span'} className={classNames.noWrap}>
@@ -42,7 +42,7 @@ const VideoPage = () => {
             </Box>
           </Typography>
         </Grid>
-        <Grid item md={10} sm={11} xs={12}>
+        <Grid item md={9} sm={11} xs={12}>
           <Box className={classNames.videoBorder}>
             <Box className={classNames.videoBox}>
               <iframe
@@ -85,8 +85,7 @@ const VideoPage = () => {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     videoContainer: {
-      padding: theme.spacing(2),
-      paddingTop: theme.spacing(1),
+      padding: theme.spacing(1),
     },
     videoHeader: {
       textAlign: 'center',
@@ -101,7 +100,7 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.common.white,
       borderWidth: '10px',
       borderRadius: '20px',
-      padding: theme.spacing(2),
+      padding: theme.spacing(1),
     },
     videoBox: {
       position: 'relative',
