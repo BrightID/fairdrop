@@ -9,10 +9,10 @@ import { useWallet } from '../contexts/wallet';
 import MenuIcon from '@material-ui/icons/Menu';
 import {
   Box,
-  Divider,
   IconButton,
   Menu,
   MenuItem,
+  Tooltip,
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
@@ -28,6 +28,7 @@ import { useHistory } from 'react-router';
 import { useCookies } from 'react-cookie';
 import { useLocation } from 'react-router-dom';
 import { BRIGHT } from '../utils/constants';
+import { HelpOutline } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -425,6 +426,16 @@ const Header = () => {
           >
             {buttonLabel}
           </Button>
+          <Tooltip title={'learn more about bright'}>
+            <IconButton
+              aria-label="learn more"
+              href={'https://brightid.gitbook.io/bright/what-is-bright/'}
+              rel={'noreferrer noopener'}
+              target={'_blank'}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
         </>
       );
     }
