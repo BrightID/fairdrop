@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, Grid, Hidden, Typography } from '@material-ui/core';
 import chainName from '../utils/chainName';
 import ChainSelectorWizard from './ChainSelectorWizard';
@@ -29,9 +29,20 @@ const ChainSelector = ({
   const classNames = useStyles();
   const { wallet, onboardApi, walletAddress } = useContext(EthersWalletContext);
   const [showWizard, setShowWizard] = useState(false);
-  const [sliderValue, setSliderValue] = useState<0 | 1>(
-    currentChainId === mainnetChainId ? 0 : 1
+  const [sliderValue, setSliderValue] = useState<0 | 1 | undefined>(
+    undefined
   );
+
+  // initialize slider value when currentChainId is retrieved from the backend
+  useEffect(() => {
+    if (sliderValue === undefined) {
+      console.log(`ChainSelector: currentChainId is ${currentChainId}`);
+      if (currentChainId !== 0) {
+        console.log(`Setting slider value...`);
+        setSliderValue(currentChainId === mainnetChainId ? 0 : 1);
+      }
+    }
+  }, [currentChainId, sliderValue]);
 
   const handleOpenWizard = async () => {
     // wallet connected?
@@ -135,7 +146,7 @@ const ChainSelector = ({
             >
               Select your preferred chain to receive $BRIGHT
             </Typography>
-            {walletAddress === address && (
+            {walletAddress === address && sliderValue !== undefined && (
               <Box className={classNames.sliderContainer}>
                 <BinarySlider
                   value={sliderValue}
