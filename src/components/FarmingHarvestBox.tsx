@@ -108,7 +108,11 @@ export const SubsHarvestBox: FC = () => {
         <Typography>{rewardBalance}</Typography>
       </Box>
       <Box>
-        <Button variant={'contained'} onClick={handleHarvest}>
+        <Button
+          variant={'contained'}
+          onClick={handleHarvest}
+          disabled={isWorking !== null}
+        >
           {isWorking ? isWorking : 'Harvest'}
         </Button>
       </Box>
@@ -195,7 +199,11 @@ export const HoneyHarvestBox: FC = () => {
         <Typography>{rewardBalance}</Typography>
       </Box>
       <Box>
-        <Button variant={'contained'} onClick={handleHarvest}>
+        <Button
+          variant={'contained'}
+          onClick={handleHarvest}
+          disabled={isWorking !== null}
+        >
           {isWorking ? isWorking : 'Harvest'}
         </Button>
       </Box>
@@ -215,7 +223,7 @@ export const UniswapV3HarvestBox: FC = () => {
   });
   const { stakedPositions, currentIncentive } = useV3Liquidity();
   const { uniswapV3StakerContract } = useContracts();
-  const { claim, claimUnstakeStake } = useV3Staking(1);
+  const { isWorking, claim, claimUnstakeStake } = useV3Staking(1);
 
   const checkForRewards = useCallback(() => {
     if (
@@ -367,8 +375,12 @@ export const UniswapV3HarvestBox: FC = () => {
         <Typography>{rewardBalance.display}</Typography>
       </Box>
       <Box>
-        <Button variant={'contained'} onClick={handleHarvest}>
-          Harvest
+        <Button
+          variant={'contained'}
+          onClick={handleHarvest}
+          disabled={isWorking !== null}
+        >
+          {isWorking ? isWorking : 'Harvest'}
         </Button>
       </Box>
     </>

@@ -194,6 +194,7 @@ const V2UnstakingModal: FC = () => {
           withdrawStake={withdrawStake}
           handleClose={handleClose}
           disableWithdraw={disableWithdraw}
+          isWorking={isWorking}
         />
       </DialogContent>
     </Dialog>
@@ -205,6 +206,7 @@ interface FormButtonsProps {
   withdrawStake: () => void;
   handleClose: () => void;
   disableWithdraw: boolean;
+  isWorking: string | null;
 }
 
 const FormButtons = ({
@@ -212,6 +214,7 @@ const FormButtons = ({
   withdrawStake,
   handleClose,
   disableWithdraw,
+  isWorking,
 }: FormButtonsProps) => {
   const classes = useStyles();
 
@@ -223,9 +226,9 @@ const FormButtons = ({
           color="primary"
           size="large"
           onClick={withdrawStake}
-          disabled={disableWithdraw}
+          disabled={disableWithdraw || isWorking !== null}
         >
-          Withdraw
+          {isWorking ? isWorking : 'Withdraw'}
         </Button>
         <Box fontSize="small" mt={1}>
           (no rewards claimed)
@@ -237,6 +240,7 @@ const FormButtons = ({
           color="primary"
           size="large"
           onClick={exitStake}
+          disabled={isWorking !== null}
         >
           Withdraw 100%
         </Button>

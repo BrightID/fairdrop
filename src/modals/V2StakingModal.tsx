@@ -220,6 +220,7 @@ const V2StakingModal: FC = () => {
           handleClose={handleClose}
           disableConfirm={disableConfirm}
           activeStep={activeStep}
+          isWorking={isWorking}
         />
       </DialogContent>
       <DialogActions className={classes.bottom}>
@@ -242,6 +243,7 @@ interface FormButtonsProps {
   handleClose: () => void;
   disableConfirm: boolean;
   activeStep: number;
+  isWorking: string | null;
 }
 
 const FormButtons = ({
@@ -249,6 +251,7 @@ const FormButtons = ({
   handleClose,
   disableConfirm,
   activeStep,
+  isWorking,
 }: FormButtonsProps) => {
   const classes = useStyles();
 
@@ -264,8 +267,9 @@ const FormButtons = ({
             style={{
               width: '50%',
             }}
+            disabled={isWorking !== null}
           >
-            Approve
+            {isWorking ? isWorking : 'Approve'}
           </Button>
         </>
       )}
@@ -276,6 +280,7 @@ const FormButtons = ({
             color="primary"
             size="large"
             onClick={handleClose}
+            disabled={isWorking !== null}
           >
             Cancel
           </Button>
@@ -283,13 +288,13 @@ const FormButtons = ({
             variant="contained"
             color="primary"
             size="large"
-            disabled={disableConfirm}
+            disabled={disableConfirm || isWorking !== null}
             onClick={approveOrTransferOrStake}
             style={{
               marginLeft: 50,
             }}
           >
-            Confirm
+            {isWorking ? isWorking : 'Confirm'}
           </Button>
         </>
       )}

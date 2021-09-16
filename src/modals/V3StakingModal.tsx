@@ -164,7 +164,7 @@ const V3StakingModal: FC = () => {
                 color="primary"
                 variant="contained"
                 onClick={approveOrTransferOrStake}
-                disabled={!positionSelected}
+                disabled={!positionSelected || isWorking !== null}
               >
                 {isWorking ? isWorking : STEPS[activeStep]}
               </Button>

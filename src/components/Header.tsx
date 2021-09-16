@@ -344,7 +344,7 @@ const Header = () => {
       // buttons inside appbar
       return (
         <>
-          <Button className={classes.navLink} onClick={handleHome}>
+          <Button onClick={handleHome}>
             <img
               src={header_home}
               alt="airdrop"
