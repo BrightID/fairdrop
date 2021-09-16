@@ -213,8 +213,7 @@ export const UniswapV3HarvestBox: FC = () => {
     display: '0.0',
     bn: BigNumber.from(0),
   });
-  const { stakedPositions, currentIncentive, refreshPositions } =
-    useV3Liquidity();
+  const { stakedPositions, currentIncentive } = useV3Liquidity();
   const { uniswapV3StakerContract } = useContracts();
   const { claim, claimUnstakeStake } = useV3Staking(1);
 

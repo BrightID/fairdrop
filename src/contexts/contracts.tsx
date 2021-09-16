@@ -1,48 +1,32 @@
 import { FC, useContext, useMemo, createContext, ReactNode } from 'react';
 import { Contract } from 'ethers';
-
-// import {
-//   TOKEN_0_ADDRESS,
-//   TOKEN_1_ADDRESS,
-//   NFT_POSITIONS_MANAGER_ADDRESS,
-//   STAKING_REWARDS_ADDRESS,
-// } from 'config';
+import { abi as IUniswapV3PoolStateABI } from '@uniswap/v3-core/artifacts/contracts/interfaces/pool/IUniswapV3PoolState.sol/IUniswapV3PoolState.json';
+import { abi as QuoterABI } from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json';
+import { abi as NonfungiblePositionManagerABI } from '@uniswap/v3-periphery/artifacts/contracts/NonfungiblePositionManager.sol/NonfungiblePositionManager.json';
 
 import {
   NFT_POSITIONS_MANAGER_ADDRESS,
   UNISWAP_V3_STAKER,
   STAKING_REWARDS_CONTRACT,
+  UNISWAP_V3_LP_POOL,
+  UNISWAP_QUOTER,
 } from '../utils/constants';
 import { useWallet } from '../contexts/wallet';
-// import useTokenInfo from 'hooks/useTokenInfo';
-import NFT_POSITIONS_MANAGER_ABI from '../abis/nft_positions_manager.json';
 import UNISWAP_V3_STAKER_ABI from '../abis/uniswap_v3_staker.json';
 import STAKING_REWARDS_ABI from '../abis/staking_rewards.json';
 
 const ContractsContext = createContext<{
-  // token0Address: string | null;
-  // token1Address: string | null;
-  // token0Decimals: number | null;
-  // token1Decimals: number | null;
-  // token0Symbol: string | null;
-  // token1Symbol: string | null;
   uniswapV3StakerContract: Contract | null;
   stakingRewardsContract: Contract | null;
   nftManagerPositionsContract: Contract | null;
+  brightV3PoolContract: Contract | null;
+  quoterContract: Contract | null;
 } | null>(null);
 
 export const ContractsProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const { network, signer } = useWallet();
-
-  // const token0Address = !network ? null : TOKEN_0_ADDRESS[network];
-  // const token1Address = !network ? null : TOKEN_1_ADDRESS[network];
-
-  // const { decimals: token0Decimals, symbol: token0Symbol } =
-  //   useTokenInfo(token0Address);
-  // const { decimals: token1Decimals, symbol: token1Symbol } =
-  //   useTokenInfo(token1Address);
 
   const nftManagerPositionsAddress = !network
     ? null
@@ -54,13 +38,17 @@ export const ContractsProvider: FC<{ children: ReactNode }> = ({
     ? null
     : STAKING_REWARDS_CONTRACT[network];
 
+  const brightV3PoolAddress = !network ? null : UNISWAP_V3_LP_POOL[network];
+
+  const quoterAddress = !network ? null : UNISWAP_QUOTER[network];
+
   const nftManagerPositionsContract = useMemo(
     () =>
       !(nftManagerPositionsAddress && signer)
         ? null
         : new Contract(
             nftManagerPositionsAddress,
-            NFT_POSITIONS_MANAGER_ABI,
+            NonfungiblePositionManagerABI,
             signer
           ),
     [nftManagerPositionsAddress, signer]
@@ -82,18 +70,32 @@ export const ContractsProvider: FC<{ children: ReactNode }> = ({
     [stakingRewardsAddress, signer]
   );
 
+  const brightV3PoolContract = useMemo(
+    () =>
+      !(brightV3PoolAddress && signer)
+        ? null
+        : new Contract(brightV3PoolAddress, IUniswapV3PoolStateABI, signer),
+    [brightV3PoolAddress, signer]
+  );
+
+  const quoterContract = useMemo(
+    () =>
+      !(quoterAddress && signer)
+        ? null
+        : new Contract(quoterAddress, QuoterABI, signer),
+    [quoterAddress, signer]
+  );
+
+  console.log('quoterContract', quoterContract);
+
   return (
     <ContractsContext.Provider
       value={{
-        // token0Address,
-        // token1Address,
-        // token0Decimals,
-        // token1Decimals,
-        // token0Symbol,
-        // token1Symbol,
         uniswapV3StakerContract,
         nftManagerPositionsContract,
         stakingRewardsContract,
+        brightV3PoolContract,
+        quoterContract,
       }}
     >
       {children}
@@ -107,26 +109,18 @@ export function useContracts() {
     throw new Error('Missing Contracts context');
   }
   const {
-    // token0Address,
-    // token1Address,
-    // token0Decimals,
-    // token1Decimals,
-    // token0Symbol,
-    // token1Symbol,
     uniswapV3StakerContract,
     nftManagerPositionsContract,
     stakingRewardsContract,
+    brightV3PoolContract,
+    quoterContract,
   } = context;
 
   return {
-    // token0Address,
-    // token1Address,
-    // token0Decimals,
-    // token1Decimals,
-    // token0Symbol,
-    // token1Symbol,
     uniswapV3StakerContract,
     nftManagerPositionsContract,
     stakingRewardsContract,
+    brightV3PoolContract,
+    quoterContract,
   };
 }

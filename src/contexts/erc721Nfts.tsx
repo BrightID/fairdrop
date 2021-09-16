@@ -8,8 +8,18 @@ import {
   useMemo,
   useState,
 } from 'react';
-// import _flatten from 'lodash/flatten';
-// import _orderBy from 'lodash/orderBy';
+import { utils } from 'ethers';
+import { NonfungiblePositionManager, Pool, Position } from '@uniswap/v3-sdk';
+import { Price, Token } from '@uniswap/sdk-core';
+import {
+  priceToClosestTick,
+  nearestUsableTick,
+  FeeAmount,
+  TICK_SPACINGS,
+  encodeSqrtRatioX96,
+  TickMath,
+} from '@uniswap/v3-sdk/dist/';
+
 import { BigNumber } from 'ethers';
 import { useWallet } from './wallet';
 import { useContracts } from './contracts';
@@ -25,21 +35,26 @@ import {
 } from '../utils/constants';
 
 const ERC721NftContext = createContext<{
-  nftPositions: LiquidityPosition[];
+  totalNftPositions: LiquidityPosition[];
   stakedPositions: LiquidityPosition[];
   unstakedPositions: LiquidityPosition[];
   currentIncentive: { key?: (string | number)[] | null };
   loadingNftPositions: boolean;
-  refreshPositions: () => any;
+  loadPositions: () => any;
 } | null>(null);
 
 export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const { nftManagerPositionsContract, uniswapV3StakerContract } =
-    useContracts();
+  const {
+    nftManagerPositionsContract,
+    uniswapV3StakerContract,
+    brightV3PoolContract,
+  } = useContracts();
   const { network, walletAddress } = useWallet();
-  const [nftPositions, setNftPositions] = useState<LiquidityPosition[]>([]);
+  const [totalNftPositions, setTotalNftPositions] = useState<
+    LiquidityPosition[]
+  >([]);
   const [stakedPositions, setStakedPositions] = useState<LiquidityPosition[]>(
     []
   );
@@ -102,11 +117,14 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
     [wethAddress, brightAddress]
   );
 
-  const refreshPositions = useCallback(() => {
+  const loadPositions = useCallback(() => {
     if (
       !nftManagerPositionsContract ||
       !uniswapV3StakerContract ||
-      !walletAddress
+      !walletAddress ||
+      !brightAddress ||
+      !brightV3PoolContract ||
+      !network
     )
       return;
 
@@ -130,13 +148,12 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
             )
           );
 
-        const tokenIdsResults =
+        // return list of tokenId big numbers
+        const tokenIds = (
           await nftManagerPositionsContract.callStatic.multicall(
             tokenIdsCalldata
-          );
-
-        // return list of tokenId big numbers
-        const tokenIds = tokenIdsResults
+          )
+        )
           .map((result: any) =>
             nftManagerPositionsContract.interface.decodeFunctionResult(
               'tokenOfOwnerByIndex',
@@ -159,15 +176,21 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
             positionCallData
           );
 
-        // return Bright / Eth positions owned by user
-        const positions = await Promise.all(
-          encodedPositions.map((encodedPosition: any, i: number) =>
-            filterPositions(owner, encodedPosition, tokenIds[i])
-          )
-        );
+        // get pool info
+        const slot0 = await brightV3PoolContract.slot0();
 
-        return positions.filter((p: any) => p);
-      } catch {
+        // return Bright / Eth positions owned by user
+        const positions: any[] = (
+          await Promise.all(
+            encodedPositions.map((encodedPosition: any, i: number) =>
+              filterPositions(owner, encodedPosition, tokenIds[i], slot0)
+            )
+          )
+        ).filter((p: any) => p);
+
+        return positions;
+      } catch (err) {
+        console.log('err', err);
         return [];
       }
     };
@@ -175,10 +198,11 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
     const filterPositions = async (
       owner: string,
       encodedPosition: any,
-      tokenId: any
+      tokenId: any,
+      slot0: any
     ): Promise<any | null> => {
       try {
-        const { token0, token1, liquidity, fee } =
+        const { token0, token1, liquidity, fee, tickLower, tickUpper } =
           nftManagerPositionsContract.interface.decodeFunctionResult(
             'positions',
             encodedPosition
@@ -193,21 +217,68 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
         if (!checkForBrightLp(token0, token1)) {
           return null;
         }
+
         // check if fee is 0.3%
         if (fee !== 3000) {
           return null;
         }
 
+        // sdk position
+        let _position: Position | null = null;
+        if (
+          poolAddress &&
+          liquidity &&
+          typeof tickLower === 'number' &&
+          typeof tickUpper === 'number'
+        ) {
+          try {
+            let _token0: Token;
+            let _token1: Token;
+            if (token0.toLowerCase() === brightAddress?.toLowerCase()) {
+              _token0 = new Token(network, token0, 18, 'BRIGHT', 'BRIGHT');
+              _token1 = new Token(network, token1, 18, 'WETH', 'WETH');
+            } else {
+              _token0 = new Token(network, token1, 18, 'WETH', 'WETH');
+              _token1 = new Token(network, token0, 18, 'BRIGHT', 'BRIGHT');
+            }
+
+            let pool = new Pool(
+              _token0,
+              _token1,
+              fee,
+              slot0.sqrtPriceX96,
+              liquidity,
+              slot0.tick
+            );
+
+            _position = new Position({
+              pool,
+              liquidity: liquidity.toString(),
+              tickLower,
+              tickUpper,
+            });
+          } catch (err) {
+            console.log('error', err);
+          }
+        }
+
         const stakedPosition = await uniswapV3StakerContract.deposits(tokenId);
 
+        console.log('stakedPosition', stakedPosition);
         // check if owner of staked nft
-        if (owner !== walletAddress && stakedPosition.owner !== walletAddress)
-          return null;
+        let forTotalLiquidity = false;
+        if (owner !== walletAddress && stakedPosition.owner !== walletAddress) {
+          forTotalLiquidity = true;
+        }
 
-        let staked = stakedPosition.numberOfStakes;
-        let reward = BigNumber.from(0);
-
-        return { owner, reward, staked, tokenId };
+        return {
+          owner,
+          staked: !!stakedPosition.numberOfStakes,
+          numberOfStakes: stakedPosition.numberOfStakes,
+          tokenId,
+          forTotalLiquidity,
+          _position,
+        };
       } catch {
         return null;
       }
@@ -222,7 +293,9 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
           uniswapV3StakerContract.address,
         ];
 
-        const allPositions = await Promise.all(owners.map(loadPositions));
+        const allPositions: LiquidityPosition[][] = await Promise.all(
+          owners.map(loadPositions)
+        );
 
         const downloadURI = async (position: any): Promise<any | null> => {
           const uri = await nftManagerPositionsContract.tokenURI(
@@ -232,22 +305,27 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
           return { ...position, uri };
         };
 
-        const allPositionsWithURI = await Promise.all(
-          allPositions.flat().map(downloadURI)
+        const stakedPositions = allPositions
+          .flat()
+          .filter((position) => position.staked && !position.forTotalLiquidity);
+
+        const stakedPositionsWithURI = await Promise.all(
+          stakedPositions.map(downloadURI)
         );
 
-        setNftPositions(allPositionsWithURI);
+        const unstakedPositions = allPositions
+          .flat()
+          .filter(
+            (position) => !position.staked && !position.forTotalLiquidity
+          );
 
-        const stakedPositions = allPositionsWithURI.filter(
-          (position) => position.staked
+        const unstakedPositionsWithURI = await Promise.all(
+          unstakedPositions.map(downloadURI)
         );
 
-        const unstakedPositions = allPositionsWithURI.filter(
-          (position) => !position.staked
-        );
-
-        setStakedPositions(stakedPositions);
-        setUnstakedPositions(unstakedPositions);
+        setTotalNftPositions(allPositions.flat());
+        setStakedPositions(stakedPositionsWithURI);
+        setUnstakedPositions(unstakedPositionsWithURI);
 
         setLoadingNftPositions(false);
       } catch (e) {
@@ -262,6 +340,10 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
     nftManagerPositionsContract,
     walletAddress,
     checkForBrightLp,
+    network,
+    brightV3PoolContract,
+    poolAddress,
+    brightAddress,
   ]);
 
   //initial load of positions
@@ -275,13 +357,13 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
 
     // only check if network is ethereum or rinkeby
     if (network && (network === 1 || network === 4)) {
-      refreshPositions();
+      loadPositions();
     }
   }, [
     walletAddress,
     uniswapV3StakerContract,
     nftManagerPositionsContract,
-    refreshPositions,
+    loadPositions,
     network,
   ]);
   // handle nft events
@@ -296,7 +378,7 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
     const handleTransfer = (_1: any, address1: any, address2: string) => {
       console.log('handling transfer', _1, address1, address2);
 
-      refreshPositions();
+      loadPositions();
     };
 
     const subscribe = () => {
@@ -324,18 +406,18 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
     nftManagerPositionsContract,
     uniswapV3StakerContract,
     walletAddress,
-    refreshPositions,
+    loadPositions,
   ]);
 
   return (
     <ERC721NftContext.Provider
       value={{
-        nftPositions,
+        totalNftPositions,
         stakedPositions,
         unstakedPositions,
         currentIncentive,
         loadingNftPositions,
-        refreshPositions,
+        loadPositions,
       }}
     >
       {children}
@@ -349,20 +431,20 @@ export function useV3Liquidity() {
     throw new Error('Missing Data context');
   }
   const {
-    nftPositions,
+    totalNftPositions,
     stakedPositions,
     unstakedPositions,
     currentIncentive,
     loadingNftPositions,
-    refreshPositions,
+    loadPositions,
   } = context;
 
   return {
-    nftPositions,
+    totalNftPositions,
     stakedPositions,
     unstakedPositions,
     currentIncentive,
     loadingNftPositions,
-    refreshPositions,
+    loadPositions,
   };
 }

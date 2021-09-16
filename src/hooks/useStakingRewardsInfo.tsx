@@ -17,12 +17,13 @@ export function useStakingRewardsInfo() {
   const { stakingRewardsContract } = useContracts();
   const { honeyswapLpToken, subsToken } = useERC20Tokens();
 
-  const token = network === XDAI ? honeyswapLpToken : subsToken;
+  let token: any = null;
+  if (network === XDAI) token = honeyswapLpToken;
+  if (network === ETH || network === RINKEBY) token = subsToken;
   // TODO check for different staking rewards contracts for subs vs honey
 
   useEffect(() => {
     if (!stakingRewardsContract || !walletAddress || !token) return;
-    console.log('token', token);
 
     const onStakedBalanceChange = async (address: string) => {
       try {

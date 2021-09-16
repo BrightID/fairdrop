@@ -9,6 +9,7 @@ import { FARM } from '../utils/types';
 import ethLogo from '../images/ethereum_logo.png';
 import brightLogo from '../images/bright_logo.png';
 import hnysLogo from '../images/hnys.png';
+import subsLogo from '../images/subs_logo.png';
 
 export const SubsTitleBox: FC = () => {
   const classes = useStyles();
@@ -23,19 +24,25 @@ export const SubsTitleBox: FC = () => {
         </Box>
       </Box>
       <Box className={classes.title} mt={1}>
-        <Box>
-          <Avatar className={classes.subs}>DAI</Avatar>
-        </Box>
-        <Box display="flex" flexDirection="column">
+        <Avatar className={classes.subs}>
+          <img className={classes.ethLogo} alt="SUBS" src={subsLogo} />
+        </Avatar>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+        >
           <Typography variant={'h6'}>SUBS</Typography>
           <Box
             display="flex"
             alignItems="center"
             justifyContent="center"
             mt={0.5}
+            px={1}
           >
             <Typography>
-              <b>APR:</b> {'50%'}
+              <b>APR:</b> {'TBD'}
             </Typography>
           </Box>
         </Box>
@@ -74,7 +81,7 @@ export const HoneyTitleBox: FC = () => {
             mt={0.5}
           >
             <Typography>
-              <b>APR:</b> {'50%'}
+              <b>APR:</b> {'TBD'}
             </Typography>
           </Box>
         </Box>
@@ -113,7 +120,7 @@ export const UniswapV3TitleBox: FC = () => {
             mt={0.5}
           >
             <Typography>
-              <b>APR:</b> {'50%'}
+              <b>APR:</b> {'TBD'}
             </Typography>
           </Box>
         </Box>
@@ -179,13 +186,6 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingLeft: '12px',
       paddingRight: '12px',
     },
-    subs: {
-      backgroundColor: '#FFA48D',
-      fontSize: '10px',
-      fontWeight: 'bold',
-      boxShadow: '-2px 2px 4px #C4C4C4',
-    },
-
     eth: {
       backgroundColor: 'white',
       width: theme.spacing(5),
@@ -209,6 +209,16 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '92%',
       height: '92%',
       objectFit: 'contain',
+    },
+    subs: {
+      backgroundColor: 'white',
+      width: theme.spacing(5),
+      height: theme.spacing(5),
+      // boxShadow: '-2px 2px 4px #C4C4C4',
+      filter: 'drop-shadow(-2px 2px 4px #C4C4C4)',
+      zIndex: 1,
+      marginTop: theme.spacing(1),
+      marginLeft: theme.spacing(1),
     },
   })
 );

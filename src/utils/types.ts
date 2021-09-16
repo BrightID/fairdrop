@@ -1,5 +1,5 @@
 import { BigNumber, Contract } from 'ethers';
-
+import { Position } from '@uniswap/v3-sdk';
 export type Incentive = {
   id: string;
   reward: BigNumber;
@@ -15,16 +15,18 @@ export type Incentive = {
 
 export type LiquidityPosition = {
   owner: string;
-  reward: BigNumber;
-  staked: number;
+  staked: boolean;
+  numberOfStakes: number;
   tokenId: BigNumber;
   uri: string;
+  forTotalLiquidity: boolean;
+  _position: Position | null;
 };
 
 export type ERC20Token = {
   balance: BigNumber;
-  contract: '' | Contract | null | undefined;
-  decimals: number | null;
+  contract: Contract | null;
+  decimals: number;
   symbol: string | null;
 };
 

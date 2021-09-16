@@ -19,18 +19,20 @@ export function useV2Staking(tokenId?: number) {
   const { stakingRewardsContract } = useContracts();
   const { honeyswapLpToken, subsToken } = useERC20Tokens();
 
-  const stakeToken = network === XDAI ? honeyswapLpToken : subsToken;
+  let stakeToken: any = null;
+  if (network === XDAI) stakeToken = honeyswapLpToken;
+  if (network === ETH || network === RINKEBY) stakeToken = subsToken;
 
   const [isWorking, setIsWorking] = useState<string | null>(null);
 
   const approve = useCallback(
     async (next: () => void) => {
       try {
-        if (!(stakeToken?.contract && stakingRewardsContract)) return;
+        if (!stakeToken || !stakingRewardsContract) return;
 
         setIsWorking('Approving...');
         await tx('Approving...', 'Approved!', () =>
-          stakeToken?.contract.approve(
+          stakeToken.contract.approve(
             stakingRewardsContract.address,
             approveValue
           )
@@ -50,7 +52,7 @@ export function useV2Staking(tokenId?: number) {
     async (value: BigNumber, next: () => void) => {
       try {
         if (
-          !stakeToken?.contract ||
+          !stakeToken ||
           !stakingRewardsContract ||
           !walletAddress ||
           !stakeToken?.balance ||

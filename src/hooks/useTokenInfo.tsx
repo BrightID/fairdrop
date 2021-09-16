@@ -5,15 +5,15 @@ import { useWallet } from '../contexts/wallet';
 
 export function useTokenInfo(tokenAddress: string | null) {
   const [balance, setBalance] = useState(BigNumber.from('0'));
-  const [decimals, setDecimals] = useState<number | null>(null);
+  const [decimals, setDecimals] = useState<number>(18);
   const [symbol, setSymbol] = useState<string | null>(null);
   const { walletAddress, signer } = useWallet();
 
   const erc20Contract = useMemo(
     () =>
-      signer &&
-      tokenAddress &&
-      new Contract(tokenAddress, ERC20_CONTRACT_ABI, signer),
+      !(signer && tokenAddress)
+        ? null
+        : new Contract(tokenAddress, ERC20_CONTRACT_ABI, signer),
     [tokenAddress, signer]
   );
 
@@ -35,6 +35,7 @@ export function useTokenInfo(tokenAddress: string | null) {
         erc20Contract.symbol(),
         erc20Contract.balanceOf(walletAddress),
       ]);
+
       setDecimals(decimals);
       setSymbol(symbol);
       setBalance(BigNumber.from(balance));

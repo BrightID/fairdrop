@@ -29,7 +29,11 @@ export const SubsStakedBox: FC = () => {
   let displayBalance = '0';
 
   try {
-    if (stakedBalance && (network === ETH || network === RINKEBY)) {
+    if (
+      stakedBalance &&
+      subsToken &&
+      (network === ETH || network === RINKEBY)
+    ) {
       displayBalance = utils
         .formatUnits(stakedBalance, subsToken.decimals)
         .split('.')[0];
@@ -156,13 +160,13 @@ export const UniswapV3StakedBox: FC = () => {
   const { walletAddress, network, onboardApi } = useWallet();
   const { uniswapV3StakerContract } = useContracts();
   const history = useHistory();
-  const { refreshPositions, stakedPositions } = useV3Liquidity();
+  const { loadPositions, stakedPositions } = useV3Liquidity();
   // check for NFT positions in user's wallet
   // useEffect(() => {
   //   if (walletAddress && network && (network === 1 || network === 4)) {
-  //     refreshPositions();
+  //     loadPositions();
   //   }
-  // }, [network, walletAddress, refreshPositions]);
+  // }, [network, walletAddress, loadPositions]);
 
   const navToStake = () => {
     history.push('/stake/v3');

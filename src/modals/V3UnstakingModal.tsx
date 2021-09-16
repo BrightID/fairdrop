@@ -46,12 +46,8 @@ const V3StakingModal: FC = () => {
     useState<LiquidityPosition | null>(null);
   const [initialSelected, setInitialSelected] = useState(false);
 
-  const {
-    refreshPositions,
-    loadingNftPositions,
-    nftPositions,
-    stakedPositions,
-  } = useV3Liquidity();
+  const { loadPositions, loadingNftPositions, stakedPositions } =
+    useV3Liquidity();
 
   const { tokenId } = positionSelected || {};
 
@@ -72,9 +68,9 @@ const V3StakingModal: FC = () => {
   // check for NFT positions in user's wallet
   useEffect(() => {
     if (walletAddress && network && (network === 1 || network === 4)) {
-      refreshPositions();
+      loadPositions();
     }
-  }, [network, walletAddress, refreshPositions]);
+  }, [network, walletAddress, loadPositions]);
 
   const approveOrTransferOrStake = () => {
     switch (activeStep) {
@@ -88,7 +84,7 @@ const V3StakingModal: FC = () => {
     }
   };
 
-  const loading = loadingNftPositions && nftPositions.length === 0;
+  const loading = loadingNftPositions && stakedPositions.length === 0;
 
   const noOwnedPositions = !loading && stakedPositions.length === 0;
 
@@ -124,7 +120,7 @@ const V3StakingModal: FC = () => {
               Select NFT Position to Unstake
             </Box>
             <DisplayNfts
-              nftPositions={stakedPositions}
+              stakedPositions={stakedPositions}
               setPositionSelected={setPositionSelected}
               positionSelected={positionSelected}
             />
@@ -161,13 +157,13 @@ const Loading = () => {
 };
 
 interface DisplayNftsProps {
-  nftPositions: LiquidityPosition[];
+  stakedPositions: LiquidityPosition[];
   setPositionSelected: (position: LiquidityPosition | null) => void;
   positionSelected: LiquidityPosition | null;
 }
 
 const DisplayNfts = ({
-  nftPositions,
+  stakedPositions,
   setPositionSelected,
   positionSelected,
 }: DisplayNftsProps) => {
@@ -189,7 +185,7 @@ const DisplayNfts = ({
 
   return (
     <ImageList className={classes.imageList} cols={2.5}>
-      {nftPositions.map((nft) => {
+      {stakedPositions.map((nft) => {
         if (!nft?.tokenId) return <></>;
         const nftData = parseUri(nft.uri);
         const nftExists = !!positionSelected;

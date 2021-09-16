@@ -55,12 +55,8 @@ const V3StakingModal: FC = () => {
     useState<LiquidityPosition | null>(null);
   const [initialSelected, setInitialSelected] = useState(false);
 
-  const {
-    refreshPositions,
-    loadingNftPositions,
-    nftPositions,
-    unstakedPositions,
-  } = useV3Liquidity();
+  const { loadPositions, loadingNftPositions, unstakedPositions } =
+    useV3Liquidity();
 
   const { owner, staked, tokenId } = positionSelected || {};
 
@@ -73,9 +69,9 @@ const V3StakingModal: FC = () => {
   // check for NFT positions in user's wallet
   useEffect(() => {
     if (walletAddress && network && (network === 1 || network === 4)) {
-      refreshPositions();
+      loadPositions();
     }
-  }, [network, walletAddress, refreshPositions]);
+  }, [network, walletAddress, loadPositions]);
 
   // select position automatically
   useEffect(() => {
@@ -123,7 +119,7 @@ const V3StakingModal: FC = () => {
     }
   };
 
-  const loading = loadingNftPositions && nftPositions.length === 0;
+  const loading = loadingNftPositions && unstakedPositions.length === 0;
 
   const noOwnedPositions = !loading && unstakedPositions.length === 0;
 

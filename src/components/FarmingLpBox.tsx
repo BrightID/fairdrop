@@ -22,7 +22,7 @@ export const SubsLpBox: FC = () => {
   let displayBalance = '0';
 
   try {
-    if (uniV2LpBalance) {
+    if (uniV2LpBalance && subsToken) {
       // manually remove trailing ".0". This is fixed with ethers 5.2.x, but we are on 5.1
       displayBalance = utils
         .formatUnits(uniV2LpBalance, subsToken.decimals)
@@ -49,7 +49,7 @@ export const HoneyLpBox: FC = () => {
 
   let displayBalance = '0.0';
   try {
-    if (uniV2LpBalance) {
+    if (uniV2LpBalance && honeyswapLpToken) {
       displayBalance = utils.formatUnits(
         uniV2LpBalance,
         honeyswapLpToken.decimals

@@ -97,16 +97,21 @@ const TxContent: FC<{ notification: any }> = ({ notification }) => {
   const classes = useStyles();
   const { network } = useWallet();
 
-  const isMainnet = network === 1;
+  let href = '#';
+  if (network === 1) {
+    href = `https://etherscan.io/tx/${notification.hash}`;
+  } else if (network === 4) {
+    href = `https://rinkeby.etherscan.io/tx/${notification.hash}`;
+  } else if (network === 100) {
+    href = `https://blockscout.com/xdai/mainnet/tx/${notification.hash}`;
+  }
 
   return (
     <>
       <strong className={classes.small}>{notification.description}</strong>
 
       <a
-        href={`https://${isMainnet ? '' : `rinkeby.`}etherscan.io/tx/${
-          notification.hash
-        }`}
+        href={href}
         target="_blank"
         rel="noopener noreferrer"
         className={classes.small}
