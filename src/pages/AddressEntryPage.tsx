@@ -39,7 +39,7 @@ const AddressEntryPage = () => {
         justifyContent={'flex-start'}
       >
         <Grid item sm={12} md={9}>
-          <Typography variant={'h4'}>{$Bright} airdrop is here!</Typography>
+          <Typography variant={'h4'}>{$Bright} fairdrop is here!</Typography>
           <Typography variant={'h4'} style={{ marginBottom: '20px' }}>
             Enter your ETH address to claim it
           </Typography>

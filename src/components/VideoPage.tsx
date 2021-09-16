@@ -47,7 +47,7 @@ const VideoPage = () => {
             <Box className={classNames.videoBox}>
               <iframe
                 className={classNames.video}
-                src="https://www.youtube.com/embed/C8rA9oxw4Zk?rel=0"
+                src="https://www.youtube.com/embed/wzlbXf5Peig?rel=0"
                 allow="autoplay; encrypted-media"
                 allowFullScreen
                 frameBorder="0"
