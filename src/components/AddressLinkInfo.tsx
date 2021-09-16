@@ -129,7 +129,7 @@ const AddressLinkInfo = ({
                 target={'_blank'}
               >
                 <Box className={classNames.learnMoreBtnArrow}></Box>
-                Terms and Conditions
+                Learn more
               </Link>
             </Typography>
           </Box>
