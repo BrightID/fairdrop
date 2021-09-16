@@ -27,6 +27,7 @@ import header_dao from '../images/header_dao.svg';
 import { useHistory } from 'react-router';
 import { useCookies } from 'react-cookie';
 import { useLocation } from 'react-router-dom';
+import { BRIGHT } from '../utils/constants';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -74,6 +75,8 @@ const Header = () => {
   const [popupAnchorEl, setPopupAnchorEl] = React.useState<null | HTMLElement>(
     null
   );
+  const [buyPopupAnchorEl, setBuyPopupAnchorEl] =
+    React.useState<null | HTMLElement>(null);
   const routerHistory = useHistory();
   const { pathname } = useLocation();
   const { wallet, network, provider, onboardApi, walletAddress } = useWallet();
@@ -164,6 +167,8 @@ const Header = () => {
 
   const openMenu = Boolean(anchorEl);
   const openPopup = Boolean(popupAnchorEl);
+  const openBuyPopup = Boolean(buyPopupAnchorEl);
+
   const walletName = wallet?.name || undefined;
 
   useEffect(() => {
@@ -193,6 +198,13 @@ const Header = () => {
   };
   const handleClosePopup = () => {
     setPopupAnchorEl(null);
+  };
+
+  const handleOpenBuyPopup = (event: React.MouseEvent<HTMLElement>) => {
+    setBuyPopupAnchorEl(event.currentTarget);
+  };
+  const handleCloseBuyPopup = () => {
+    setBuyPopupAnchorEl(null);
   };
 
   const switchWallet = async () => {
@@ -241,6 +253,42 @@ const Header = () => {
   // On the homepage the header should be hidden unless the videoWatched cookie is set.
   // Deep links should always work regardless of cookie
   if (pathname === '/' && cookies.videoWatched !== '1') return null;
+
+  const buyBrightPopover = (
+    <Popover
+      id={'buyBrightPopup'}
+      open={openBuyPopup}
+      anchorEl={buyPopupAnchorEl}
+      onClose={handleCloseBuyPopup}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'center',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'center',
+      }}
+    >
+      <Button
+        variant="outlined"
+        size={'large'}
+        href={`https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=${BRIGHT[1]}`}
+        target={'_blank'}
+        onClick={handleCloseBuyPopup}
+      >
+        Uniswap (Ethereum)
+      </Button>
+      <Button
+        variant="outlined"
+        size={'large'}
+        href={`https://app.honeyswap.org/#/swap?inputCurrency=xDAI&outputCurrency=${BRIGHT[100]}`}
+        target={'_blank'}
+        onClick={handleCloseBuyPopup}
+      >
+        Honeyswap (xDai)
+      </Button>
+    </Popover>
+  );
 
   const buildAppbarButtons = () => {
     if (xsDisplay) {
@@ -335,6 +383,8 @@ const Header = () => {
             />
           </Button>
           <Box className={classes.divider}></Box>
+          <Button onClick={handleOpenBuyPopup}>Buy $BRIGHT</Button>
+          {buyBrightPopover}
           {balance && (
             <>
               <Button

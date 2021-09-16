@@ -42,7 +42,7 @@ export const SubsLpBox: FC = () => {
       >
         <Box>
           <Box fontSize={12} fontWeight="bold">
-            Total Liquidity
+            Total staked
           </Box>
           <Box fontSize={12}>{displayPrice} SUBS</Box>
         </Box>
