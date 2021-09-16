@@ -13,9 +13,9 @@ import {
 } from '@material-ui/core';
 import { generateDeeplink, verifyContextId } from 'brightid_sdk';
 import QRCode from 'qrcode.react';
-import { ContextInfo } from './AddressRegistrationController';
 import { makeStyles } from '@material-ui/core/styles';
 import { Alert } from '@material-ui/lab';
+import { ContextInfo } from '../pages/AddressRegistrationController';
 
 interface LinkAddressWizardProps {
   onClose: (isLinked: boolean) => any;
