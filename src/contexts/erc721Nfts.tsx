@@ -78,13 +78,6 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
     if (!brightAddress || !poolAddress || !incentiveRefundeeAddress)
       return { key: null };
 
-    console.log('incentive key', [
-      brightAddress,
-      poolAddress,
-      INCENTIVE_START_TIME,
-      INCENTIVE_END_TIME,
-      incentiveRefundeeAddress,
-    ]);
     return {
       key: [
         brightAddress,
@@ -264,7 +257,6 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
 
         const stakedPosition = await uniswapV3StakerContract.deposits(tokenId);
 
-        console.log('stakedPosition', stakedPosition);
         // check if owner of staked nft
         let forTotalLiquidity = false;
         if (owner !== walletAddress && stakedPosition.owner !== walletAddress) {

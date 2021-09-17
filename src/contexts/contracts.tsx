@@ -86,8 +86,6 @@ export const ContractsProvider: FC<{ children: ReactNode }> = ({
     [quoterAddress, signer]
   );
 
-  console.log('quoterContract', quoterContract);
-
   return (
     <ContractsContext.Provider
       value={{

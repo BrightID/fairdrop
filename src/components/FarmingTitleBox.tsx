@@ -1,18 +1,47 @@
-import { FC, ReactElement, useMemo } from 'react';
-import clsx from 'clsx';
-
+import { FC, ReactElement, useEffect, useState } from 'react';
+import BN from 'bignumber.js';
+import { utils } from 'ethers';
 import { Avatar, Box, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { useWallet } from '../contexts/wallet';
-import { LiquidityPosition } from '../utils/types';
+import { brightPrice } from '../utils/coingecko';
+import { useBrightPrice } from '../hooks/useBrightPrice';
+
+import { useTotalLiquidity } from '../hooks/useTotalLiquidity';
 import { FARM } from '../utils/types';
 import ethLogo from '../images/ethereum_logo.png';
 import brightLogo from '../images/bright_logo.png';
 import hnysLogo from '../images/hnys.png';
 import subsLogo from '../images/subs_logo.png';
 
+// SUBs staking runs for 2 years, with 6,000,000 BRIGHT total reward
+const subsBrightPerYear = new BN('3000000');
+// Bright-Eth on univ3 runs for 2 months with 350,000 total reward
+const univ3BrightPerYear = new BN('2100000');
+// Bright-Hny on xDai rund also 2 months with 350,000 total reward
+const xdaiBrightPerYear = new BN('2100000');
+
 export const SubsTitleBox: FC = () => {
   const classes = useStyles();
+  const { totalSubs } = useTotalLiquidity();
+  const { priceUSD, decimals } = useBrightPrice();
+  const [apr, setApr] = useState('0');
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const brightPriceUSD = priceUSD
+          ? new BN(utils.formatUnits(priceUSD, decimals))
+          : new BN(0);
+        const brightPerYearUSD = brightPriceUSD.multipliedBy(subsBrightPerYear);
+        const totalLiquidity = new BN(totalSubs);
+        const APR = brightPerYearUSD.dividedBy(totalLiquidity);
+        setApr(utils.commify(APR.toFixed(2)));
+      } catch {}
+    };
+
+    load();
+  }, [totalSubs, priceUSD, decimals]);
+
   return (
     <Box width="100%">
       <Box display="flex" width="100%" border={1} borderColor="white">
@@ -42,7 +71,7 @@ export const SubsTitleBox: FC = () => {
             px={1}
           >
             <Typography>
-              <b>APR:</b> {'TBD'}
+              <b>APR: </b>${apr} per SUB
             </Typography>
           </Box>
         </Box>
@@ -53,6 +82,38 @@ export const SubsTitleBox: FC = () => {
 
 export const HoneyTitleBox: FC = () => {
   const classes = useStyles();
+  const { totalXdai } = useTotalLiquidity();
+  const [apr, setApr] = useState('0');
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const _brightPrice = await brightPrice();
+        const brightPriceUSD = _brightPrice
+          ? new BN(_brightPrice['bright-token'].usd)
+          : new BN(0);
+        const brightPerYearUSD =
+          brightPriceUSD.multipliedBy(univ3BrightPerYear);
+        const totalLiquidity = new BN(totalXdai);
+        const APR = brightPerYearUSD
+          .dividedBy(totalLiquidity)
+          .multipliedBy(100);
+
+        setApr(utils.commify(APR.toFixed(0)));
+      } catch {}
+    };
+
+    load();
+
+    const interval = setInterval(() => {
+      load();
+    }, 1000 * 60 * 2);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [totalXdai]);
+
   return (
     <Box width="100%">
       <Box display="flex" width="100%" border={1} borderColor="white">
@@ -66,7 +127,7 @@ export const HoneyTitleBox: FC = () => {
       <Box className={classes.title} mt={1}>
         <Box className={classes.avatarBox}>
           <Avatar className={classes.bright}>
-            <img className={classes.ethLogo} alt="$BRIGHT" src={brightLogo} />
+            <img className={classes.ethLogo} alt="BRIGHT" src={brightLogo} />
           </Avatar>
           <Avatar className={classes.eth}>
             <img className={classes.ethLogo} alt="HNYS" src={hnysLogo} />
@@ -77,11 +138,12 @@ export const HoneyTitleBox: FC = () => {
           <Box
             display="flex"
             alignItems="center"
-            justifyContent="center"
+            justifyContent="flex-end"
             mt={0.5}
           >
             <Typography>
-              <b>APR:</b> {'TBD'}
+              <b>APR: </b>
+              {apr}%
             </Typography>
           </Box>
         </Box>
@@ -92,6 +154,29 @@ export const HoneyTitleBox: FC = () => {
 
 export const UniswapV3TitleBox: FC = () => {
   const classes = useStyles();
+  const { totalV3 } = useTotalLiquidity();
+  const { priceUSD, decimals } = useBrightPrice();
+  const [apr, setApr] = useState('0');
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const brightPriceUSD = priceUSD
+          ? new BN(utils.formatUnits(priceUSD, decimals))
+          : new BN(0);
+        const brightPerYearUSD = brightPriceUSD.multipliedBy(xdaiBrightPerYear);
+        const totalLiquidity = new BN(totalV3);
+        const APR = brightPerYearUSD
+          .dividedBy(totalLiquidity)
+          .multipliedBy(100);
+
+        setApr(utils.commify(APR.toFixed(0)));
+      } catch {}
+    };
+
+    load();
+  }, [totalV3, priceUSD, decimals]);
+
   return (
     <Box width="100%">
       <Box display="flex" width="100%" border={1} borderColor="white">
@@ -105,22 +190,23 @@ export const UniswapV3TitleBox: FC = () => {
       <Box className={classes.title} mt={1}>
         <Box className={classes.avatarBox}>
           <Avatar className={classes.bright}>
-            <img className={classes.ethLogo} alt="$BRIGHT" src={brightLogo} />
+            <img className={classes.ethLogo} alt="BRIGHT" src={brightLogo} />
           </Avatar>
           <Avatar className={classes.eth}>
             <img className={classes.ethLogo} alt="ETH" src={ethLogo} />
           </Avatar>
         </Box>
         <Box display="flex" flexDirection="column">
-          <Typography variant={'h6'}>$BRIGHT - ETH</Typography>
+          <Typography variant={'h6'}>BRIGHT - ETH</Typography>
           <Box
             display="flex"
             alignItems="center"
-            justifyContent="center"
+            justifyContent="flex-end"
             mt={0.5}
           >
             <Typography>
-              <b>APR:</b> {'TBD'}
+              <b>APR: </b>
+              {apr}%
             </Typography>
           </Box>
         </Box>
