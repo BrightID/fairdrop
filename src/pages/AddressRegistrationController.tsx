@@ -39,6 +39,7 @@ export type ContextInfo = ContextInfoSuccess | ContextInfoError;
 const AddressRegistrationController = () => {
   const { address: rawAddress } = useParams<Params>();
   const history = useHistory();
+  const { walletAddress } = useWallet();
   const [claim, setClaim] = useState<ClaimInfo | undefined>(undefined);
   const [claimLoading, setClaimLoading] = useState(true);
   const [registrationInfoLoading, setRegistrationInfoLoading] = useState(true);
@@ -51,6 +52,7 @@ const AddressRegistrationController = () => {
   const [nextAmount, setNextAmount] = useState(BigNumber.from(0));
   const [brightIdLinked, setBrightIdLinked] = useState(false);
   const [address, setAddress] = useState('');
+  const [oldWalletAddress, setOldWalletAddress] = useState(walletAddress);
 
   // check if address from params is valid
   useEffect(() => {
@@ -67,7 +69,18 @@ const AddressRegistrationController = () => {
         setAddress('');
       }
     }
-  }, [rawAddress]);
+  }, [rawAddress, history, address]);
+
+  // handle walletAddress change
+  useEffect(() => {
+    if (!walletAddress) return;
+    if (!oldWalletAddress) {
+      setOldWalletAddress(walletAddress);
+    } else if (walletAddress !== oldWalletAddress) {
+      setOldWalletAddress(walletAddress);
+      history.push(`/airdrop/${walletAddress}`);
+    }
+  }, [oldWalletAddress, walletAddress, history]);
 
   // Get info about registration phases from backend
   useEffect(() => {
