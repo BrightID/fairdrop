@@ -1,6 +1,6 @@
 import { FC, useContext, useMemo, createContext, ReactNode } from 'react';
 import { Contract } from 'ethers';
-import { abi as IUniswapV3PoolStateABI } from '@uniswap/v3-core/artifacts/contracts/interfaces/pool/IUniswapV3PoolState.sol/IUniswapV3PoolState.json';
+import { abi as UniswapV3PoolABI } from '@uniswap/v3-core/artifacts/contracts/UniswapV3Pool.sol/UniswapV3Pool.json';
 import { abi as QuoterABI } from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json';
 import { abi as NonfungiblePositionManagerABI } from '@uniswap/v3-periphery/artifacts/contracts/NonfungiblePositionManager.sol/NonfungiblePositionManager.json';
 
@@ -74,7 +74,7 @@ export const ContractsProvider: FC<{ children: ReactNode }> = ({
     () =>
       !(brightV3PoolAddress && signer)
         ? null
-        : new Contract(brightV3PoolAddress, IUniswapV3PoolStateABI, signer),
+        : new Contract(brightV3PoolAddress, UniswapV3PoolABI, signer),
     [brightV3PoolAddress, signer]
   );
 
