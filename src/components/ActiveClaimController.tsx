@@ -278,7 +278,7 @@ const ActiveClaimController = ({
       const address = token.address;
       const decimals = await token.decimals();
       const symbol = await token.symbol();
-      const image = 'https://fairdrop.brightid.org/favicon.ico';
+      const image = 'https://fairdrop.brightid.org/BrightTokenIcon256.png';
 
       await watchAsset({
         address,

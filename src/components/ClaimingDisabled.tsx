@@ -12,11 +12,11 @@ const ClaimingDisabled = ({ registrationInfo }: ClaimingDisabledProps) => {
   const mainContent = (
     <Grid item>
       <Typography align={'left'} variant={'h4'}>
-        We are currently preparing the next airdrop phase. During this time
+        We are currently preparing the next fairdrop phase. During this time
         claiming is not possible.
       </Typography>
       <CountDown
-        title={'Next claim period starts in'}
+        title={'Next phase estimated to start in'}
         timestamp={registrationInfo.nextClaimStart}
       />
     </Grid>

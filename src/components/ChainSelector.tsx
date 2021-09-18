@@ -29,9 +29,7 @@ const ChainSelector = ({
   const classNames = useStyles();
   const { wallet, onboardApi, walletAddress } = useContext(EthersWalletContext);
   const [showWizard, setShowWizard] = useState(false);
-  const [sliderValue, setSliderValue] = useState<0 | 1 | undefined>(
-    undefined
-  );
+  const [sliderValue, setSliderValue] = useState<0 | 1 | undefined>(undefined);
 
   // initialize slider value when currentChainId is retrieved from the backend
   useEffect(() => {

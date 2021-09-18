@@ -174,7 +174,7 @@ const ActiveClaim = ({
             claimable at the next claim period on {chainName(selectedChainId)}.
           </Typography>
           <CountDown
-            title={'Next claim period in'}
+            title={'Next claim period estimated to start in'}
             timestamp={registrationInfo.nextClaimStart}
           />
           {/*
