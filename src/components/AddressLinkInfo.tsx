@@ -167,7 +167,7 @@ const AddressLinkInfo = ({
                   </ListItemText>
                 </ListItem>
               </List>
-              <ListItem button>
+              <ListItem>
                 <ListItemText>
                   You only get the Link Bonus once. You only need to link one
                   address. Linking additional addresses will not increase the
