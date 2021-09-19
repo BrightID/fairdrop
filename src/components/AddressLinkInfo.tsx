@@ -6,6 +6,9 @@ import {
   Grid,
   Hidden,
   Link,
+  List,
+  ListItem,
+  ListItemText,
   Typography,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -155,15 +158,29 @@ const AddressLinkInfo = ({
             </Button>
             <Box className={classNames.infoBox}>
               <Typography variant={'h6'}>Address Link Info</Typography>
-              <Typography>
-                The resulting $BRIGHT will be included in the next claim period,
-                starting in approximately <strong>{durationString}</strong>.
-              </Typography>
-              <Typography>
-                You only get the Link Bonus once. You only need to link one
-                address. Linking additional addresses will not increase the
-                $BRIGHT you will receive.
-              </Typography>
+              <List>
+                <ListItem>
+                  <ListItemText>
+                    In rare cases there is something to claim before you link
+                    your BrightID. Usually you have to link first, then come
+                    back in the next claim period to see the amount and claim it
+                  </ListItemText>
+                </ListItem>
+              </List>
+              <ListItem button>
+                <ListItemText>
+                  You only get the Link Bonus once. You only need to link one
+                  address. Linking additional addresses will not increase the
+                  $BRIGHT you will receive.
+                </ListItemText>
+              </ListItem>
+              <ListItem>
+                <ListItemText>
+                  The resulting $BRIGHT will be included in the next claim
+                  period, starting in approximately{' '}
+                  <strong>{durationString}</strong>.
+                </ListItemText>
+              </ListItem>
             </Box>
           </Grid>
           <Hidden xsDown>
