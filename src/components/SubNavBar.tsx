@@ -50,11 +50,16 @@ const useStyles = makeStyles((theme) => ({
 interface SubNavBarProps {
   chainSelector: React.ReactNode;
   addressLinker: React.ReactNode;
+  brightIdLinked: Boolean | undefined;
 }
 
-const SubNavBar = ({ chainSelector, addressLinker }: SubNavBarProps) => {
+const SubNavBar = ({
+  chainSelector,
+  addressLinker,
+  brightIdLinked,
+}: SubNavBarProps) => {
   const classes = useStyles();
-  const [value, setValue] = useState<number>(0);
+  const [value, setValue] = useState<number>(brightIdLinked ? 0 : 1);
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);

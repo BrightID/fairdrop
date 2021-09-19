@@ -50,7 +50,9 @@ const AddressRegistrationController = () => {
   });
   const [payoutChainId, setPayoutChainId] = useState(0);
   const [nextAmount, setNextAmount] = useState(BigNumber.from(0));
-  const [brightIdLinked, setBrightIdLinked] = useState(false);
+  const [brightIdLinked, setBrightIdLinked] = useState<boolean | undefined>(
+    undefined
+  );
   const [address, setAddress] = useState('');
   const [oldWalletAddress, setOldWalletAddress] = useState(walletAddress);
 
@@ -126,18 +128,18 @@ const AddressRegistrationController = () => {
   // Check if address is linked with a BrightID
   useEffect(() => {
     const runEffect = async () => {
-      setBrightIdLinked(false);
       // Get linked info from real brightId node
       const contextInfo: ContextInfo = await verifyContextId(
         'Bright',
         address as string
       );
-      console.log(contextInfo);
       if ('contextIds' in contextInfo) {
         // API response includes eth address in lowercase
         setBrightIdLinked(
           contextInfo.contextIds.includes((address as string).toLowerCase())
         );
+      } else {
+        setBrightIdLinked(false);
       }
     };
     if (address !== '') {
@@ -191,6 +193,7 @@ const AddressRegistrationController = () => {
     );
     subNavBar = (
       <SubNavBar
+        brightIdLinked={brightIdLinked}
         chainSelector={chainSelector}
         addressLinker={addressLinkInfo}
       />

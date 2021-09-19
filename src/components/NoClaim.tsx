@@ -9,7 +9,7 @@ import formatDuration from 'date-fns/formatDuration';
 
 interface NoClaimProps {
   address?: string;
-  brightIdLinked: boolean;
+  brightIdLinked: boolean | undefined;
   registrationInfo: RegistrationInfo;
 }
 
@@ -66,15 +66,12 @@ const NoClaim = ({
           variant={'h5'}
           className={classNames.noClaimText}
         >
-          The address <HashDisplay hash={address} type={'address'} /> is not
-          eligible to claim $BRIGHT :-(
+          Don't see any $BRIGHT to claim?
         </Typography>
         <Typography variant={'h6'} className={classNames.infoBox}>
-          <Typography variant={'h6'}>
-            Don't see any $BRIGHT to claim?
-          </Typography>
+          <Typography variant={'h6'}>Don't worry!</Typography>
           <Typography variant={'body1'}>
-            Don't worry! Link your BrightID below and come back in about{' '}
+            Link your BrightID below and come back in about{' '}
             <strong>{durationString}</strong>. You can claim some $BRIGHT if
             your BrightID account is eligible. See{' '}
             <a

@@ -22,7 +22,7 @@ import HashDisplay from './HashDisplay';
 
 interface AddressLinkInfoProps {
   address: string;
-  brightIdLinked: boolean;
+  brightIdLinked: boolean | undefined;
   setBrightIdLinked: (isLinked: boolean) => any;
   registrationInfo: RegistrationInfo;
 }
@@ -92,7 +92,8 @@ const AddressLinkInfo = ({
             align={'left'}
             variant={'h4'}
           >
-            Link your BrightID to get more $BRIGHT at the next claim period
+            Link your verified BrightID to get more $BRIGHT at the next claim
+            period
           </Typography>
           <Alert severity={'warning'} className={classNames.alert}>
             <Typography>
@@ -124,8 +125,7 @@ const AddressLinkInfo = ({
               className={classNames.socialRecoveryNotificationText}
               variant={'subtitle1'}
             >
-              Set up SOCIAL RECOVERY before linking your BrightID to get MORE
-              $BRIGHT!
+              Set up SOCIAL RECOVERY to get MORE $BRIGHT!
               <Link
                 className={classNames.learnMoreBtnLink}
                 href={
@@ -144,9 +144,10 @@ const AddressLinkInfo = ({
             <Typography
               className={classNames.paragraph}
               align={'left'}
-              variant={'h4'}
+              variant={'h5'}
             >
-              Link your BrightID to get more $BRIGHT at the next claim period
+              Link your verified BrightID to get more $BRIGHT at the next claim
+              period in approximately <strong>{durationString}</strong>
             </Typography>
             <Button
               className={classNames.button}
@@ -172,13 +173,6 @@ const AddressLinkInfo = ({
                   You only get the Link Bonus once. You only need to link one
                   address. Linking additional addresses will not increase the
                   $BRIGHT you will receive.
-                </ListItemText>
-              </ListItem>
-              <ListItem>
-                <ListItemText>
-                  The resulting $BRIGHT will be included in the next claim
-                  period, starting in approximately{' '}
-                  <strong>{durationString}</strong>.
                 </ListItemText>
               </ListItem>
             </Box>
