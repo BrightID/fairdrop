@@ -15,6 +15,7 @@ import { intervalToDuration } from 'date-fns';
 import formatDuration from 'date-fns/formatDuration';
 import { RegistrationInfo } from '../utils/api';
 import { Alert } from '@material-ui/lab';
+import HashDisplay from './HashDisplay';
 
 interface AddressLinkInfoProps {
   address: string;
@@ -50,7 +51,7 @@ const AddressLinkInfo = ({
   });
   console.log(`Duration: ${formatDuration(duration)}`);
   const durationString = formatDuration(duration, {
-    format: ['days', 'hours', 'minutes'],
+    format: ['days', 'hours'],
   });
 
   if (brightIdLinked) {
@@ -62,8 +63,9 @@ const AddressLinkInfo = ({
               BrightID Linked
             </Typography>
             <Typography align={'left'} variant={'body1'}>
-              The resulting $BRIGHT will be included in the next claim period,
-              starting in approximately <strong>{durationString}</strong>.
+              Your BrightID account is linked. Check back in about{' '}
+              <strong>{durationString}</strong> if you have linked your BrightID
+              during the current phase.
             </Typography>
           </Grid>
         </Grid>

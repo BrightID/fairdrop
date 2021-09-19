@@ -95,7 +95,7 @@ const ChainSelector = ({
     end: registrationInfo.nextClaimStart,
   });
   const durationString = formatDuration(duration, {
-    format: ['days', 'hours', 'minutes'],
+    format: ['days', 'hours'],
   });
   if (
     registrationTicksRemaining < 0 &&
