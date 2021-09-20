@@ -1,17 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Popover from '@material-ui/core/Popover';
-import { EthersProviderContext } from './ProviderContext';
-import HashDisplay from './HashDisplay';
+import { useWallet } from '../contexts/wallet';
 import MenuIcon from '@material-ui/icons/Menu';
 import {
+  Box,
   IconButton,
   Menu,
   MenuItem,
+  Tooltip,
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
@@ -19,21 +20,30 @@ import { ERC20, ERC20__factory } from '../typechain';
 import { getTokenAddress } from '../utils/api';
 import { BigNumber, utils } from 'ethers';
 import watchAsset from '../utils/watchAsset';
+import header_home from '../images/header_home.svg';
+import header_farm from '../images/header_farm.svg';
+import header_fairdrop from '../images/header_fairdrop.svg';
+import header_dao from '../images/header_dao.svg';
+import { useHistory } from 'react-router';
+import { useCookies } from 'react-cookie';
+import { useLocation } from 'react-router-dom';
+import { BRIGHT } from '../utils/constants';
+import { HelpOutline } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
+  header: {
+    display: 'flex',
   },
   appBar: {
-    background: 'white',
+    background: 'transparent',
     boxShadow: 'none',
-    borderBottom: '1px solid lightgrey',
-    marginBottom: theme.spacing(6),
+    marginBottom: theme.spacing(2),
   },
   menuButton: {
     marginRight: theme.spacing(2),
   },
-  title: {
+  title: {},
+  divider: {
     flexGrow: 1,
   },
   changeWalletBtn: {
@@ -55,26 +65,28 @@ const useStyles = makeStyles((theme) => ({
       paddingRight: theme.spacing(3),
     },
   },
+  navLink: {
+    marginLeft: theme.spacing(1),
+  },
 }));
 
-interface HeaderProps {
-  address?: string;
-  changeAddress: () => any;
-}
-
-const Header = ({ address, changeAddress }: HeaderProps) => {
+const Header = () => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [popupAnchorEl, setPopupAnchorEl] = React.useState<null | HTMLElement>(
     null
   );
-  const { wallet, network, provider, onboardApi } = useContext(
-    EthersProviderContext
-  );
+  const [buyPopupAnchorEl, setBuyPopupAnchorEl] =
+    React.useState<null | HTMLElement>(null);
+  const routerHistory = useHistory();
+  const { pathname } = useLocation();
+  const { wallet, network, provider, onboardApi, walletAddress } = useWallet();
   const theme = useTheme();
   const xsDisplay = useMediaQuery(theme.breakpoints.down('xs'));
   const [token, setToken] = useState<ERC20 | undefined>(undefined);
   const [balance, setBalance] = useState<BigNumber | undefined>();
+  const [buttonLabel, setButtonLabel] = useState('Connect Wallet');
+  const [cookies, _] = useCookies();
 
   // get token contract
   useEffect(() => {
@@ -114,9 +126,9 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
   useEffect(() => {
     const runEffect = async () => {
       // get initial balance
-      if (token && address) {
-        console.log(`Getting balance for ${address}`);
-        const newBalance = await token.balanceOf(address);
+      if (token && walletAddress) {
+        console.log(`Getting balance for ${walletAddress}`);
+        const newBalance = await token.balanceOf(walletAddress);
         setBalance(newBalance);
       }
     };
@@ -124,37 +136,53 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
     return () => {
       setBalance(undefined);
     };
-  }, [token, address]);
+  }, [token, walletAddress]);
 
   // listen for transfer events
   useEffect(() => {
-    if (token && address && address !== '') {
+    if (token && walletAddress && walletAddress !== '') {
       const handler = (from: string, to: string, value: any) => {
         console.log(
           `Transfer from ${from} to ${to} value: ${value.toString()}`
         );
-        token.balanceOf(address).then((newBalance) => {
-          setBalance(newBalance);
-        });
+        token
+          .balanceOf(walletAddress)
+          .then((newBalance) => {
+            setBalance(newBalance);
+          })
+          .catch();
       };
-      const inFilter = token.filters.Transfer(null, address, null);
-      const outFilter = token.filters.Transfer(address, null, null);
-      console.log(`Start listening for Transfer events for ${address}`);
+      const inFilter = token.filters.Transfer(null, walletAddress, null);
+      const outFilter = token.filters.Transfer(walletAddress, null, null);
+      console.log(`Start listening for Transfer events for ${walletAddress}`);
       token.on(inFilter, handler);
       token.on(outFilter, handler);
 
       return () => {
-        console.log(`Stop listening for Transfer events for ${address}`);
+        console.log(`Stop listening for Transfer events for ${walletAddress}`);
         token.off(inFilter, handler);
         token.off(outFilter, handler);
       };
     }
-  }, [token, address]);
+  }, [token, walletAddress]);
 
   const openMenu = Boolean(anchorEl);
   const openPopup = Boolean(popupAnchorEl);
+  const openBuyPopup = Boolean(buyPopupAnchorEl);
+
   const walletName = wallet?.name || undefined;
-  const buttonLabel = walletName || 'Connect Wallet';
+
+  useEffect(() => {
+    if (walletAddress) {
+      setButtonLabel(
+        `${walletAddress.substring(0, 6)}...${walletAddress.substring(
+          walletAddress.length - 4
+        )}`
+      );
+    } else {
+      setButtonLabel('Connect Wallet');
+    }
+  }, [walletAddress]);
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -173,6 +201,13 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
     setPopupAnchorEl(null);
   };
 
+  const handleOpenBuyPopup = (event: React.MouseEvent<HTMLElement>) => {
+    setBuyPopupAnchorEl(event.currentTarget);
+  };
+  const handleCloseBuyPopup = () => {
+    setBuyPopupAnchorEl(null);
+  };
+
   const switchWallet = async () => {
     console.log(`SwitchWallet`);
     setAnchorEl(null);
@@ -182,18 +217,13 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
     }
   };
 
-  const changeAddressFromMenu = () => {
-    setAnchorEl(null);
-    changeAddress();
-  };
-
   const watchAssetHandler = async () => {
     if (token && wallet && wallet.provider) {
       console.log(`Adding token...`);
       const address = token.address;
       const decimals = await token.decimals();
       const symbol = await token.symbol();
-      const image = 'https://fairdrop.brightid.org/favicon.ico';
+      const image = 'https://fairdrop.brightid.org/BrightTokenIcon256.png';
 
       await watchAsset({
         address,
@@ -206,9 +236,64 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
     handleClosePopup();
   };
 
+  const handleNavAirdrop = () => {
+    setAnchorEl(null);
+    routerHistory.push('/airdrop');
+  };
+
+  const handleNavFarms = () => {
+    setAnchorEl(null);
+    routerHistory.push('/farms');
+  };
+
+  const handleHome = () => {
+    setAnchorEl(null);
+    routerHistory.push('/');
+  };
+
+  // On the homepage the header should be hidden unless the videoWatched cookie is set.
+  // Deep links should always work regardless of cookie
+  if (pathname === '/' && cookies.videoWatched !== '1') return null;
+
+  const buyBrightPopover = (
+    <Popover
+      id={'buyBrightPopup'}
+      open={openBuyPopup}
+      anchorEl={buyPopupAnchorEl}
+      onClose={handleCloseBuyPopup}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'center',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'center',
+      }}
+    >
+      <Button
+        variant="outlined"
+        size={'large'}
+        href={`https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=${BRIGHT[1]}`}
+        target={'_blank'}
+        onClick={handleCloseBuyPopup}
+      >
+        Uniswap (Ethereum)
+      </Button>
+      <Button
+        variant="outlined"
+        size={'large'}
+        href={`https://app.honeyswap.org/#/swap?inputCurrency=xDAI&outputCurrency=${BRIGHT[100]}`}
+        target={'_blank'}
+        onClick={handleCloseBuyPopup}
+      >
+        Honeyswap (xDai)
+      </Button>
+    </Popover>
+  );
+
   const buildAppbarButtons = () => {
     if (xsDisplay) {
-      // only small menu button to the right
+      // only small menu button to the left
       return (
         <>
           <IconButton color={'primary'} onClick={handleOpenMenu}>
@@ -229,12 +314,21 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
             open={openMenu}
             onClose={handleCloseMenu}
           >
-            <MenuItem onClick={switchWallet}>{buttonLabel}</MenuItem>
-            {address && (
-              <MenuItem onClick={changeAddressFromMenu}>
-                <HashDisplay hash={address} type={'address'} />
-              </MenuItem>
-            )}
+            <MenuItem onClick={handleHome}>Home</MenuItem>
+            <MenuItem onClick={handleNavAirdrop}>$BRIGHT Airdrop</MenuItem>
+            <MenuItem onClick={handleNavFarms}>$BRIGHT Farm</MenuItem>
+            <MenuItem
+              component={'a'}
+              href={
+                'https://gardens-xdai.1hive.org/#/garden/0x1e2d5fb385e2eae45bd42357e426507a63597397'
+              }
+              target={'_blank'}
+              rel={'noopener, noreferrer'}
+              onClick={handleCloseMenu}
+            >
+              $BRIGHT DAO
+            </MenuItem>
+            <MenuItem onClick={switchWallet}>Wallet: {buttonLabel}</MenuItem>
             {balance && (
               <MenuItem>
                 <Typography>{`${utils.formatUnits(
@@ -250,6 +344,48 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
       // buttons inside appbar
       return (
         <>
+          <Button onClick={handleHome}>
+            <img
+              src={header_home}
+              alt="airdrop"
+              style={{ objectFit: 'contain' }}
+              width="100%"
+            />
+          </Button>
+          <Button className={classes.navLink} onClick={handleNavAirdrop}>
+            <img
+              src={header_fairdrop}
+              alt="airdrop"
+              style={{ objectFit: 'contain' }}
+              width="100%"
+            />
+          </Button>
+          <Button className={classes.navLink} onClick={handleNavFarms}>
+            <img
+              src={header_farm}
+              alt="farm"
+              style={{ objectFit: 'contain' }}
+              width="100%"
+            />
+          </Button>
+          <Button
+            className={classes.navLink}
+            href={
+              'https://gardens-xdai.1hive.org/#/garden/0x1e2d5fb385e2eae45bd42357e426507a63597397'
+            }
+            target={'_blank'}
+            rel={'noopener, noreferrer'}
+          >
+            <img
+              src={header_dao}
+              alt="dao"
+              style={{ objectFit: 'contain' }}
+              width="100%"
+            />
+          </Button>
+          <Box className={classes.divider}></Box>
+          <Button onClick={handleOpenBuyPopup}>Buy $BRIGHT</Button>
+          {buyBrightPopover}
           {balance && (
             <>
               <Button
@@ -282,16 +418,6 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
               </Popover>
             </>
           )}
-          {address && (
-            <Button
-              className={classes.changeAddressBtn}
-              variant={'contained'}
-              color={'primary'}
-              onClick={changeAddress}
-            >
-              <HashDisplay hash={address} type={'address'} />
-            </Button>
-          )}
           <Button
             className={classes.changeWalletBtn}
             variant={'contained'}
@@ -300,24 +426,29 @@ const Header = ({ address, changeAddress }: HeaderProps) => {
           >
             {buttonLabel}
           </Button>
+          <Tooltip title={'learn more about bright'}>
+            <IconButton
+              aria-label="learn more"
+              href={'https://brightid.gitbook.io/bright/what-is-bright/'}
+              rel={'noreferrer noopener'}
+              target={'_blank'}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
         </>
       );
     }
   };
 
   return (
-    <div className={classes.root}>
+    <div className={classes.header}>
       <AppBar
         position="sticky"
         color={'transparent'}
         className={classes.appBar}
       >
-        <Toolbar>
-          <Typography variant="h6" className={classes.title} color={'primary'}>
-            $BRIGHT
-          </Typography>
-          {buildAppbarButtons()}
-        </Toolbar>
+        <Toolbar variant="dense">{buildAppbarButtons()}</Toolbar>
       </AppBar>
     </div>
   );

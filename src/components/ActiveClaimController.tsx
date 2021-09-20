@@ -6,7 +6,7 @@ import {
   ERC20__factory,
   ERC20,
 } from '../typechain';
-import { EthersProviderContext } from './ProviderContext';
+import { EthersWalletContext } from '../contexts/wallet';
 import ActiveClaim from './ActiveClaim';
 import {
   ClaimInfo,
@@ -55,7 +55,7 @@ const ActiveClaimController = ({
   const [claimState, setClaimState] = useState<ClaimState>({
     txState: TxStates.Idle,
   });
-  const { wallet, network, onboardApi } = useContext(EthersProviderContext);
+  const { wallet, network, onboardApi } = useContext(EthersWalletContext);
   const [showWizard, setShowWizard] = useState(false);
 
   // initialize contract instance
@@ -70,7 +70,10 @@ const ActiveClaimController = ({
       console.log(
         `Claimcontroller: Setting up ethers provider, network ${network}`
       );
-      const provider = new ethers.providers.Web3Provider(wallet.provider);
+      const provider = new ethers.providers.Web3Provider(
+        wallet.provider,
+        'any'
+      );
       const ethersNetwork = await provider.getNetwork();
       console.log(
         `Claimcontroller: Got ethersNetwork with chainId ${ethersNetwork.chainId}`
@@ -88,6 +91,14 @@ const ActiveClaimController = ({
         return;
       }
       console.log(`MerkleDistributor address: ${contractAddress}`);
+      provider.on('network', (newNetwork, oldNetwork) => {
+        // When a Provider makes its initial connection, it emits a "network"
+        // event with a null oldNetwork along with the newNetwork. So, if the
+        // oldNetwork exists, it represents a changing network
+        // if (oldNetwork) {
+        //   window.location.reload();
+        // }
+      });
       try {
         // check if contract is deployed
         const code = await provider.getCode(contractAddress);
@@ -235,6 +246,7 @@ const ActiveClaimController = ({
         }
       } catch (err) {
         console.log(`Error while claiming: ${err}`);
+        // @ts-ignore
         const message = err?.data?.message || err.message;
         setClaimState({
           txState: TxStates.Error,
@@ -266,7 +278,7 @@ const ActiveClaimController = ({
       const address = token.address;
       const decimals = await token.decimals();
       const symbol = await token.symbol();
-      const image = 'https://fairdrop.brightid.org/favicon.ico';
+      const image = 'https://fairdrop.brightid.org/BrightTokenIcon256.png';
 
       await watchAsset({
         address,

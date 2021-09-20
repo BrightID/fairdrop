@@ -30,7 +30,7 @@ const CountDown = ({ title, timestamp }: CountDownProps) => {
   const classNames = useStyles();
   const [duration, setDuration] = useState(calcDuration(timestamp));
 
-  // poll for successfull linking
+  // update timer
   useEffect(() => {
     const intervalId = setInterval(async () => {
       setDuration(calcDuration(timestamp));

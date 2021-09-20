@@ -1,29 +1,29 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext } from 'react';
 import { Button, Grid } from '@material-ui/core';
 import { ethers } from 'ethers';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Form } from 'react-final-form';
 import { TextField } from 'mui-rff';
-import { EthersProviderContext } from './ProviderContext';
-import { useEffect } from 'react';
+import { EthersWalletContext } from '../contexts/wallet';
 
 interface AddressFormData {
-  address: string;
+  address?: string;
 }
 
 interface AddressFormProps {
-  initialValues: AddressFormData;
-  setAddress: (address: string) => any;
+  setAddress?: (address: string) => any;
 }
 
-const AddressForm = ({ initialValues, setAddress }: AddressFormProps) => {
+const AddressForm = ({ setAddress }: AddressFormProps) => {
   const classNames = useStyles();
-  const { onboardApi, walletAddress } = useContext(EthersProviderContext);
+  const { walletAddress } = useContext(EthersWalletContext);
 
   const onSubmit = (values: AddressFormData) => {
     console.log(`Submitting ${values.address}`);
     // make sure to have a checksummed address before storing
-    setAddress(ethers.utils.getAddress(values.address));
+    if (values.address && setAddress) {
+      setAddress(ethers.utils.getAddress(values.address));
+    }
   };
 
   const validate = (values: AddressFormData) => {
@@ -42,22 +42,6 @@ const AddressForm = ({ initialValues, setAddress }: AddressFormProps) => {
 
   return (
     <Form
-      //   mutators={{
-      //     importWalletAddress: async (args, state, utils) => {
-      //       console.log('state', state);
-      //       utils.changeValue(state, 'address', () => walletAddress);
-      //       console.log(`Mutator called, wallet address is ${walletAddress}`);
-      //         if (walletAddress && walletAddress !== '') {
-      //           utils.changeValue(state, 'address', () => walletAddress);
-      //         } else {
-      //       console.log(`Connecting wallet...`);
-      //       const selected = await onboardApi?.walletSelect();
-      //       if (selected) {
-      //         await onboardApi?.walletCheck();
-      //       }
-      //         }
-      //     },
-      //   }}
       onSubmit={onSubmit}
       initialValues={{ address: walletAddress }}
       validate={validate}
@@ -98,13 +82,6 @@ const AddressForm = ({ initialValues, setAddress }: AddressFormProps) => {
                 Check Address
               </Button>
             </Grid>
-
-            {/* <Button
-                                  className={classNames.Btn}
-                                  onClick={form.mutators.importWalletAddress}
-                                  variant={'outlined'}>
-                                  Use Wallet Address
-                              </Button> */}
           </Grid>
         </form>
       )}

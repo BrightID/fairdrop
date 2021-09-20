@@ -1,8 +1,7 @@
 import { BigNumber } from 'ethers';
 const { REACT_APP_FAIRDROP_API_URL } = process.env;
 
-const baseUrl =
-  REACT_APP_FAIRDROP_API_URL || 'https://fairdrop.brightid.org/api';
+const baseUrl = REACT_APP_FAIRDROP_API_URL || '/api';
 
 console.log(process.env);
 

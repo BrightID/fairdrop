@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import Onboard from 'bnc-onboard';
 import { API, Wallet } from 'bnc-onboard/dist/src/interfaces';
+import { SettingsBrightnessRounded } from '@material-ui/icons';
 
 // derived from https://docs.blocknative.com/onboard#wallet-modules
 const walletNamesWithRpcUrl = [
@@ -21,10 +22,12 @@ const infuraRPCUrl = 'mainnet.infura.io/v3/';
 
 const ChainIds = {
   Mainnet: 1,
+  // Rinkeby: 4,
   IDChain: 74,
   XDai: 100,
   Hardhat: 31337,
 };
+
 type ChainId = typeof ChainIds[keyof typeof ChainIds];
 
 const rpcUrls = {
@@ -32,9 +35,10 @@ const rpcUrls = {
   [ChainIds.IDChain]: 'https://idchain.one/rpc/',
   [ChainIds.XDai]: 'https://rpc.xdaichain.com/',
   [ChainIds.Hardhat]: 'http://127.0.0.1:8545/',
+  // [ChainIds.Rinkeby]:
 };
 
-type ProviderContextType = {
+type WalletContextType = {
   provider?: ethers.providers.Web3Provider;
   wallet?: Wallet;
   signer?: ethers.Signer;
@@ -42,14 +46,13 @@ type ProviderContextType = {
   changeChainId?: (chainId: number) => any;
   network?: number;
   walletAddress?: string;
+  address?: string;
 };
-export const EthersProviderContext = React.createContext<ProviderContextType>(
-  {}
-);
+export const EthersWalletContext = React.createContext<WalletContextType>({});
 
-type ProviderContextProps = {};
+type WalletContextProps = {};
 
-const ProviderContext: React.FC<ProviderContextProps> = ({ children }) => {
+export const WalletContext: React.FC<WalletContextProps> = ({ children }) => {
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [supportsRpcUrl, setSupportsRpcUrl] = useState(false);
   const [onboard, setOnboard] = useState<API | undefined>(undefined);
@@ -58,7 +61,41 @@ const ProviderContext: React.FC<ProviderContextProps> = ({ children }) => {
   const [provider, setProvider] = useState<
     ethers.providers.Web3Provider | undefined
   >(undefined);
-  const [walletAddress, setWalletAddress] = useState('');
+  const [signer, setSigner] = useState<ethers.Signer | undefined>(undefined);
+  const [walletAddress, setWalletAddress] = useState<string>('');
+
+  // load wallet if already exists
+  useEffect(() => {
+    const runEffect = async () => {
+      const previouslySelectedWallet =
+        window.localStorage.getItem('selectedWallet');
+
+      // call wallet select with that value if it exists
+      if (previouslySelectedWallet) {
+        await onboard?.walletSelect(previouslySelectedWallet);
+      }
+    };
+    if (!walletAddress) {
+      runEffect();
+    }
+  }, [walletAddress, onboard]);
+
+  //reset app if network changes
+  useEffect(() => {
+    if (!provider) return;
+
+    provider.on('network', (newNetwork, oldNetwork) => {
+      // When a Provider makes its initial connection, it emits a "network"
+      // event with a null oldNetwork along with the newNetwork. So, if the
+      // oldNetwork exists, it represents a changing network
+      // if (oldNetwork) {
+      //   window.location.reload();
+      // }
+    });
+    return () => {
+      provider.off('network');
+    };
+  }, [provider]);
 
   // setup onboard.js
   useEffect(() => {
@@ -82,14 +119,20 @@ const ProviderContext: React.FC<ProviderContextProps> = ({ children }) => {
               );
               setWallet(wallet);
               const ethersProvider = new ethers.providers.Web3Provider(
-                wallet.provider
+                wallet.provider,
+                'any'
               );
               setProvider(ethersProvider);
+              setSigner(ethersProvider.getSigner());
+              // store the selected wallet name to be retrieved next time the app loads
+              window.localStorage.setItem('selectedWallet', wallet.name || '');
             } else {
               console.log(`Got undefined wallet from onboard...`);
               setSupportsRpcUrl(false);
               setWallet(null);
               setProvider(undefined);
+              setSigner(undefined);
+              window.localStorage.setItem('selectedWallet', '');
             }
           },
           address: (addr) => {
@@ -152,12 +195,40 @@ const ProviderContext: React.FC<ProviderContextProps> = ({ children }) => {
     network,
     provider,
     walletAddress,
+    address: walletAddress,
+    signer,
   };
   return (
-    <EthersProviderContext.Provider value={ctx}>
+    <EthersWalletContext.Provider value={ctx}>
       {children}
-    </EthersProviderContext.Provider>
+    </EthersWalletContext.Provider>
   );
 };
 
-export default ProviderContext;
+export default WalletContext;
+
+export function useWallet() {
+  const context = useContext(EthersWalletContext);
+  if (!context) {
+    throw new Error('Missing Contracts context');
+  }
+  const {
+    wallet,
+    onboardApi,
+    network,
+    provider,
+    walletAddress,
+    address,
+    signer,
+  } = context;
+
+  return {
+    wallet,
+    onboardApi,
+    network,
+    provider,
+    walletAddress,
+    address,
+    signer,
+  };
+}

@@ -7,9 +7,8 @@ import { intervalToDuration } from 'date-fns';
 import { RegistrationInfo } from '../utils/api';
 import boxes from '../images/boxes.svg';
 import highfive from '../images/highfive.svg';
-import boxes from '../images/boxes.svg';
 import claimSuccess from '../images/claimSuccess.svg';
-import claimPending from '../images/claim_pending.png';
+
 import CountDown from './CountDown';
 
 interface ActiveClaimProps {
@@ -175,7 +174,7 @@ const ActiveClaim = ({
             claimable at the next claim period on {chainName(selectedChainId)}.
           </Typography>
           <CountDown
-            title={'Next claim period in'}
+            title={'Next claim period estimated to start in'}
             timestamp={registrationInfo.nextClaimStart}
           />
           {/*

@@ -45,7 +45,7 @@ const HashDisplay = ({
           classes={{ tooltip: classes.toolTip }}
         >
           <span className={className}>
-            {hash.substring(0, 7)}...{hash.substring(hash.length - 4)}
+            {hash.substring(0, 6)}...{hash.substring(hash.length - 4)}
           </span>
         </Tooltip>
         {withEtherscanLink && (

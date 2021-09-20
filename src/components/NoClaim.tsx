@@ -4,10 +4,12 @@ import { Box, Grid, Hidden, Typography } from '@material-ui/core';
 import noclaim from '../images/noclaim.svg';
 import HashDisplay from './HashDisplay';
 import { RegistrationInfo } from '../utils/api';
+import { intervalToDuration } from 'date-fns';
+import formatDuration from 'date-fns/formatDuration';
 
 interface NoClaimProps {
-  address: string;
-  brightIdLinked: boolean;
+  address?: string;
+  brightIdLinked: boolean | undefined;
   registrationInfo: RegistrationInfo;
 }
 
@@ -31,6 +33,18 @@ const NoClaim = ({
       showLinkHint = false;
     }
   }
+
+  const registrationTicksRemaining =
+    registrationInfo.currentRegistrationEnd - Date.now();
+  const duration = intervalToDuration({
+    start: Date.now(),
+    end: registrationInfo.nextClaimStart,
+  });
+  const durationString = formatDuration(duration, {
+    // format: ['days', 'hours', 'minutes'],
+    format: ['days', 'hours'],
+  });
+
   return (
     <Grid container alignItems={'center'}>
       <Hidden xsDown>
@@ -42,7 +56,7 @@ const NoClaim = ({
         item
         container
         direction={'column'}
-        justify={'center'}
+        justifyContent={'center'}
         xs={12}
         sm={9}
         md={7}
@@ -52,10 +66,24 @@ const NoClaim = ({
           variant={'h5'}
           className={classNames.noClaimText}
         >
-          There is no $BRIGHT to claim for address{' '}
-          <HashDisplay hash={address} type={'address'}></HashDisplay>
+          Don't see any $BRIGHT to claim?
         </Typography>
-        {showLinkHint && (
+        <Typography variant={'h6'} className={classNames.infoBox}>
+          <Typography variant={'h6'}>Don't worry!</Typography>
+          <Typography variant={'body1'}>
+            Link your BrightID below and come back in about{' '}
+            <strong>{durationString}</strong>. You can claim some $BRIGHT if
+            your BrightID account is eligible. See{' '}
+            <a
+              href="https://brightid.gitbook.io/brightid/bright/getting-bright/fairdrop/eligibility"
+              target="blank"
+            >
+              eligibility
+            </a>
+            .
+          </Typography>
+        </Typography>
+        {false /*showLinkHint*/ && (
           <Typography className={classNames.infoBox}>
             <Typography variant={'h6'}>Did you link your BrightId?</Typography>
             <Typography variant={'body1'}>
