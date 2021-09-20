@@ -210,7 +210,11 @@ const DisplayNfts = ({
 
   const parseUri = (tokenURI: string) => {
     if (!tokenURI) return {};
-    return JSON.parse(atob(tokenURI.slice(STARTS_WITH.length)));
+    try {
+      return JSON.parse(atob(tokenURI.slice(STARTS_WITH.length)));
+    } catch {
+      return {};
+    }
   };
   const selectNft = (position: LiquidityPosition) => () => {
     if (positionSelected?.tokenId.toString() === position?.tokenId.toString()) {

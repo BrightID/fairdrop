@@ -1,6 +1,5 @@
-import { FC, useEffect, useMemo, useState } from 'react';
-import clsx from 'clsx';
-import { BigNumber as BigNumberEthers, utils } from 'ethers';
+import { FC } from 'react';
+import { utils } from 'ethers';
 import { useHistory } from 'react-router-dom';
 import { Button, Box, Fab, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -8,7 +7,6 @@ import AddRoundedIcon from '@material-ui/icons/AddRounded';
 import RemoveRoundedIcon from '@material-ui/icons/RemoveRounded';
 import { useWallet } from '../contexts/wallet';
 import { useV3Liquidity } from '../contexts/erc721Nfts';
-import { useContracts } from '../contexts/contracts';
 import { useStakingRewardsInfo } from '../hooks/useStakingRewardsInfo';
 import { FARM } from '../utils/types';
 import { useERC20Tokens } from '../contexts/erc20Tokens';
@@ -16,6 +14,8 @@ import { useERC20Tokens } from '../contexts/erc20Tokens';
 const ETH = 1;
 const RINKEBY = 4;
 const XDAI = 100;
+
+const STARTS_WITH = 'data:application/json;base64,';
 
 export const SubsStakedBox: FC = () => {
   const classes = useStyles();
@@ -157,16 +157,9 @@ export const HoneyStakedBox: FC = () => {
 
 export const UniswapV3StakedBox: FC = () => {
   const classes = useStyles();
-  const { walletAddress, network, onboardApi } = useWallet();
-  const { uniswapV3StakerContract } = useContracts();
+  const { walletAddress, onboardApi } = useWallet();
   const history = useHistory();
-  const { loadPositions, stakedPositions } = useV3Liquidity();
-  // check for NFT positions in user's wallet
-  // useEffect(() => {
-  //   if (walletAddress && network && (network === 1 || network === 4)) {
-  //     loadPositions();
-  //   }
-  // }, [network, walletAddress, loadPositions]);
+  const { stakedPositions } = useV3Liquidity();
 
   const navToStake = () => {
     history.push('/stake/v3');
@@ -183,10 +176,10 @@ export const UniswapV3StakedBox: FC = () => {
 
   return (
     <>
-      <Box>
+      <Box width="50%" maxWidth="50%">
         <Typography className={classes.subheader}>Staked NFT's</Typography>
         {walletAddress ? (
-          <Typography>{stakedPositions?.length}</Typography>
+          <DisplayNfts />
         ) : (
           <Button variant={'outlined'} size={'small'} onClick={switchWallet}>
             Connect Wallet
@@ -219,6 +212,44 @@ export const UniswapV3StakedBox: FC = () => {
   );
 };
 
+const DisplayNfts = () => {
+  const classes = useStyles();
+  const { stakedPositions } = useV3Liquidity();
+
+  const parseUri = (tokenURI: string) => {
+    if (!tokenURI) return {};
+    try {
+      return JSON.parse(atob(tokenURI.slice(STARTS_WITH.length)));
+    } catch {
+      return {};
+    }
+  };
+
+  return (
+    <Box className={classes.imageList}>
+      {stakedPositions.map((nft) => {
+        if (!nft?.tokenId) return <></>;
+        const nftData = parseUri(nft.uri);
+        const tokenId = nft.tokenId.toString();
+        return (
+          <a
+            href={`https://app.uniswap.org/#/pool/${tokenId}`}
+            target="_blank"
+            rel="noreferrer"
+            key={tokenId}
+          >
+            <img
+              className={classes.nftImage}
+              src={nftData.image}
+              alt={'nft position'}
+            />
+          </a>
+        );
+      })}
+    </Box>
+  );
+};
+
 interface FarmingStakedBoxProps {
   farm: FARM;
 }
@@ -248,6 +279,26 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     fab: {
       backgroundColor: 'white',
+    },
+    nftImage: {
+      height: 62,
+      objectFit: 'contain',
+      // width: '95%',
+      marginLeft: 2,
+      marginRight: 2,
+    },
+    imageList: {
+      display: 'flex',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      flexWrap: 'nowrap',
+      // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+      transform: 'translateZ(0)',
+      width: '100%',
+      maxWidth: '100%',
+      // height: 65,
+      marginTop: 3,
+      marginBottom: -5,
     },
   })
 );

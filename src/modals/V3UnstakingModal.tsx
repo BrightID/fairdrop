@@ -1,10 +1,8 @@
-import { FC, useEffect, useMemo, useState } from 'react';
-import { BigNumber, utils } from 'ethers';
+import { FC, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import {
   Box,
   Button,
-  ButtonBase,
   Dialog,
   DialogActions,
   DialogTitle,
@@ -12,18 +10,14 @@ import {
   Divider,
   ImageList,
   ImageListItem,
-  ImageListItemBar,
-  Link,
   IconButton,
   Typography,
-  Grid,
 } from '@material-ui/core';
 
 import CloseIcon from '@material-ui/icons/Close';
-import { useParams, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import LaunchIcon from '@material-ui/icons/Launch';
-import { useContracts } from '../contexts/contracts';
 import { useWallet } from '../contexts/wallet';
 import { useV3Liquidity } from '../contexts/erc721Nfts';
 import { useV3Staking } from '../hooks/useV3Staking';
@@ -37,7 +31,6 @@ const V3StakingModal: FC = () => {
   const classes = useStyles();
   const history = useHistory();
 
-  const { uniswapV3StakerContract } = useContracts();
   const { walletAddress, network } = useWallet();
 
   const [activeStep, setActiveStep] = useState<number>(0);
@@ -57,13 +50,16 @@ const V3StakingModal: FC = () => {
     history.push('/farms');
   };
 
+  console.log('stakedPositions', stakedPositions);
   // select position automatically
   useEffect(() => {
-    if (stakedPositions?.length > 1 && !positionSelected && !initialSelected) {
+    if (stakedPositions?.length > 0 && !positionSelected && !initialSelected) {
       setPositionSelected(stakedPositions[0]);
       setInitialSelected(true);
     }
   }, [stakedPositions, positionSelected, initialSelected]);
+
+  console.log('positionSelected', positionSelected);
 
   // check for NFT positions in user's wallet
   useEffect(() => {
@@ -139,8 +135,14 @@ const V3StakingModal: FC = () => {
         )}
       </DialogContent>
       <DialogActions className={classes.bottom}>
-        <Button href="#" color="primary" endIcon={<LaunchIcon />}>
-          Get BRIGHT / ETH 0.3% Position
+        <Button
+          href={`https://app.uniswap.org/#/pool/${tokenId?.toString()}`}
+          color="primary"
+          endIcon={<LaunchIcon />}
+          target="_blank"
+          rel="noreferrer"
+        >
+          View Position
         </Button>
       </DialogActions>
     </Dialog>
@@ -171,7 +173,11 @@ const DisplayNfts = ({
 
   const parseUri = (tokenURI: string) => {
     if (!tokenURI) return {};
-    return JSON.parse(atob(tokenURI.slice(STARTS_WITH.length)));
+    try {
+      return JSON.parse(atob(tokenURI.slice(STARTS_WITH.length)));
+    } catch {
+      return {};
+    }
   };
   const selectNft = (position: LiquidityPosition) => () => {
     if (positionSelected?.tokenId.toString() === position?.tokenId.toString()) {
