@@ -1,15 +1,4 @@
-import { FC, ReactElement, useMemo } from 'react';
-import clsx from 'clsx';
-
-import {
-  Box,
-  Button,
-  CssBaseline,
-  Typography,
-  Divider,
-  Hidden,
-  Paper,
-} from '@material-ui/core';
+import { Box, Link, Paper } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useWallet } from '../contexts/wallet';
 import { FARM } from '../utils/types';

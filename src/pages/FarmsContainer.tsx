@@ -91,7 +91,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      height: 450,
+      height: 470,
     },
     farmerImage: {
       objectFit: 'contain',

@@ -1,14 +1,11 @@
-import { FC, useEffect, useMemo, useState } from 'react';
-import clsx from 'clsx';
-import { BigNumber as BigNumberEthers, utils } from 'ethers';
-import { useHistory } from 'react-router-dom';
-import { Button, Box, Fab, Typography } from '@material-ui/core';
+import { FC } from 'react';
+import { utils } from 'ethers';
+import { Link, Box, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { useWallet } from '../contexts/wallet';
 import { useV3Liquidity } from '../contexts/erc721Nfts';
 import { useERC20Tokens } from '../contexts/erc20Tokens';
-import { useContracts } from '../contexts/contracts';
-import { useStakingRewardsInfo } from '../hooks/useStakingRewardsInfo';
+
 import { FARM } from '../utils/types';
 
 export const SubsLpBox: FC = () => {
@@ -32,10 +29,21 @@ export const SubsLpBox: FC = () => {
   } catch {}
 
   return (
-    <Box>
-      <Typography className={classes.subheader}>SUBS in wallet</Typography>
-      <Typography>{displayBalance}</Typography>
-    </Box>
+    <>
+      <Box>
+        <Typography className={classes.subheader}>SUBS in wallet</Typography>
+        <Typography>{displayBalance}</Typography>
+      </Box>
+      <Link
+        underline="always"
+        className={classes.lpLink}
+        href="https://etherscan.io/address/0x79A7CAD3Ac4554C133dCaaa9Bc3319385Eb7FD5D"
+        target="_blank"
+        rel="noopener"
+      >
+        Staking Contract
+      </Link>
+    </>
   );
 };
 
@@ -58,10 +66,21 @@ export const HoneyLpBox: FC = () => {
   } catch {}
 
   return (
-    <Box>
-      <Typography className={classes.subheader}>LP in wallet</Typography>
-      <Typography>{displayBalance}</Typography>
-    </Box>
+    <>
+      <Box>
+        <Typography className={classes.subheader}>LP in wallet</Typography>
+        <Typography>{displayBalance}</Typography>
+      </Box>
+      <Link
+        underline="always"
+        className={classes.lpLink}
+        href="https://blockscout.com/xdai/mainnet/address/0x79A7CAD3Ac4554C133dCaaa9Bc3319385Eb7FD5D"
+        target="_blank"
+        rel="noopener"
+      >
+        Staking Contract
+      </Link>
+    </>
   );
 };
 
@@ -72,10 +91,21 @@ export const UniswapV3LpBox: FC = () => {
   const { unstakedPositions } = useV3Liquidity();
 
   return (
-    <Box>
-      <Typography className={classes.subheader}>NFT's in wallet</Typography>
-      <Typography>{unstakedPositions.length}</Typography>
-    </Box>
+    <>
+      <Box>
+        <Typography className={classes.subheader}>NFT's in wallet</Typography>
+        <Typography>{unstakedPositions.length}</Typography>
+      </Box>
+      <Link
+        underline="always"
+        className={classes.lpLink}
+        href="https://etherscan.io/address/0x1f98407aaB862CdDeF78Ed252D6f557aA5b0f00d"
+        target="_blank"
+        rel="noopener"
+      >
+        Staking Contract
+      </Link>
+    </>
   );
 };
 
@@ -105,6 +135,11 @@ const useStyles = makeStyles((theme: Theme) =>
     subheader: {
       fontWeight: 'bold',
       fontSize: 14,
+    },
+    lpLink: {
+      color: 'black',
+      fontSize: 12,
+      fontWeight: 'bold',
     },
   })
 );

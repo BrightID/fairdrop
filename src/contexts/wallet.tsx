@@ -67,35 +67,20 @@ export const WalletContext: React.FC<WalletContextProps> = ({ children }) => {
   // load wallet if already exists
   useEffect(() => {
     const runEffect = async () => {
-      const previouslySelectedWallet =
-        window.localStorage.getItem('selectedWallet');
+      try {
+        const previouslySelectedWallet =
+          window.localStorage.getItem('selectedWallet');
 
-      // call wallet select with that value if it exists
-      if (previouslySelectedWallet) {
-        await onboard?.walletSelect(previouslySelectedWallet);
-      }
+        // call wallet select with that value if it exists
+        if (previouslySelectedWallet) {
+          await onboard?.walletSelect(previouslySelectedWallet);
+        }
+      } catch {}
     };
     if (!walletAddress) {
       runEffect();
     }
   }, [walletAddress, onboard]);
-
-  //reset app if network changes
-  useEffect(() => {
-    if (!provider) return;
-
-    provider.on('network', (newNetwork, oldNetwork) => {
-      // When a Provider makes its initial connection, it emits a "network"
-      // event with a null oldNetwork along with the newNetwork. So, if the
-      // oldNetwork exists, it represents a changing network
-      // if (oldNetwork) {
-      //   window.location.reload();
-      // }
-    });
-    return () => {
-      provider.off('network');
-    };
-  }, [provider]);
 
   // setup onboard.js
   useEffect(() => {

@@ -75,19 +75,27 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
     : INCENTIVE_REFUNDEE_ADDRESS[network];
 
   const currentIncentive = useMemo(() => {
-    if (!brightAddress || !poolAddress || !incentiveRefundeeAddress)
+    if (
+      !brightAddress ||
+      !poolAddress ||
+      !incentiveRefundeeAddress ||
+      (network !== 1 && network !== 4)
+    )
       return { key: null };
+
+    const incentiveStartTime = INCENTIVE_START_TIME[network];
+    const incentiveEndTime = INCENTIVE_END_TIME[network];
 
     return {
       key: [
         brightAddress,
         poolAddress,
-        INCENTIVE_START_TIME,
-        INCENTIVE_END_TIME,
+        incentiveStartTime,
+        incentiveEndTime,
         incentiveRefundeeAddress,
       ],
     };
-  }, [brightAddress, poolAddress, incentiveRefundeeAddress]);
+  }, [brightAddress, poolAddress, incentiveRefundeeAddress, network]);
 
   // check for WETH / BRIGHT Pair
   const checkForBrightLp = useCallback(

@@ -4,8 +4,20 @@ export const DRAWER_WIDTH = 240;
 
 export const NETWORK_MAINNET = chainName(1);
 export const NETWORK_RINKEBY = chainName(4);
-export const INCENTIVE_START_TIME = 1631811600;
-export const INCENTIVE_END_TIME = 1637085600;
+
+export const INCENTIVE_START_TIME: Record<number, number> = {
+  4: 1632166143,
+  // do not modify until rewards end
+  1: 1631811600,
+  100: 0,
+};
+
+export const INCENTIVE_END_TIME: Record<number, number> = {
+  4: 1633375743,
+  // do not modify until rewards end
+  1: 1637085600,
+  100: 0,
+};
 
 export const NFT_POSITIONS_MANAGER_ADDRESS: Record<string, string> = {
   4: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
@@ -38,7 +50,7 @@ export const HNY: Record<string, string> = {
 };
 
 export const BRIGHT: Record<string, string> = {
-  4: '0x779ec783bbEec9350B3EfB8BeC775C6379f5E218',
+  4: '0x28156250e9D4c03334Ba00568b63b4B0Fd49Ce93',
   1: '0x5dd57da40e6866c9fcc34f4b6ddc89f1ba740dfe',
   100: '0x83FF60E2f93F8eDD0637Ef669C69D5Fb4f64cA8E',
 };
@@ -56,7 +68,7 @@ export const HONEYSWAP_LP_POOL: Record<string, string> = {
 };
 
 export const UNISWAP_V3_LP_POOL: Record<string, string> = {
-  4: '0x17472be087c2ae35ac8a9fc2a31ff9617ae2609a',
+  4: '0x5705ae6e3BF74608543a248b9E87e297d36a2aA9',
   1: '0x615d40af2c321bd0cd6345ae0a7fc1506a659a89',
   100: '',
 };
@@ -68,7 +80,7 @@ export const UNISWAP_QUOTER: Record<string, string> = {
 };
 
 export const INCENTIVE_REFUNDEE_ADDRESS: Record<string, string> = {
-  4: '0x7e3c105c83166737da77942240378e786842eb1d',
+  4: '0xdC2681C2cef66649045E3eB2B2bb505D2D1564ba',
   1: '0x693FB04d603D800fA9456a02564bA060dA8939fc',
   100: '',
 };
