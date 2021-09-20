@@ -225,6 +225,14 @@ const DisplayNfts = () => {
     }
   };
 
+  if (stakedPositions.length === 0) {
+    return (
+      <Box className={classes.imageList}>
+        <Typography>0</Typography>
+      </Box>
+    );
+  }
+
   return (
     <Box className={classes.imageList}>
       {stakedPositions.map((nft) => {
