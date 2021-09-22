@@ -29,6 +29,7 @@ import { useCookies } from 'react-cookie';
 import { useLocation } from 'react-router-dom';
 import { BRIGHT } from '../utils/constants';
 import { HelpOutline } from '@material-ui/icons';
+import formatAmount from '../utils/formatAmount';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -331,10 +332,11 @@ const Header = () => {
             <MenuItem onClick={switchWallet}>Wallet: {buttonLabel}</MenuItem>
             {balance && (
               <MenuItem>
-                <Typography>{`${utils.formatUnits(
-                  balance,
-                  18
-                )} $Bright`}</Typography>
+                <Typography>{`${formatAmount({
+                  value: balance,
+                  decimals: 18,
+                  roundToDecimals: 3,
+                })} BRIGHT`}</Typography>
               </MenuItem>
             )}
           </Menu>
@@ -388,12 +390,18 @@ const Header = () => {
           {buyBrightPopover}
           {balance && (
             <>
-              <Button
-                className={classes.balanceDisplay}
-                onClick={handleOpenPopup}
-              >
-                {`${utils.formatUnits(balance, 18)} $Bright`}
-              </Button>
+              <Tooltip title={`${utils.formatUnits(balance, 18)}`}>
+                <Button
+                  className={classes.balanceDisplay}
+                  onClick={handleOpenPopup}
+                >
+                  {`${formatAmount({
+                    value: balance,
+                    decimals: 18,
+                    roundToDecimals: 3,
+                  })} BRIGHT`}
+                </Button>
+              </Tooltip>
               <Popover
                 id={'addTokenPopup'}
                 open={openPopup}
