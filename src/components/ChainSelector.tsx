@@ -94,9 +94,16 @@ const ChainSelector = ({
     start: Date.now(),
     end: registrationInfo.nextClaimStart,
   });
-  const durationString = formatDuration(duration, {
-    format: ['days', 'hours'],
-  });
+  let durationString;
+  if (duration.hours) {
+    durationString = formatDuration(duration, {
+      format: ['days', 'hours'],
+    });
+  } else {
+    durationString = formatDuration(duration, {
+      format: ['days', 'hours', 'minutes'],
+    });
+  }
   if (
     registrationTicksRemaining < 0 &&
     registrationInfo.nextRegistrationStart > 0

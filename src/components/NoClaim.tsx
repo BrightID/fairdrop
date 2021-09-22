@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Grid, Hidden, Typography } from '@material-ui/core';
 import noclaim from '../images/noclaim.svg';
-import HashDisplay from './HashDisplay';
 import { RegistrationInfo } from '../utils/api';
-import { intervalToDuration } from 'date-fns';
+import { intervalToDuration, Duration } from 'date-fns';
 import formatDuration from 'date-fns/formatDuration';
 
 interface NoClaimProps {
@@ -40,10 +39,17 @@ const NoClaim = ({
     start: Date.now(),
     end: registrationInfo.nextClaimStart,
   });
-  const durationString = formatDuration(duration, {
-    // format: ['days', 'hours', 'minutes'],
-    format: ['days', 'hours'],
-  });
+
+  let durationString;
+  if (duration.hours) {
+    durationString = formatDuration(duration, {
+      format: ['days', 'hours'],
+    });
+  } else {
+    durationString = formatDuration(duration, {
+      format: ['days', 'hours', 'minutes'],
+    });
+  }
 
   return (
     <Grid container alignItems={'center'}>

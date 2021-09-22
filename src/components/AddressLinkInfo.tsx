@@ -53,9 +53,16 @@ const AddressLinkInfo = ({
     end: registrationInfo.nextClaimStart,
   });
   console.log(`Duration: ${formatDuration(duration)}`);
-  const durationString = formatDuration(duration, {
-    format: ['days', 'hours'],
-  });
+  let durationString;
+  if (duration.hours) {
+    durationString = formatDuration(duration, {
+      format: ['days', 'hours'],
+    });
+  } else {
+    durationString = formatDuration(duration, {
+      format: ['days', 'hours', 'minutes'],
+    });
+  }
 
   if (brightIdLinked) {
     return (
