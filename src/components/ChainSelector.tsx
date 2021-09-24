@@ -122,7 +122,7 @@ const ChainSelector = ({
             </Typography>
             <Alert severity={'warning'} className={classNames.alert}>
               <Typography>
-                We are currently preparing the next airdrop phase. During this
+                We are currently preparing the next claim period. During this
                 time you can't change your preferred payout chain.
               </Typography>
               <Typography>

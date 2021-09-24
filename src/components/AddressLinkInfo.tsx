@@ -75,7 +75,7 @@ const AddressLinkInfo = ({
             <Typography align={'left'} variant={'body1'}>
               Your BrightID account is linked. Check back in about{' '}
               <strong>{durationString}</strong> if you have linked your BrightID
-              during the current phase.
+              during the current claim period (and not a previous one).
             </Typography>
           </Grid>
         </Grid>
@@ -104,8 +104,8 @@ const AddressLinkInfo = ({
           </Typography>
           <Alert severity={'warning'} className={classNames.alert}>
             <Typography>
-              We are currently preparing the next airdrop phase. During this
-              time you can't link your BrightID.
+              We are currently preparing the next claim period. During this time
+              you can't link your BrightID.
             </Typography>
             <Typography>
               This functionality will be enabled again in approximately{' '}

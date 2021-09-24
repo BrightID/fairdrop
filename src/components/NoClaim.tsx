@@ -5,6 +5,7 @@ import noclaim from '../images/noclaim.svg';
 import { RegistrationInfo } from '../utils/api';
 import { intervalToDuration, Duration } from 'date-fns';
 import formatDuration from 'date-fns/formatDuration';
+import formatRelative from 'date-fns/formatRelative';
 
 interface NoClaimProps {
   address?: string;
@@ -18,6 +19,7 @@ const NoClaim = ({
   registrationInfo,
 }: NoClaimProps) => {
   const classNames = useStyles();
+  const prevPhaseStart = 1632420000000;
   let showLinkHint = false;
   if (!brightIdLinked) {
     if (registrationInfo.currentRegistrationEnd > Date.now()) {
@@ -32,6 +34,21 @@ const NoClaim = ({
       showLinkHint = false;
     }
   }
+
+  const currentRuntime = intervalToDuration({
+    start: new Date(),
+    end: prevPhaseStart,
+  });
+  console.log(
+    `valid linking interval: ${formatDuration(currentRuntime, {
+      format: ['days', 'hours', 'minutes'],
+    })}`
+  );
+  console.log(
+    `Relative: ${formatRelative(prevPhaseStart, new Date(), {
+      weekStartsOn: 1,
+    })}`
+  );
 
   const registrationTicksRemaining =
     registrationInfo.currentRegistrationEnd - Date.now();
@@ -67,36 +84,84 @@ const NoClaim = ({
         sm={9}
         md={7}
       >
-        <Typography
-          align={'left'}
-          variant={'h5'}
-          className={classNames.noClaimText}
-        >
-          Don't see any $BRIGHT to claim?
-        </Typography>
-        <Typography variant={'h6'} className={classNames.infoBox}>
-          <Typography variant={'h6'}>Don't worry!</Typography>
-          <Typography variant={'body1'}>
-            Link your BrightID below and come back in about{' '}
-            <strong>{durationString}</strong>. You can claim some $BRIGHT if
-            your BrightID account is eligible. See{' '}
-            <a
-              href="https://brightid.gitbook.io/brightid/bright/getting-bright/fairdrop/eligibility"
-              target="blank"
+        {showLinkHint && (
+          <>
+            <Typography
+              align={'left'}
+              variant={'h5'}
+              className={classNames.noClaimText}
             >
-              eligibility
-            </a>
-            .
-          </Typography>
-        </Typography>
-        {false /*showLinkHint*/ && (
-          <Typography className={classNames.infoBox}>
-            <Typography variant={'h6'}>Did you link your BrightId?</Typography>
-            <Typography variant={'body1'}>
-              Link your address with your BrightID to get more $BRIGHT in the
-              next claim phase!
+              Don't see any $BRIGHT to claim?
             </Typography>
-          </Typography>
+            <Typography variant={'h6'} className={classNames.infoBox}>
+              <Typography variant={'h6'}>Don't worry!</Typography>
+              <Typography variant={'body1'}>
+                Link your BrightID below and come back in about{' '}
+                <strong>{durationString}</strong>. You can claim some $BRIGHT if
+                your BrightID account is eligible. See{' '}
+                <a
+                  href="https://brightid.gitbook.io/brightid/bright/getting-bright/fairdrop/eligibility"
+                  target="blank"
+                >
+                  eligibility
+                </a>
+                .
+              </Typography>
+            </Typography>
+          </>
+        )}
+
+        {brightIdLinked && (
+          <>
+            <Typography
+              align={'left'}
+              variant={'h5'}
+              className={classNames.noClaimText}
+            >
+              Don't see any $BRIGHT to claim?
+            </Typography>
+            <Typography variant={'h6'} className={classNames.infoBox}>
+              <Typography variant={'h6'}>
+                Did you link your BrightId <strong>after</strong>{' '}
+                {formatRelative(prevPhaseStart, new Date(), {
+                  weekStartsOn: 1,
+                })}
+                ?
+              </Typography>
+              <Typography variant={'body1'}>
+                Come back when the next claim period starts in about{' '}
+                <strong>{durationString}</strong>. You can claim some $BRIGHT if
+                your BrightID account is eligible. See{' '}
+                <a
+                  href="https://brightid.gitbook.io/brightid/bright/getting-bright/fairdrop/eligibility"
+                  target="blank"
+                >
+                  eligibility
+                </a>
+                .
+              </Typography>
+            </Typography>
+
+            <Typography variant={'h6'} className={classNames.infoBox}>
+              <Typography variant={'h6'}>
+                Did you link your BrightId <strong>before</strong>{' '}
+                {formatRelative(prevPhaseStart, new Date(), {
+                  weekStartsOn: 1,
+                })}
+                ?
+              </Typography>
+              <Typography variant={'body1'}>
+                Unfortunately you are not eligible. See{' '}
+                <a
+                  href="https://brightid.gitbook.io/brightid/bright/getting-bright/fairdrop/eligibility"
+                  target="blank"
+                >
+                  eligibility
+                </a>
+                .
+              </Typography>
+            </Typography>
+          </>
         )}
       </Grid>
     </Grid>
