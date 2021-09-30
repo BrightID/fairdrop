@@ -19,7 +19,7 @@ const NoClaim = ({
   registrationInfo,
 }: NoClaimProps) => {
   const classNames = useStyles();
-  const prevPhaseStart = 1632420000000;
+  const prevPhaseStart = 1633021200000;
   let showLinkHint = false;
   if (!brightIdLinked) {
     if (registrationInfo.currentRegistrationEnd > Date.now()) {
