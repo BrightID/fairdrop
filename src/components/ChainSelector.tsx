@@ -30,6 +30,7 @@ const ChainSelector = ({
   const { wallet, onboardApi, walletAddress } = useContext(EthersWalletContext);
   const [showWizard, setShowWizard] = useState(false);
   const [sliderValue, setSliderValue] = useState<0 | 1 | undefined>(undefined);
+  const isLastPhase = registrationInfo.nextRegistrationStart < Date.now();
 
   // initialize slider value when currentChainId is retrieved from the backend
   useEffect(() => {
@@ -104,6 +105,37 @@ const ChainSelector = ({
       format: ['days', 'hours', 'minutes'],
     });
   }
+
+  if (isLastPhase) {
+    // The last phase has started. No point anymore in changing payout chain
+    return (
+      <>
+        <Grid container alignItems={'center'} spacing={10}>
+          <Grid item container direction={'column'} sm={9} md={6}>
+            <Typography
+              className={classNames.paragraph}
+              align={'left'}
+              variant={'h4'}
+            >
+              Select your preferred chain to receive $BRIGHT
+            </Typography>
+            <Alert severity={'warning'} className={classNames.alert}>
+              <Typography>
+                The final claim period has already started. It is not possible
+                to change the payout chain anymore.
+              </Typography>
+            </Alert>
+          </Grid>
+          <Hidden xsDown>
+            <Grid item sm={3} md={6}>
+              <img src={selectChain} width={'100%'} alt={'selectChain'} />
+            </Grid>
+          </Hidden>
+        </Grid>
+      </>
+    );
+  }
+
   if (
     registrationTicksRemaining < 0 &&
     registrationInfo.nextRegistrationStart > 0

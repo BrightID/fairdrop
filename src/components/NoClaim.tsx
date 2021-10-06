@@ -20,18 +20,16 @@ const NoClaim = ({
 }: NoClaimProps) => {
   const classNames = useStyles();
   const prevPhaseStart = 1633021200000;
+  const isLastPhase = registrationInfo.nextRegistrationStart < Date.now();
   let showLinkHint = false;
   if (!brightIdLinked) {
-    if (registrationInfo.currentRegistrationEnd > Date.now()) {
-      // we have an active registration phase
-      showLinkHint = true;
-    } else if (registrationInfo.nextRegistrationStart > Date.now()) {
-      // we are in between registration phases, so linking still makes sense for the next phase
-      showLinkHint = true;
-    } else {
-      // no active registration phase and no upcoming registration phase, so there is no point in linking
+    if (isLastPhase) {
+      // no upcoming claim phase, so there is no point in linking
       // address anymore.
       showLinkHint = false;
+    } else {
+      // There is a next claim phase upcoming
+      showLinkHint = true;
     }
   }
 
@@ -111,7 +109,7 @@ const NoClaim = ({
           </>
         )}
 
-        {brightIdLinked && (
+        {brightIdLinked && !isLastPhase && (
           <>
             <Typography
               align={'left'}
@@ -150,6 +148,31 @@ const NoClaim = ({
                 })}
                 ?
               </Typography>
+              <Typography variant={'body1'}>
+                Unfortunately you are not eligible. See{' '}
+                <a
+                  href="https://brightid.gitbook.io/brightid/bright/getting-bright/fairdrop/eligibility"
+                  target="blank"
+                >
+                  eligibility
+                </a>
+                .
+              </Typography>
+            </Typography>
+          </>
+        )}
+
+        {brightIdLinked && isLastPhase && (
+          <>
+            <Typography
+              align={'left'}
+              variant={'h5'}
+              className={classNames.noClaimText}
+            >
+              Don't see any $BRIGHT to claim?
+            </Typography>
+
+            <Typography variant={'h6'} className={classNames.infoBox}>
               <Typography variant={'body1'}>
                 Unfortunately you are not eligible. See{' '}
                 <a
