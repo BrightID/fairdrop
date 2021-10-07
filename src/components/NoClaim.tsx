@@ -162,7 +162,7 @@ const NoClaim = ({
           </>
         )}
 
-        {brightIdLinked && isLastPhase && (
+        {isLastPhase && (
           <>
             <Typography
               align={'left'}
