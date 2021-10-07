@@ -34,8 +34,9 @@ const AddressLinkInfo = ({
   registrationInfo,
 }: AddressLinkInfoProps) => {
   const [showWizard, setShowWizard] = useState(false);
-
   const classNames = useStyles();
+
+  const isLastPhase = registrationInfo.nextRegistrationStart < Date.now();
 
   const handleOpenWizard = () => {
     setShowWizard(true);
@@ -73,9 +74,14 @@ const AddressLinkInfo = ({
               BrightID Linked
             </Typography>
             <Typography align={'left'} variant={'body1'}>
-              Your BrightID account is linked. Check back in about{' '}
-              <strong>{durationString}</strong> if you have linked your BrightID
-              during the current claim period (and not a previous one).
+              Your BrightID account is already linked.
+              {!isLastPhase && (
+                <Typography>
+                  Check back in about <strong>{durationString}</strong> if you
+                  have linked your BrightID during the current claim period (and
+                  not a previous one).
+                </Typography>
+              )}
             </Typography>
           </Grid>
         </Grid>
@@ -86,10 +92,7 @@ const AddressLinkInfo = ({
         </Hidden>
       </Grid>
     );
-  } else if (
-    registrationTicksRemaining < 0 &&
-    registrationInfo.nextRegistrationStart > 0
-  ) {
+  } else if (registrationTicksRemaining < 0 && !isLastPhase) {
     // current registration phase has ended, next phase will start soon
     return (
       <Grid container spacing={10} alignItems={'center'}>
@@ -120,7 +123,8 @@ const AddressLinkInfo = ({
         </Hidden>
       </Grid>
     );
-  } else {
+  } else if (!isLastPhase) {
+    // Current claim period is active and another period is upcoming. You can link now.
     return (
       <>
         <AppBar
@@ -198,6 +202,33 @@ const AddressLinkInfo = ({
           />
         )}
       </>
+    );
+  } else {
+    // We are in the last claim period, so linking does not make sense anymore
+    return (
+      <Grid container spacing={10} alignItems={'center'}>
+        <Grid item container direction={'column'} xs={12} sm={9} md={6}>
+          <Typography
+            className={classNames.paragraph}
+            align={'left'}
+            variant={'h4'}
+          >
+            Link your verified BrightID to get more $BRIGHT at the next claim
+            period
+          </Typography>
+          <Alert severity={'warning'} className={classNames.alert}>
+            <Typography>
+              The final claim period has already started. It is not possible to
+              link your BrightID anymore.
+            </Typography>
+          </Alert>
+        </Grid>
+        <Hidden xsDown>
+          <Grid item sm={9} md={6}>
+            <img src={linkAddress} width={'90%'} alt={'link address'} />
+          </Grid>
+        </Hidden>
+      </Grid>
     );
   }
 };
