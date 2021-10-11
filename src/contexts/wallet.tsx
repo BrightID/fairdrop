@@ -17,7 +17,7 @@ const walletNamesWithRpcUrl = [
   'huobiwallet',
   'wallet.io',
 ];
-const infuraApiKey = '7f230a5ca832426796454c28577d93f2';
+const infuraApiKey = '9998b46602b84ba9854e770c48d2b388';
 const infuraRPCUrl = 'mainnet.infura.io/v3/';
 
 const ChainIds = {
