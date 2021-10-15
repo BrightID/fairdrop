@@ -6,15 +6,15 @@ export const NETWORK_MAINNET = chainName(1);
 export const NETWORK_RINKEBY = chainName(4);
 
 export const INCENTIVE_START_TIME: Record<number, number> = {
-  4: 1632166143,
-  // do not modify until rewards end
+  4: 1634246877,
+  // do not modify below this line (until rewards end)
   1: 1631811600,
   100: 0,
 };
 
 export const INCENTIVE_END_TIME: Record<number, number> = {
-  4: 1633375743,
-  // do not modify until rewards end
+  4: 1665350877,
+  // do not modify below this line (until rewards end)
   1: 1637085600,
   100: 0,
 };
