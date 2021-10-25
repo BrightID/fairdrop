@@ -172,6 +172,86 @@ const setAddressPayoutChainId = async ({
   }
 };
 
+const getEthLiquidity = async (): Promise<any> => {
+  const url = `${baseUrl}/apr/ethLiquidity`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (response.ok) {
+    return await response.json();
+  } else {
+    throw Error(`${response.status} - ${response.statusText}`);
+  }
+};
+
+const getXdaiLiquidity = async (): Promise<any> => {
+  const url = `${baseUrl}/apr/xdaiLiquidity`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (response.ok) {
+    return await response.json();
+  } else {
+    throw Error(`${response.status} - ${response.statusText}`);
+  }
+};
+
+const getEthPrice = async (): Promise<any> => {
+  const url = `${baseUrl}/apr/ethPrice`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (response.ok) {
+    return await response.json();
+  } else {
+    throw Error(`${response.status} - ${response.statusText}`);
+  }
+};
+
+const getBrightPrice = async (): Promise<any> => {
+  const url = `${baseUrl}/apr/brightPrice`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (response.ok) {
+    return await response.json();
+  } else {
+    throw Error(`${response.status} - ${response.statusText}`);
+  }
+};
+
+const getHnyPrice = async (): Promise<any> => {
+  const url = `${baseUrl}/apr/hnyPrice`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (response.ok) {
+    return await response.json();
+  } else {
+    throw Error(`${response.status} - ${response.statusText}`);
+  }
+};
+
 export {
   getDistributorAddress,
   getTokenAddress,
@@ -179,4 +259,9 @@ export {
   getAddressInfo,
   getClaimInfo,
   setAddressPayoutChainId,
+  getEthLiquidity,
+  getXdaiLiquidity,
+  getEthPrice,
+  getBrightPrice,
+  getHnyPrice,
 };

@@ -1,12 +1,9 @@
-import { FC, ReactElement, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import BN from 'bignumber.js';
 import { utils } from 'ethers';
 import { Avatar, Box, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { brightPrice } from '../utils/coingecko';
-import { useBrightPrice } from '../hooks/useBrightPrice';
-
-import { useTotalLiquidity } from '../hooks/useTotalLiquidity';
+import { usePrices } from '../contexts/prices';
 import { FARM } from '../utils/types';
 import ethLogo from '../images/ethereum_logo.png';
 import brightLogo from '../images/bright_logo.png';
@@ -22,25 +19,20 @@ const xdaiBrightPerYear = new BN('2100000');
 
 export const SubsTitleBox: FC = () => {
   const classes = useStyles();
-  const { totalSubs } = useTotalLiquidity();
-  const { priceUSD, decimals } = useBrightPrice();
+  const { subsLiquidity, brightPrice } = usePrices();
   const [apr, setApr] = useState('0');
 
   useEffect(() => {
     const load = async () => {
       try {
-        const brightPriceUSD = priceUSD
-          ? new BN(utils.formatUnits(priceUSD, decimals))
-          : new BN(0);
-        const brightPerYearUSD = brightPriceUSD.multipliedBy(subsBrightPerYear);
-        const totalLiquidity = new BN(totalSubs);
-        const APR = brightPerYearUSD.dividedBy(totalLiquidity);
+        const brightPerYearUSD = brightPrice.multipliedBy(subsBrightPerYear);
+        const APR = brightPerYearUSD.dividedBy(subsLiquidity);
         setApr(utils.commify(APR.toFixed(2)));
       } catch {}
     };
 
     load();
-  }, [totalSubs, priceUSD, decimals]);
+  }, [subsLiquidity, brightPrice]);
 
   return (
     <Box width="100%">
@@ -82,22 +74,15 @@ export const SubsTitleBox: FC = () => {
 
 export const HoneyTitleBox: FC = () => {
   const classes = useStyles();
-  const { totalXdai } = useTotalLiquidity();
   const [apr, setApr] = useState('0');
+  const { xdaiLiquidity, brightPrice } = usePrices();
 
   useEffect(() => {
     const load = async () => {
       try {
-        const _brightPrice = await brightPrice();
-        const brightPriceUSD = _brightPrice
-          ? new BN(_brightPrice['bright-token'].usd)
-          : new BN(0);
-        const brightPerYearUSD =
-          brightPriceUSD.multipliedBy(univ3BrightPerYear);
-        const totalLiquidity = new BN(totalXdai);
-        const APR = brightPerYearUSD
-          .dividedBy(totalLiquidity)
-          .multipliedBy(100);
+        const brightPerYearUSD = brightPrice.multipliedBy(univ3BrightPerYear);
+
+        const APR = brightPerYearUSD.dividedBy(xdaiLiquidity).multipliedBy(100);
 
         setApr(utils.commify(APR.toFixed(0)));
       } catch {}
@@ -112,7 +97,7 @@ export const HoneyTitleBox: FC = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [totalXdai]);
+  }, [xdaiLiquidity, brightPrice]);
 
   return (
     <Box width="100%">
@@ -154,28 +139,22 @@ export const HoneyTitleBox: FC = () => {
 
 export const UniswapV3TitleBox: FC = () => {
   const classes = useStyles();
-  const { totalV3 } = useTotalLiquidity();
-  const { priceUSD, decimals } = useBrightPrice();
+  const { v3Liquidity, brightPrice } = usePrices();
   const [apr, setApr] = useState('0');
 
   useEffect(() => {
     const load = async () => {
       try {
-        const brightPriceUSD = priceUSD
-          ? new BN(utils.formatUnits(priceUSD, decimals))
-          : new BN(0);
-        const brightPerYearUSD = brightPriceUSD.multipliedBy(xdaiBrightPerYear);
-        const totalLiquidity = new BN(totalV3);
-        const APR = brightPerYearUSD
-          .dividedBy(totalLiquidity)
-          .multipliedBy(100);
+        const brightPerYearUSD = brightPrice.multipliedBy(xdaiBrightPerYear);
+
+        const APR = brightPerYearUSD.dividedBy(v3Liquidity).multipliedBy(100);
 
         setApr(utils.commify(APR.toFixed(0)));
       } catch {}
     };
 
     load();
-  }, [totalV3, priceUSD, decimals]);
+  }, [v3Liquidity, brightPrice]);
 
   return (
     <Box width="100%">

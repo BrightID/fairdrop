@@ -6,6 +6,8 @@ import { BigNumber, Contract } from 'ethers';
 import { ethPrice } from '../utils/coingecko';
 import { ethers } from 'ethers/lib.esm';
 
+/** HOOK NOT USED (replicated on backend) */
+
 interface Immutables {
   factory: string;
   token0: string;

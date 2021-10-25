@@ -3,21 +3,18 @@ import { FC } from 'react';
 import { utils } from 'ethers';
 import { Box, Link } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-
-import { useTotalLiquidity } from '../hooks/useTotalLiquidity';
+import { usePrices } from '../contexts/prices';
 import { FARM } from '../utils/types';
 
 export const SubsLpBox: FC = () => {
   const classes = useStyles();
 
-  const { totalSubs } = useTotalLiquidity();
+  const { subsLiquidity } = usePrices();
 
   let displayPrice = '0';
 
   try {
-    if (totalSubs) {
-      displayPrice = utils.commify(totalSubs);
-    }
+    displayPrice = utils.commify(subsLiquidity.toFixed(0));
   } catch {}
 
   return (
@@ -52,13 +49,12 @@ export const SubsLpBox: FC = () => {
 
 export const HoneyLpBox: FC = () => {
   const classes = useStyles();
-  const { totalXdai } = useTotalLiquidity();
+  const { xdaiLiquidity } = usePrices();
+
   let totalValueUSD = '0.00';
 
   try {
-    if (totalXdai) {
-      totalValueUSD = utils.commify(totalXdai);
-    }
+    totalValueUSD = utils.commify(xdaiLiquidity.toFixed(2));
   } catch {}
 
   return (
@@ -89,14 +85,12 @@ export const HoneyLpBox: FC = () => {
 export const UniswapV3LpBox: FC = () => {
   const classes = useStyles();
 
-  const { totalV3 } = useTotalLiquidity();
+  const { v3Liquidity } = usePrices();
 
   let totalValueUsd = '0.00';
 
   try {
-    if (totalV3) {
-      totalValueUsd = utils.commify(totalV3);
-    }
+    totalValueUsd = utils.commify(v3Liquidity.toFixed(2));
   } catch {}
 
   return (

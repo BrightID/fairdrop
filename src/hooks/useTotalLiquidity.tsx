@@ -8,6 +8,8 @@ import { useContracts } from '../contexts/contracts';
 import { useStakingRewardsInfo } from '../hooks/useStakingRewardsInfo';
 import { ethPrice, hnyPrice } from '../utils/coingecko';
 
+/** HOOK NOT USED (replicated on backend) */
+
 export function useTotalLiquidity() {
   const { totalLiquidity } = useStakingRewardsInfo();
   const { totalNftPositions } = useV3Liquidity();

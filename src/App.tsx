@@ -20,6 +20,7 @@ import { ContractsProvider } from './contexts/contracts';
 import { ERC20TokensProvider } from './contexts/erc20Tokens';
 import { ERC721NftsProvider } from './contexts/erc721Nfts';
 import { NotificationsProvider } from './contexts/notifications';
+import { PricesProvider } from './contexts/prices';
 import {
   baseTheme,
   ethBackground,
@@ -68,6 +69,7 @@ const BackgroundController: FC = ({ children }) => {
   }, [
     pathname,
     network,
+    classes.homeBackground,
     classes.ethBackground,
     classes.xdaiBackground,
     classes.fairdropBackground,
@@ -85,29 +87,31 @@ const App = () => {
           <ERC20TokensProvider>
             <ERC721NftsProvider>
               <CookiesProvider>
-                <Router>
-                  <BackgroundController>
-                    <Header />
-                    <div className={classes.content}>
-                      <SnackbarProvider
-                        maxSnack={4}
-                        anchorOrigin={{
-                          vertical: 'top',
-                          horizontal: 'right',
-                        }}
-                        content={(key, data) => (
-                          <div>
-                            <Notification id={key} notification={data} />
-                          </div>
-                        )}
-                      >
-                        <NotificationsProvider>
-                          <Routes />
-                        </NotificationsProvider>
-                      </SnackbarProvider>
-                    </div>
-                  </BackgroundController>
-                </Router>
+                <PricesProvider>
+                  <Router>
+                    <BackgroundController>
+                      <Header />
+                      <div className={classes.content}>
+                        <SnackbarProvider
+                          maxSnack={4}
+                          anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                          }}
+                          content={(key, data) => (
+                            <div>
+                              <Notification id={key} notification={data} />
+                            </div>
+                          )}
+                        >
+                          <NotificationsProvider>
+                            <Routes />
+                          </NotificationsProvider>
+                        </SnackbarProvider>
+                      </div>
+                    </BackgroundController>
+                  </Router>
+                </PricesProvider>
               </CookiesProvider>
             </ERC721NftsProvider>
           </ERC20TokensProvider>

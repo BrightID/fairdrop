@@ -1,12 +1,4 @@
-import {
-  createContext,
-  FC,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { createContext, FC, ReactNode, useContext } from 'react';
 
 import { useWallet } from '../contexts/wallet';
 import { useTokenInfo } from '../hooks/useTokenInfo';
