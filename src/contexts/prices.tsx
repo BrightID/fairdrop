@@ -33,6 +33,7 @@ export const PricesProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [subsLiquidity, setSubsLiquidity] = useState(new BigNumber(0));
   const [v3Liquidity, setV3Liquidity] = useState(new BigNumber(0));
   const [xdaiLiquidity, setXdaiLiquidity] = useState(new BigNumber(0));
+  const [firstLoad, setFirstLoad] = useState(true);
 
   const { stakedPositions } = useV3Liquidity();
   const { subsToken, honeyswapLpToken } = useERC20Tokens();
@@ -98,12 +99,16 @@ export const PricesProvider: FC<{ children: ReactNode }> = ({ children }) => {
       runEffect();
     }, 1000 * 60 * 5);
 
-    runEffect();
+    // only run effect once
+    if (firstLoad) {
+      setFirstLoad(false);
+      runEffect();
+    }
     return () => {
       clearInterval(interval);
     };
     // subscribe to events for nfts, subs, honeyswapLp
-  }, [stakedPositions, subsToken, honeyswapLpToken]);
+  }, [stakedPositions, subsToken, honeyswapLpToken, firstLoad]);
 
   return (
     <PricesContext.Provider
