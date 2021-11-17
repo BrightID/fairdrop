@@ -146,9 +146,18 @@ export function useV3Staking(tokenId: number | undefined) {
         const unstakeMulticall = stakedPositions.map(unstakeCalldata);
         const stakeMulticall = stakedPositions.map(stakeCalldata);
 
-        const multicallData = unstakeMulticall
-          .concat(stakeMulticall)
-          .concat(claimRewardCalldata);
+        let multicallData: string[];
+        const unixNow = Math.floor(Date.now() / 1000);
+        const incentiveEnd = currentIncentive.key[3];
+        if (incentiveEnd < unixNow) {
+          // incentive has ended. Just unstake and claim.
+          multicallData = unstakeMulticall.concat(claimRewardCalldata);
+        } else {
+          // incentive ongoing. Unstake, claim and stake again.
+          multicallData = unstakeMulticall
+            .concat(stakeMulticall)
+            .concat(claimRewardCalldata);
+        }
 
         await tx('Harvesting...', 'Harvested!', () =>
           uniswapV3StakerContract.multicall(multicallData)
