@@ -35,7 +35,7 @@ export const PricesProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [xdaiLiquidity, setXdaiLiquidity] = useState(new BigNumber(0));
   const [firstLoad, setFirstLoad] = useState(true);
 
-  const { stakedPositions } = useV3Liquidity();
+  const { stakedPositions } = useV3Liquidity(false);
   const { subsToken, honeyswapLpToken } = useERC20Tokens();
 
   // get price from api, update every 5 minutes

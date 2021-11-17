@@ -12,7 +12,7 @@ import { ethPrice, hnyPrice } from '../utils/coingecko';
 
 export function useTotalLiquidity() {
   const { totalLiquidity } = useStakingRewardsInfo();
-  const { totalNftPositions } = useV3Liquidity();
+  const { totalNftPositions } = useV3Liquidity(false);
   const { network } = useWallet();
   const { stakingRewardsContract, quoterContract } = useContracts();
 

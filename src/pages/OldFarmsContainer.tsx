@@ -10,9 +10,10 @@ import {
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import brightFarmer from '../images/bright_farmer.png';
 import ActiveFarms from '../components/ActiveFarms';
+import OldFarms from '../components/OldFarms';
 import { Link as RouterLink } from 'react-router-dom';
 
-const FarmsContainer = () => {
+const OldFarmsContainer = () => {
   const classes = useStyles();
 
   return (
@@ -20,18 +21,16 @@ const FarmsContainer = () => {
       <Box display="flex" justifyContent="space-between" ml={2}>
         <Box>
           <Typography variant={'h2'} color={'secondary'}>
-            Farms
+            Expired Farms
           </Typography>
           <Box fontSize={30} mt={3}>
-            <Link
-              href={
-                'https://brightid.gitbook.io/brightid/bright/getting-bright/farming/'
-              }
-              target={'_blank'}
-              color={'secondary'}
-              underline="always"
-            >
-              How does this work?
+            <Typography>These farms do not provide rewards anymore.</Typography>
+            <Typography>You should unstake and claim your rewards.</Typography>
+          </Box>
+          <Box fontSize={30} mt={3}>
+            Back to{' '}
+            <Link component={RouterLink} to="/farms">
+              Active Farms
             </Link>
           </Box>
         </Box>
@@ -45,24 +44,9 @@ const FarmsContainer = () => {
       </Box>
       <Grid container alignItems={'flex-start'}>
         <Grid item xs={12} container>
-          <ActiveFarms />
+          <OldFarms />
         </Grid>
       </Grid>
-      <Box display="flex" justifyContent="space-between" ml={2}>
-        <Box>
-          <Typography variant={'h4'} color={'secondary'}>
-            Missing a farm?
-          </Typography>
-          <Box fontSize={25} mt={3}>
-            Some farms are expired and do not provide rewards anymore. They are
-            accessible at the{' '}
-            <Link component={RouterLink} to={'/oldfarms'}>
-              Expired farms
-            </Link>{' '}
-            page.
-          </Box>
-        </Box>
-      </Box>
     </Container>
   );
 };
@@ -87,4 +71,4 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default FarmsContainer;
+export default OldFarmsContainer;

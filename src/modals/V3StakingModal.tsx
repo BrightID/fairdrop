@@ -56,11 +56,14 @@ const V3StakingModal: FC = () => {
   const [initialSelected, setInitialSelected] = useState(false);
 
   const { loadPositions, loadingNftPositions, unstakedPositions } =
-    useV3Liquidity();
+    useV3Liquidity(false);
 
   const { owner, staked, tokenId } = positionSelected || {};
 
-  const { isWorking, transfer, stake } = useV3Staking(tokenId?.toNumber());
+  const { isWorking, transfer, stake } = useV3Staking(
+    tokenId?.toNumber(),
+    false
+  );
 
   const handleClose = () => {
     history.push('/farms');

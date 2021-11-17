@@ -32,6 +32,8 @@ import {
   INCENTIVE_END_TIME,
   UNISWAP_V3_LP_POOL,
   INCENTIVE_REFUNDEE_ADDRESS,
+  PREVIOUS_INCENTIVE_START_TIME,
+  PREVIOUS_INCENTIVE_END_TIME,
 } from '../utils/constants';
 
 const ERC721NftContext = createContext<{
@@ -39,6 +41,7 @@ const ERC721NftContext = createContext<{
   stakedPositions: LiquidityPosition[];
   unstakedPositions: LiquidityPosition[];
   currentIncentive: { key?: (string | number)[] | null };
+  previousIncentive: { key?: (string | number)[] | null };
   loadingNftPositions: boolean;
   loadPositions: () => any;
 } | null>(null);
@@ -85,6 +88,29 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
 
     const incentiveStartTime = INCENTIVE_START_TIME[network];
     const incentiveEndTime = INCENTIVE_END_TIME[network];
+
+    return {
+      key: [
+        brightAddress,
+        poolAddress,
+        incentiveStartTime,
+        incentiveEndTime,
+        incentiveRefundeeAddress,
+      ],
+    };
+  }, [brightAddress, poolAddress, incentiveRefundeeAddress, network]);
+
+  const previousIncentive = useMemo(() => {
+    if (
+      !brightAddress ||
+      !poolAddress ||
+      !incentiveRefundeeAddress ||
+      (network !== 1 && network !== 4)
+    )
+      return { key: null };
+
+    const incentiveStartTime = PREVIOUS_INCENTIVE_START_TIME[network];
+    const incentiveEndTime = PREVIOUS_INCENTIVE_END_TIME[network];
 
     return {
       key: [
@@ -416,6 +442,7 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
         stakedPositions,
         unstakedPositions,
         currentIncentive,
+        previousIncentive,
         loadingNftPositions,
         loadPositions,
       }}
@@ -425,7 +452,7 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
   );
 };
 
-export function useV3Liquidity() {
+export function useV3Liquidity(previous: boolean) {
   const context = useContext(ERC721NftContext);
   if (!context) {
     throw new Error('Missing Data context');
@@ -435,6 +462,7 @@ export function useV3Liquidity() {
     stakedPositions,
     unstakedPositions,
     currentIncentive,
+    previousIncentive,
     loadingNftPositions,
     loadPositions,
   } = context;
@@ -443,7 +471,8 @@ export function useV3Liquidity() {
     totalNftPositions,
     stakedPositions,
     unstakedPositions,
-    currentIncentive,
+    currentIncentive: previous ? previousIncentive : currentIncentive,
+    previousIncentive,
     loadingNftPositions,
     loadPositions,
   };

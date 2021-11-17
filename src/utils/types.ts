@@ -30,6 +30,6 @@ export type ERC20Token = {
   symbol: string | null;
 };
 
-export const FARMS = ['UNISWAP', 'SUBS', 'HONEY'] as const;
+export const FARMS = ['UNISWAP', 'SUBS', 'HONEY', 'PREVUNISWAP'] as const;
 
 export type FARM = typeof FARMS[number];

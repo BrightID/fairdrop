@@ -211,7 +211,9 @@ export const HoneyHarvestBox: FC = () => {
   );
 };
 
-export const UniswapV3HarvestBox: FC = () => {
+export const UniswapV3HarvestBox: FC<{ previous: boolean }> = ({
+  previous,
+}) => {
   const classes = useStyles();
   const { walletAddress, network } = useWallet();
   const [rewardBalance, setRewardBalance] = useState<{
@@ -221,9 +223,9 @@ export const UniswapV3HarvestBox: FC = () => {
     display: '0.0',
     bn: BigNumber.from(0),
   });
-  const { stakedPositions, currentIncentive } = useV3Liquidity();
+  const { stakedPositions, currentIncentive } = useV3Liquidity(previous);
   const { uniswapV3StakerContract } = useContracts();
-  const { isWorking, claim, claimUnstakeStake } = useV3Staking(1);
+  const { isWorking, claim, claimUnstakeStake } = useV3Staking(1, previous);
 
   const checkForRewards = useCallback(() => {
     if (
@@ -394,7 +396,7 @@ interface FarmingHarvestBoxProps {
 export const FarmingHarvestBox = ({ farm }: FarmingHarvestBoxProps) => {
   switch (farm) {
     case 'UNISWAP': {
-      return <UniswapV3HarvestBox />;
+      return <UniswapV3HarvestBox previous={false} />;
     }
     case 'SUBS': {
       return <SubsHarvestBox />;

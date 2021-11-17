@@ -200,7 +200,8 @@ interface FarmingTitleboxProps {
 
 export const FarmingTitleBox = ({ farm }: FarmingTitleboxProps) => {
   switch (farm) {
-    case 'UNISWAP': {
+    case 'UNISWAP':
+    case 'PREVUNISWAP': {
       return <UniswapV3TitleBox />;
     }
     case 'SUBS': {

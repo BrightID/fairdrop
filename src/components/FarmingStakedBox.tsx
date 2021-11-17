@@ -155,11 +155,11 @@ export const HoneyStakedBox: FC = () => {
   );
 };
 
-export const UniswapV3StakedBox: FC = () => {
+export const UniswapV3StakedBox: FC<{ previous: boolean }> = ({ previous }) => {
   const classes = useStyles();
   const { walletAddress, onboardApi } = useWallet();
   const history = useHistory();
-  const { stakedPositions, currentIncentive } = useV3Liquidity();
+  const { stakedPositions, currentIncentive } = useV3Liquidity(previous);
   const [stakingEnabled, setStakingEnabled] = useState(false);
 
   useEffect(() => {
@@ -224,7 +224,7 @@ export const UniswapV3StakedBox: FC = () => {
 
 const DisplayNfts = () => {
   const classes = useStyles();
-  const { stakedPositions } = useV3Liquidity();
+  const { stakedPositions } = useV3Liquidity(false);
 
   const parseUri = (tokenURI: string) => {
     if (!tokenURI) return {};
@@ -275,7 +275,10 @@ interface FarmingStakedBoxProps {
 export const FarmingStakedBox = ({ farm }: FarmingStakedBoxProps) => {
   switch (farm) {
     case 'UNISWAP': {
-      return <UniswapV3StakedBox />;
+      return <UniswapV3StakedBox previous={false} />;
+    }
+    case 'PREVUNISWAP': {
+      return <UniswapV3StakedBox previous={true} />;
     }
     case 'SUBS': {
       return <SubsStakedBox />;

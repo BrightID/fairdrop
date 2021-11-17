@@ -19,6 +19,18 @@ export const INCENTIVE_END_TIME: Record<number, number> = {
   100: 0,
 };
 
+export const PREVIOUS_INCENTIVE_START_TIME: Record<number, number> = {
+  4: 0,
+  1: 1631811600,
+  100: 0,
+};
+
+export const PREVIOUS_INCENTIVE_END_TIME: Record<number, number> = {
+  4: 0,
+  1: 1637085600,
+  100: 0,
+};
+
 export const NFT_POSITIONS_MANAGER_ADDRESS: Record<string, string> = {
   4: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
   1: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',

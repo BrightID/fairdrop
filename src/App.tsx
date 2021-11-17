@@ -39,6 +39,7 @@ import V2StakingModal from './modals/V2StakingModal';
 import V2UnstakingModal from './modals/V2UnstakingModal';
 import VideoPage from './components/VideoPage';
 import { CookiesProvider, useCookies } from 'react-cookie';
+import OldFarmsContainer from './pages/OldFarmsContainer';
 
 const BackgroundController: FC = ({ children }) => {
   const classes = useStyles();
@@ -128,8 +129,11 @@ const Routes = () => {
       <Route path="/stake/v3">
         <V3StakingModal />
       </Route>
-      <Route path="/unstake/v3">
-        <V3UnstakingModal />
+      <Route path="/unstake/v3/">
+        <V3UnstakingModal previous={false} />
+      </Route>
+      <Route path="/unstake/previousv3/">
+        <V3UnstakingModal previous={true} />
       </Route>
       <Route path="/stake/v2/:farm">
         <V2StakingModal />
@@ -139,6 +143,9 @@ const Routes = () => {
       </Route>
       <Route path="/farms">
         <FarmsContainer />
+      </Route>
+      <Route path="/oldfarms">
+        <OldFarmsContainer />
       </Route>
       <Route path="/airdrop/:address">
         <AddressRegistrationController />

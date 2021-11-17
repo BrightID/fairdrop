@@ -88,7 +88,7 @@ export const UniswapV3LpBox: FC = () => {
   const classes = useStyles();
   const { walletAddress, network } = useWallet();
 
-  const { unstakedPositions } = useV3Liquidity();
+  const { unstakedPositions } = useV3Liquidity(false);
 
   return (
     <>

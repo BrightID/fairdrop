@@ -8,12 +8,12 @@ import { LiquidityPosition } from '../utils/types';
 
 const abiEncoder = utils.defaultAbiCoder;
 
-export function useV3Staking(tokenId: number | undefined) {
+export function useV3Staking(tokenId: number | undefined, previous: boolean) {
   const { tx } = useNotifications();
   const { walletAddress } = useWallet();
   const { nftManagerPositionsContract, uniswapV3StakerContract } =
     useContracts();
-  const { currentIncentive, stakedPositions } = useV3Liquidity();
+  const { currentIncentive, stakedPositions } = useV3Liquidity(previous);
 
   const [isWorking, setIsWorking] = useState<string | null>(null);
 

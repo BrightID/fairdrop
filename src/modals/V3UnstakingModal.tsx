@@ -27,7 +27,7 @@ const STEPS = ['Unstake'];
 
 const STARTS_WITH = 'data:application/json;base64,';
 
-const V3StakingModal: FC = () => {
+const V3UnstakingModal: FC<{ previous: boolean }> = ({ previous }) => {
   const classes = useStyles();
   const history = useHistory();
 
@@ -40,11 +40,11 @@ const V3StakingModal: FC = () => {
   const [initialSelected, setInitialSelected] = useState(false);
 
   const { loadPositions, loadingNftPositions, stakedPositions } =
-    useV3Liquidity();
+    useV3Liquidity(previous);
 
   const { tokenId } = positionSelected || {};
 
-  const { isWorking, exit } = useV3Staking(tokenId?.toNumber());
+  const { isWorking, exit } = useV3Staking(tokenId?.toNumber(), previous);
 
   const handleClose = () => {
     history.push('/farms');
@@ -335,4 +335,4 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default V3StakingModal;
+export default V3UnstakingModal;
