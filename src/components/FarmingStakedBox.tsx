@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { utils } from 'ethers';
 import { useHistory } from 'react-router-dom';
 import { Button, Box, Fab, Typography } from '@material-ui/core';
@@ -159,7 +159,16 @@ export const UniswapV3StakedBox: FC = () => {
   const classes = useStyles();
   const { walletAddress, onboardApi } = useWallet();
   const history = useHistory();
-  const { stakedPositions } = useV3Liquidity();
+  const { stakedPositions, currentIncentive } = useV3Liquidity();
+  const [stakingEnabled, setStakingEnabled] = useState(false);
+
+  useEffect(() => {
+    if (currentIncentive?.key) {
+      const unixNow = Math.floor(Date.now() / 1000);
+      const incentiveEnd = currentIncentive.key[3];
+      setStakingEnabled(incentiveEnd > unixNow);
+    }
+  }, [currentIncentive.key]);
 
   const navToStake = () => {
     history.push('/stake/v3');
@@ -203,6 +212,7 @@ export const UniswapV3StakedBox: FC = () => {
             className={classes.fab}
             aria-label="add"
             style={{ marginLeft: '10px' }}
+            disabled={!stakingEnabled}
           >
             <AddRoundedIcon />
           </Fab>
