@@ -272,7 +272,7 @@ export const UniswapV3HarvestBox: FC = () => {
     )
       return;
 
-    // claim rewards without unstaking, might be gas intensive
+    // claim rewards with unstaking, might be gas intensive
     if (stakedPositions.length > 0) {
       return claimUnstakeStake(() => {
         checkForRewards();
