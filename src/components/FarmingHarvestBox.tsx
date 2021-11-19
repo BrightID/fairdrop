@@ -374,14 +374,17 @@ export const UniswapV3HarvestBox: FC = () => {
         <Typography className={classes.subheader}>$BRIGHT Earned:</Typography>
         <Typography>{rewardBalance.display}</Typography>
       </Box>
-      <Box>
-        <Button
+      <Box alignItems="center" justifyContent="center">
+        {/* <Button
           variant={'contained'}
           onClick={handleHarvest}
           disabled={isWorking !== null}
         >
           {isWorking ? isWorking : 'Harvest'}
-        </Button>
+        </Button> */}
+        <Typography className={classes.info}>
+          (Please unstake to harvest)
+        </Typography>
       </Box>
     </>
   );
@@ -413,6 +416,9 @@ const useStyles = makeStyles((theme: Theme) =>
     subheader: {
       fontWeight: 'bold',
       fontSize: 14,
+    },
+    info: {
+      fontSize: 12,
     },
   })
 );
