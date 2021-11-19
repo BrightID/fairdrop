@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, useMemo } from 'react';
 import clsx from 'clsx';
 import {
   Box,
@@ -33,33 +33,41 @@ const V3StakingModal: FC = () => {
 
   const { walletAddress, network } = useWallet();
 
-  const [activeStep, setActiveStep] = useState<number>(0);
-
   const [positionSelected, setPositionSelected] =
     useState<LiquidityPosition | null>(null);
   const [initialSelected, setInitialSelected] = useState(false);
 
-  const { loadPositions, loadingNftPositions, stakedPositions } =
-    useV3Liquidity();
+  const {
+    loadPositions,
+    loadingNftPositions,
+    stakedPositions,
+    unstakedPositionsInContract,
+  } = useV3Liquidity();
+
+  const positions = useMemo(
+    () =>
+      Array.isArray(stakedPositions) &&
+      Array.isArray(unstakedPositionsInContract)
+        ? stakedPositions.concat(unstakedPositionsInContract)
+        : [],
+    [stakedPositions, unstakedPositionsInContract]
+  );
 
   const { tokenId } = positionSelected || {};
 
-  const { isWorking, exit } = useV3Staking(tokenId?.toNumber());
+  const { isWorking, exit, withdraw } = useV3Staking(tokenId?.toNumber());
 
   const handleClose = () => {
     history.push('/farms');
   };
 
-  console.log('stakedPositions', stakedPositions);
   // select position automatically
   useEffect(() => {
-    if (stakedPositions?.length > 0 && !positionSelected && !initialSelected) {
-      setPositionSelected(stakedPositions[0]);
+    if (positions?.length > 0 && !positionSelected && !initialSelected) {
+      setPositionSelected(positions[0]);
       setInitialSelected(true);
     }
-  }, [stakedPositions, positionSelected, initialSelected]);
-
-  console.log('positionSelected', positionSelected);
+  }, [positions, positionSelected, initialSelected]);
 
   // check for NFT positions in user's wallet
   useEffect(() => {
@@ -69,22 +77,22 @@ const V3StakingModal: FC = () => {
   }, [network, walletAddress, loadPositions]);
 
   const approveOrTransferOrStake = () => {
-    switch (activeStep) {
-      case 0:
-        return exit(() => {
-          history.push('/farms');
-        });
-
-      default:
-        console.warn(`unknown step: ${activeStep}`);
+    if (positionSelected?.staked) {
+      return exit(() => {
+        history.push('/farms');
+      });
+    } else {
+      return withdraw(() => {
+        history.push('/farms');
+      });
     }
   };
 
-  const loading = loadingNftPositions && stakedPositions.length === 0;
+  const loading = loadingNftPositions && positions.length === 0;
 
-  const noOwnedPositions = !loading && stakedPositions.length === 0;
+  const noOwnedPositions = !loading && positions.length === 0;
 
-  const displayStaking = !loading && stakedPositions.length > 0;
+  const displayStaking = !loading && positions.length > 0;
 
   return (
     <Dialog
@@ -116,7 +124,7 @@ const V3StakingModal: FC = () => {
               Select NFT Position to Unstake
             </Box>
             <DisplayNfts
-              stakedPositions={stakedPositions}
+              stakedPositions={positions}
               setPositionSelected={setPositionSelected}
               positionSelected={positionSelected}
             />
@@ -128,7 +136,7 @@ const V3StakingModal: FC = () => {
                 onClick={approveOrTransferOrStake}
                 disabled={!positionSelected || isWorking !== null}
               >
-                {isWorking ? isWorking : STEPS[activeStep]}
+                {isWorking ? isWorking : STEPS[0]}
               </Button>
             </Box>
           </>

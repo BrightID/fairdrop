@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { utils } from 'ethers';
 import { useHistory } from 'react-router-dom';
 import { Button, Box, Fab, Typography } from '@material-ui/core';
@@ -159,8 +159,18 @@ export const UniswapV3StakedBox: FC = () => {
   const classes = useStyles();
   const { walletAddress, onboardApi } = useWallet();
   const history = useHistory();
-  const { stakedPositions, currentIncentive } = useV3Liquidity();
+  const { stakedPositions, currentIncentive, unstakedPositionsInContract } =
+    useV3Liquidity();
   const [stakingEnabled, setStakingEnabled] = useState(false);
+
+  const positions = useMemo(
+    () =>
+      Array.isArray(stakedPositions) &&
+      Array.isArray(unstakedPositionsInContract)
+        ? stakedPositions.concat(unstakedPositionsInContract)
+        : [],
+    [stakedPositions, unstakedPositionsInContract]
+  );
 
   useEffect(() => {
     if (currentIncentive?.key) {
@@ -202,7 +212,7 @@ export const UniswapV3StakedBox: FC = () => {
             size="small"
             className={classes.fab}
             aria-label="remove"
-            disabled={stakedPositions?.length === 0}
+            disabled={positions?.length === 0}
           >
             <RemoveRoundedIcon />
           </Fab>
@@ -224,7 +234,17 @@ export const UniswapV3StakedBox: FC = () => {
 
 const DisplayNfts = () => {
   const classes = useStyles();
-  const { stakedPositions } = useV3Liquidity();
+
+  const { stakedPositions, unstakedPositionsInContract } = useV3Liquidity();
+
+  const positions = useMemo(
+    () =>
+      Array.isArray(stakedPositions) &&
+      Array.isArray(unstakedPositionsInContract)
+        ? stakedPositions.concat(unstakedPositionsInContract)
+        : [],
+    [stakedPositions, unstakedPositionsInContract]
+  );
 
   const parseUri = (tokenURI: string) => {
     if (!tokenURI) return {};
@@ -235,7 +255,7 @@ const DisplayNfts = () => {
     }
   };
 
-  if (stakedPositions.length === 0) {
+  if (positions.length === 0) {
     return (
       <Box className={classes.imageList}>
         <Typography>0</Typography>
@@ -245,7 +265,7 @@ const DisplayNfts = () => {
 
   return (
     <Box className={classes.imageList}>
-      {stakedPositions.map((nft) => {
+      {positions.map((nft) => {
         if (!nft?.tokenId) return <></>;
         const nftData = parseUri(nft.uri);
         const tokenId = nft.tokenId.toString();

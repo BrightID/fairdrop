@@ -38,6 +38,7 @@ const ERC721NftContext = createContext<{
   totalNftPositions: LiquidityPosition[];
   stakedPositions: LiquidityPosition[];
   unstakedPositions: LiquidityPosition[];
+  unstakedPositionsInContract: LiquidityPosition[];
   currentIncentive: { key?: (string | number)[] | null };
   loadingNftPositions: boolean;
   loadPositions: () => any;
@@ -55,12 +56,17 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
   const [totalNftPositions, setTotalNftPositions] = useState<
     LiquidityPosition[]
   >([]);
+
   const [stakedPositions, setStakedPositions] = useState<LiquidityPosition[]>(
     []
   );
+
   const [unstakedPositions, setUnstakedPositions] = useState<
     LiquidityPosition[]
   >([]);
+
+  const [unstakedPositionsInContract, setUnstakedPositionsInContract] =
+    useState<LiquidityPosition[]>([]);
 
   const [loadingNftPositions, setLoadingNftPositions] = useState(false);
 
@@ -316,16 +322,33 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
         const unstakedPositions = allPositions
           .flat()
           .filter(
-            (position) => !position.staked && !position.forTotalLiquidity
+            (position) =>
+              !position.staked &&
+              !position.forTotalLiquidity &&
+              position.owner === walletAddress
           );
 
         const unstakedPositionsWithURI = await Promise.all(
           unstakedPositions.map(downloadURI)
         );
 
+        const unstakedPositionsInContract = allPositions
+          .flat()
+          .filter(
+            (position) =>
+              !position.staked &&
+              !position.forTotalLiquidity &&
+              position.owner !== walletAddress
+          );
+
+        const unstakedPositionsInContractWithURI = await Promise.all(
+          unstakedPositionsInContract.map(downloadURI)
+        );
+
         setTotalNftPositions(allPositions.flat());
         setStakedPositions(stakedPositionsWithURI);
         setUnstakedPositions(unstakedPositionsWithURI);
+        setUnstakedPositionsInContract(unstakedPositionsInContractWithURI);
 
         setLoadingNftPositions(false);
       } catch (e) {
@@ -415,6 +438,7 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
         totalNftPositions,
         stakedPositions,
         unstakedPositions,
+        unstakedPositionsInContract,
         currentIncentive,
         loadingNftPositions,
         loadPositions,
@@ -434,6 +458,7 @@ export function useV3Liquidity() {
     totalNftPositions,
     stakedPositions,
     unstakedPositions,
+    unstakedPositionsInContract,
     currentIncentive,
     loadingNftPositions,
     loadPositions,
@@ -443,6 +468,7 @@ export function useV3Liquidity() {
     totalNftPositions,
     stakedPositions,
     unstakedPositions,
+    unstakedPositionsInContract,
     currentIncentive,
     loadingNftPositions,
     loadPositions,
