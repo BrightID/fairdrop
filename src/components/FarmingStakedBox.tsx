@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { utils } from 'ethers';
 import { useHistory } from 'react-router-dom';
 import { Button, Box, Fab, Typography } from '@material-ui/core';
@@ -7,9 +7,11 @@ import AddRoundedIcon from '@material-ui/icons/AddRounded';
 import RemoveRoundedIcon from '@material-ui/icons/RemoveRounded';
 import { useWallet } from '../contexts/wallet';
 import { useV3Liquidity } from '../contexts/erc721Nfts';
+import { useV3Staking } from '../hooks/useV3Staking';
 import { useStakingRewardsInfo } from '../hooks/useStakingRewardsInfo';
 import { FARM } from '../utils/types';
 import { useERC20Tokens } from '../contexts/erc20Tokens';
+import { sleep } from '../utils/promise';
 
 const ETH = 1;
 const RINKEBY = 4;
@@ -238,6 +240,7 @@ export const UniswapV3StakedBoxV1: FC = () => {
   const { walletAddress, onboardApi } = useWallet();
   const history = useHistory();
   const { stakedPositionsV1, unstakedPositionsInContract } = useV3Liquidity();
+  const { isWorking, migrate } = useV3Staking(1, 'UNISWAP_V1');
 
   const positions = useMemo(
     () =>
@@ -251,12 +254,20 @@ export const UniswapV3StakedBoxV1: FC = () => {
   const navToUnstake = () => {
     history.push('/unstake/v3/uniswap_v1');
   };
+
   const switchWallet = async () => {
     const selected = await onboardApi?.walletSelect();
     if (selected) {
       await onboardApi?.walletCheck();
     }
   };
+
+  const handleMigrate = useCallback(() => {
+    return migrate(() => {
+      sleep(500);
+      window.location.reload();
+    });
+  }, [migrate]);
 
   return (
     <>
@@ -280,35 +291,24 @@ export const UniswapV3StakedBoxV1: FC = () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={navToUnstake}
+            onClick={handleMigrate}
             size="medium"
             className={classes.btn}
-            aria-label="remove"
-            disabled={positions?.length === 0}
+            aria-label="migrate"
+            disabled={positions?.length === 0 || isWorking !== null}
           >
-            Migrate
+            {isWorking ? isWorking : 'Migrate'}
           </Button>
           <Button
             variant="contained"
-            // color="secondary"
             onClick={navToUnstake}
             size="medium"
             className={classes.btn}
-            aria-label="remove"
+            aria-label="unstake"
             disabled={positions?.length === 0}
           >
             Unstake
           </Button>
-          {/* <Fab
-            onClick={navToStake}
-            size="small"
-            className={classes.fab}
-            aria-label="add"
-            style={{ marginLeft: '10px' }}
-            disabled={!stakingEnabled}
-          >
-            <AddRoundedIcon />
-          </Fab> */}
         </Box>
       )}
     </>

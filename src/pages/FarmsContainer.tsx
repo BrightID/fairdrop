@@ -59,21 +59,10 @@ const FarmsContainer = () => {
           alignItems="center"
           justifyContent="center"
         >
-          <Box
-            className={classes.farmToggleContainer}
-            alignItems="center"
-            justifyContent="center"
-            display="flex"
-            flexDirection="column"
-          >
-            <Typography className={classes.migrateText}>
-              Please migrate to the new farms
-            </Typography>
-            <ToggleFarmDisplay
-              displayFarms={displayFarms}
-              handleDisplayFarms={handleDisplayFarms}
-            />
-          </Box>
+          <ToggleFarmDisplay
+            displayFarms={displayFarms}
+            handleDisplayFarms={handleDisplayFarms}
+          />
         </Grid>
       </Grid>
       <Grid container alignItems={'flex-start'}>

@@ -21,6 +21,7 @@ import { useWallet } from '../contexts/wallet';
 import { useV3Liquidity } from '../contexts/erc721Nfts';
 import { useV3Staking } from '../hooks/useV3Staking';
 import { LiquidityPosition, FARM, FARM_URL } from '../utils/types';
+import { sleep } from '../utils/promise';
 
 const STEPS = ['Unstake'];
 
@@ -98,7 +99,9 @@ const V3UnstakingModal: FC = () => {
       });
     } else {
       return withdraw(() => {
-        history.push('/farms');
+        sleep(500);
+        window.location.href = '/farms';
+        window.location.reload();
       });
     }
   };

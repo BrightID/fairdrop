@@ -262,29 +262,24 @@ export const UniswapV3HarvestBox: FC<{ version: FARM }> = ({ version }) => {
             p?.tokenId
           );
 
+        const rewards = await Promise.all(positions.map(getRewardInfo));
+
+        const prevRewards = await uniswapV3StakerContract.rewards(
+          // @ts-ignore: we check for this above
+          currentIncentive.key[0],
+          walletAddress
+        );
         // const incentiveId = await computeContract?.compute(
         //   currentIncentive.key
         // );
 
         // console.log('incentiveId', incentiveId);
 
-        // const getRewards = (p: LiquidityPosition) =>
-        //   uniswapV3StakerContract.rewards(
-        //     currentIncentive.key && currentIncentive.key[0],
-        //     p?.tokenId
-        //   );
-
-        const rewards = await Promise.all(positions.map(getRewardInfo));
-
-        console.log('rewards', rewards);
-
-        // const otherRewards = await Promise.all(stakedPositions.map(getRewards));
-
         // console.log('otherRewards', otherRewards.toString());
 
         const allRewards = rewards.reduce(
           (acc: BigNumber, [reward]) => acc.add(reward),
-          BigNumber.from(0)
+          prevRewards
         );
         setRewardBalance({
           display: utils.formatUnits(allRewards, 18).slice(0, 12),
