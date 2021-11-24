@@ -9,10 +9,19 @@ import {
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import FarmingBox from '../components/FarmingBox';
+import ToggleFarmDisplay from '../components/ToggleFarmDisplay';
 import brightFarmer from '../images/bright_farmer.png';
+import { useWallet, DisplayFarms } from '../contexts/wallet';
 
 const FarmsContainer = () => {
   const classes = useStyles();
+  const { displayFarms, setDisplayFarms } = useWallet();
+
+  const handleDisplayFarms = (event: any, displayFarm: DisplayFarms) => {
+    if (displayFarm !== null && setDisplayFarms) {
+      setDisplayFarms(displayFarm);
+    }
+  };
 
   return (
     <Container className={classes.content}>
@@ -42,38 +51,85 @@ const FarmsContainer = () => {
           />
         </Hidden>
       </Box>
+      <Grid container>
+        <Grid
+          item
+          xs={12}
+          container
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Box
+            className={classes.farmToggleContainer}
+            alignItems="center"
+            justifyContent="center"
+            display="flex"
+            flexDirection="column"
+          >
+            <Typography className={classes.migrateText}>
+              Please migrate to the new farms
+            </Typography>
+            <ToggleFarmDisplay
+              displayFarms={displayFarms}
+              handleDisplayFarms={handleDisplayFarms}
+            />
+          </Box>
+        </Grid>
+      </Grid>
       <Grid container alignItems={'flex-start'}>
         <Grid item xs={12} container>
-          <Grid
-            item
-            sm={12}
-            md={6}
-            lg={4}
-            className={classes.farmContainer}
-            container
-          >
-            <FarmingBox farm={'SUBS'} />
-          </Grid>
-          <Grid
-            item
-            sm={12}
-            md={6}
-            lg={4}
-            className={classes.farmContainer}
-            container
-          >
-            <FarmingBox farm={'UNISWAP'} />
-          </Grid>
-          <Grid
-            item
-            sm={12}
-            md={6}
-            lg={4}
-            className={classes.farmContainer}
-            container
-          >
-            <FarmingBox farm={'HONEY'} />
-          </Grid>
+          {/* subs is live */}
+          {displayFarms === 'live' && (
+            <Grid
+              item
+              sm={12}
+              md={6}
+              lg={4}
+              className={classes.farmContainer}
+              container
+            >
+              <FarmingBox farm={'SUBS'} />
+            </Grid>
+          )}
+          {/* uniswap v2 is live */}
+          {displayFarms === 'live' && (
+            <Grid
+              item
+              sm={12}
+              md={6}
+              lg={4}
+              className={classes.farmContainer}
+              container
+            >
+              <FarmingBox farm={'UNISWAP_V2'} />
+            </Grid>
+          )}
+          {/* bright / hny is finished */}
+          {displayFarms === 'finished' && (
+            <Grid
+              item
+              sm={12}
+              md={6}
+              lg={4}
+              className={classes.farmContainer}
+              container
+            >
+              <FarmingBox farm={'HONEY_V1'} />
+            </Grid>
+          )}
+          {/* uniswap v1 is finished */}
+          {displayFarms === 'finished' && (
+            <Grid
+              item
+              sm={12}
+              md={6}
+              lg={4}
+              className={classes.farmContainer}
+              container
+            >
+              <FarmingBox farm={'UNISWAP_V1'} />
+            </Grid>
+          )}
         </Grid>
       </Grid>
     </Container>
@@ -96,6 +152,19 @@ const useStyles = makeStyles((theme: Theme) =>
     farmerImage: {
       objectFit: 'contain',
       maxHeight: '100%',
+    },
+    farmToggleContainer: {
+      [theme.breakpoints.up('md')]: {
+        marginTop: theme.spacing(-3),
+      },
+      [theme.breakpoints.down('sm')]: {
+        marginTop: theme.spacing(2),
+      },
+    },
+    migrateText: {
+      color: 'red',
+      fontSize: 14,
+      marginBottom: theme.spacing(1),
     },
   })
 );

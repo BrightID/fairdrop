@@ -38,6 +38,8 @@ const rpcUrls = {
   // [ChainIds.Rinkeby]:
 };
 
+export type DisplayFarms = 'live' | 'finished';
+
 type WalletContextType = {
   provider?: ethers.providers.Web3Provider;
   wallet?: Wallet;
@@ -47,6 +49,8 @@ type WalletContextType = {
   network?: number;
   walletAddress?: string;
   address?: string;
+  displayFarms?: DisplayFarms;
+  setDisplayFarms?: (displayFarms: DisplayFarms) => any;
 };
 export const EthersWalletContext = React.createContext<WalletContextType>({});
 
@@ -63,6 +67,7 @@ export const WalletContext: React.FC<WalletContextProps> = ({ children }) => {
   >(undefined);
   const [signer, setSigner] = useState<ethers.Signer | undefined>(undefined);
   const [walletAddress, setWalletAddress] = useState<string>('');
+  const [displayFarms, setDisplayFarms] = useState<DisplayFarms>('live');
 
   // load wallet if already exists
   useEffect(() => {
@@ -182,6 +187,8 @@ export const WalletContext: React.FC<WalletContextProps> = ({ children }) => {
     walletAddress,
     address: walletAddress,
     signer,
+    displayFarms,
+    setDisplayFarms,
   };
   return (
     <EthersWalletContext.Provider value={ctx}>
@@ -205,6 +212,8 @@ export function useWallet() {
     walletAddress,
     address,
     signer,
+    displayFarms,
+    setDisplayFarms,
   } = context;
 
   return {
@@ -215,5 +224,7 @@ export function useWallet() {
     walletAddress,
     address,
     signer,
+    displayFarms,
+    setDisplayFarms,
   };
 }

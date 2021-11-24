@@ -1,21 +1,35 @@
 import { useCallback, useState } from 'react';
-import { utils, BigNumber } from 'ethers';
+import { utils } from 'ethers';
 import { useWallet } from '../contexts/wallet';
 import { useContracts } from '../contexts/contracts';
 import { useNotifications } from '../contexts/notifications';
 import { useV3Liquidity } from '../contexts/erc721Nfts';
-import { LiquidityPosition } from '../utils/types';
+import { LiquidityPosition, FARM } from '../utils/types';
 
 const abiEncoder = utils.defaultAbiCoder;
 
-export function useV3Staking(tokenId: number | undefined) {
+export function useV3Staking(tokenId: number | undefined, farm: FARM) {
   const { tx } = useNotifications();
   const { walletAddress } = useWallet();
   const { nftManagerPositionsContract, uniswapV3StakerContract } =
     useContracts();
-  const { currentIncentive, stakedPositions } = useV3Liquidity();
+  const {
+    currentIncentiveV1,
+    currentIncentiveV2,
+    stakedPositionsV1,
+    stakedPositionsV2,
+  } = useV3Liquidity();
 
   const [isWorking, setIsWorking] = useState<string | null>(null);
+
+  // assume live farm unless we are inside finished farm
+  let currentIncentive = currentIncentiveV2;
+  let stakedPositions = stakedPositionsV2;
+
+  if (farm === 'UNISWAP_V1') {
+    currentIncentive = currentIncentiveV1;
+    stakedPositions = stakedPositionsV1;
+  }
 
   const transfer = useCallback(
     async (next: () => void) => {

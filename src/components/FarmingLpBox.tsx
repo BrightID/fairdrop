@@ -115,13 +115,16 @@ interface FarmingLpBoxProps {
 
 export const FarmingLpBox = ({ farm }: FarmingLpBoxProps) => {
   switch (farm) {
-    case 'UNISWAP': {
+    case 'UNISWAP_V2': {
+      return <UniswapV3LpBox />;
+    }
+    case 'UNISWAP_V1': {
       return <UniswapV3LpBox />;
     }
     case 'SUBS': {
       return <SubsLpBox />;
     }
-    case 'HONEY': {
+    case 'HONEY_V1': {
       return <HoneyLpBox />;
     }
     default: {

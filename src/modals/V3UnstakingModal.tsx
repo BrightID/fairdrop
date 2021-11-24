@@ -13,23 +13,28 @@ import {
   IconButton,
   Typography,
 } from '@material-ui/core';
-
 import CloseIcon from '@material-ui/icons/Close';
-import { useHistory } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import LaunchIcon from '@material-ui/icons/Launch';
 import { useWallet } from '../contexts/wallet';
 import { useV3Liquidity } from '../contexts/erc721Nfts';
 import { useV3Staking } from '../hooks/useV3Staking';
-import { LiquidityPosition } from '../utils/types';
+import { LiquidityPosition, FARM, FARM_URL } from '../utils/types';
 
 const STEPS = ['Unstake'];
 
 const STARTS_WITH = 'data:application/json;base64,';
 
-const V3StakingModal: FC = () => {
+interface Params {
+  farm: FARM_URL;
+}
+
+const V3UnstakingModal: FC = () => {
   const classes = useStyles();
   const history = useHistory();
+
+  const { farm } = useParams<Params>();
 
   const { walletAddress, network } = useWallet();
 
@@ -40,9 +45,16 @@ const V3StakingModal: FC = () => {
   const {
     loadPositions,
     loadingNftPositions,
-    stakedPositions,
+    stakedPositionsV1,
+    stakedPositionsV2,
     unstakedPositionsInContract,
   } = useV3Liquidity();
+
+  // assume live farm
+  let stakedPositions = stakedPositionsV2;
+  if (farm === 'uniswap_v1') {
+    stakedPositions = stakedPositionsV1;
+  }
 
   const positions = useMemo(
     () =>
@@ -55,7 +67,10 @@ const V3StakingModal: FC = () => {
 
   const { tokenId } = positionSelected || {};
 
-  const { isWorking, exit, withdraw } = useV3Staking(tokenId?.toNumber());
+  const { isWorking, exit, withdraw } = useV3Staking(
+    tokenId?.toNumber(),
+    farm.toUpperCase() as FARM
+  );
 
   const handleClose = () => {
     history.push('/farms');
@@ -77,7 +92,7 @@ const V3StakingModal: FC = () => {
   }, [network, walletAddress, loadPositions]);
 
   const approveOrTransferOrStake = () => {
-    if (positionSelected?.staked) {
+    if (positionSelected?.stakedV1 || positionSelected?.stakedV2) {
       return exit(() => {
         history.push('/farms');
       });
@@ -343,4 +358,4 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default V3StakingModal;
+export default V3UnstakingModal;

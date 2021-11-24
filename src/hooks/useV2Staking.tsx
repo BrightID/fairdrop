@@ -4,24 +4,35 @@ import { useWallet } from '../contexts/wallet';
 import { useContracts } from '../contexts/contracts';
 import { useNotifications } from '../contexts/notifications';
 import { useERC20Tokens } from '../contexts/erc20Tokens';
+import { FARM } from '../utils/types';
 
 const approveValue = BigNumber.from(
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
 );
 
-const ETH = 1;
-const RINKEBY = 4;
-const XDAI = 100;
-
-export function useV2Staking(tokenId?: number) {
+export function useV2Staking(farm: FARM) {
   const { tx } = useNotifications();
-  const { walletAddress, network } = useWallet();
-  const { stakingRewardsContract } = useContracts();
+  const { walletAddress } = useWallet();
+  const { stakingRewardsContractHnyV1, stakingRewardsContractSubs } =
+    useContracts();
   const { honeyswapLpToken, subsToken } = useERC20Tokens();
 
   let stakeToken: any = null;
-  if (network === XDAI) stakeToken = honeyswapLpToken;
-  if (network === ETH || network === RINKEBY) stakeToken = subsToken;
+  let stakingRewardsContract: any = null;
+
+  switch (farm) {
+    case 'HONEY_V1':
+      stakeToken = honeyswapLpToken;
+      stakingRewardsContract = stakingRewardsContractHnyV1;
+      break;
+    case 'SUBS':
+      stakeToken = subsToken;
+      stakingRewardsContract = stakingRewardsContractSubs;
+      break;
+    default:
+      stakeToken = null;
+      stakingRewardsContract = null;
+  }
 
   const [isWorking, setIsWorking] = useState<string | null>(null);
 

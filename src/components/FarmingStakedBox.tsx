@@ -23,7 +23,7 @@ export const SubsStakedBox: FC = () => {
   const history = useHistory();
 
   // put subs token here
-  const { stakedBalance } = useStakingRewardsInfo();
+  const { stakedBalance } = useStakingRewardsInfo('SUBS');
   const { subsToken } = useERC20Tokens();
 
   let displayBalance = '0';
@@ -97,7 +97,7 @@ export const HoneyStakedBox: FC = () => {
   const history = useHistory();
 
   // put honey token here
-  const { stakedBalance } = useStakingRewardsInfo();
+  const { stakedBalance } = useStakingRewardsInfo('HONEY_V1');
 
   let displayBalance = '0.0';
 
@@ -106,10 +106,10 @@ export const HoneyStakedBox: FC = () => {
   }
 
   const navToStake = () => {
-    history.push('/stake/v2/honey');
+    history.push('/stake/v2/honey_v1');
   };
   const navToUnstake = () => {
-    history.push('/unstake/v2/honey');
+    history.push('/unstake/v2/honey_v1');
   };
   const switchWallet = async () => {
     const selected = await onboardApi?.walletSelect();
@@ -155,36 +155,37 @@ export const HoneyStakedBox: FC = () => {
   );
 };
 
-export const UniswapV3StakedBox: FC = () => {
+export const UniswapV3StakedBoxV2: FC = () => {
   const classes = useStyles();
   const { walletAddress, onboardApi } = useWallet();
   const history = useHistory();
-  const { stakedPositions, currentIncentive, unstakedPositionsInContract } =
+  const { stakedPositionsV2, currentIncentiveV2, unstakedPositionsInContract } =
     useV3Liquidity();
   const [stakingEnabled, setStakingEnabled] = useState(false);
 
   const positions = useMemo(
     () =>
-      Array.isArray(stakedPositions) &&
+      Array.isArray(stakedPositionsV2) &&
       Array.isArray(unstakedPositionsInContract)
-        ? stakedPositions.concat(unstakedPositionsInContract)
+        ? stakedPositionsV2.concat(unstakedPositionsInContract)
         : [],
-    [stakedPositions, unstakedPositionsInContract]
+    [stakedPositionsV2, unstakedPositionsInContract]
   );
 
   useEffect(() => {
-    if (currentIncentive?.key) {
+    if (currentIncentiveV2?.key) {
       const unixNow = Math.floor(Date.now() / 1000);
-      const incentiveEnd = currentIncentive.key[3];
+      const incentiveEnd = currentIncentiveV2.key[3];
       setStakingEnabled(incentiveEnd > unixNow);
     }
-  }, [currentIncentive.key]);
+  }, [currentIncentiveV2.key]);
 
   const navToStake = () => {
-    history.push('/stake/v3');
+    history.push('/stake/v3/uniswap_v2');
   };
+
   const navToUnstake = () => {
-    history.push('/unstake/v3');
+    history.push('/unstake/v3/uniswap_v2');
   };
   const switchWallet = async () => {
     const selected = await onboardApi?.walletSelect();
@@ -198,7 +199,7 @@ export const UniswapV3StakedBox: FC = () => {
       <Box width="50%" maxWidth="50%">
         <Typography className={classes.subheader}>Staked NFT's</Typography>
         {walletAddress ? (
-          <DisplayNfts />
+          <DisplayNfts farm="UNISWAP_V2" />
         ) : (
           <Button variant={'outlined'} size={'small'} onClick={switchWallet}>
             Connect Wallet
@@ -232,14 +233,106 @@ export const UniswapV3StakedBox: FC = () => {
   );
 };
 
-const DisplayNfts = () => {
+export const UniswapV3StakedBoxV1: FC = () => {
   const classes = useStyles();
-
-  const { stakedPositions, unstakedPositionsInContract } = useV3Liquidity();
+  const { walletAddress, onboardApi } = useWallet();
+  const history = useHistory();
+  const { stakedPositionsV1, unstakedPositionsInContract } = useV3Liquidity();
 
   const positions = useMemo(
     () =>
-      Array.isArray(stakedPositions) &&
+      Array.isArray(stakedPositionsV1) &&
+      Array.isArray(unstakedPositionsInContract)
+        ? stakedPositionsV1.concat(unstakedPositionsInContract)
+        : [],
+    [stakedPositionsV1, unstakedPositionsInContract]
+  );
+
+  const navToUnstake = () => {
+    history.push('/unstake/v3/uniswap_v1');
+  };
+  const switchWallet = async () => {
+    const selected = await onboardApi?.walletSelect();
+    if (selected) {
+      await onboardApi?.walletCheck();
+    }
+  };
+
+  return (
+    <>
+      <Box width="50%" maxWidth="50%">
+        <Typography className={classes.subheader}>Staked NFT's</Typography>
+        {walletAddress ? (
+          <DisplayNfts farm="UNISWAP_V1" />
+        ) : (
+          <Button variant={'outlined'} size={'small'} onClick={switchWallet}>
+            Connect Wallet
+          </Button>
+        )}
+      </Box>
+      {walletAddress && (
+        <Box
+          width="100%"
+          display="flex"
+          alignItems="center"
+          justifyContent="space-evenly"
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={navToUnstake}
+            size="medium"
+            className={classes.btn}
+            aria-label="remove"
+            disabled={positions?.length === 0}
+          >
+            Migrate
+          </Button>
+          <Button
+            variant="contained"
+            // color="secondary"
+            onClick={navToUnstake}
+            size="medium"
+            className={classes.btn}
+            aria-label="remove"
+            disabled={positions?.length === 0}
+          >
+            Unstake
+          </Button>
+          {/* <Fab
+            onClick={navToStake}
+            size="small"
+            className={classes.fab}
+            aria-label="add"
+            style={{ marginLeft: '10px' }}
+            disabled={!stakingEnabled}
+          >
+            <AddRoundedIcon />
+          </Fab> */}
+        </Box>
+      )}
+    </>
+  );
+};
+
+const DisplayNfts = ({ farm }: { farm: FARM }) => {
+  const classes = useStyles();
+
+  const { stakedPositionsV1, stakedPositionsV2, unstakedPositionsInContract } =
+    useV3Liquidity();
+
+  let stakedPositions = useMemo(() => {
+    if (farm === 'UNISWAP_V1') {
+      return stakedPositionsV1;
+    } else if (farm === 'UNISWAP_V2') {
+      return stakedPositionsV2;
+    } else {
+      return [];
+    }
+  }, [stakedPositionsV1, stakedPositionsV2, farm]);
+
+  const positions = useMemo(
+    () =>
       Array.isArray(unstakedPositionsInContract)
         ? stakedPositions.concat(unstakedPositionsInContract)
         : [],
@@ -294,15 +387,19 @@ interface FarmingStakedBoxProps {
 
 export const FarmingStakedBox = ({ farm }: FarmingStakedBoxProps) => {
   switch (farm) {
-    case 'UNISWAP': {
-      return <UniswapV3StakedBox />;
-    }
     case 'SUBS': {
       return <SubsStakedBox />;
     }
-    case 'HONEY': {
+    case 'HONEY_V1': {
       return <HoneyStakedBox />;
     }
+    case 'UNISWAP_V2': {
+      return <UniswapV3StakedBoxV2 />;
+    }
+    case 'UNISWAP_V1': {
+      return <UniswapV3StakedBoxV1 />;
+    }
+
     default: {
       return null;
     }
@@ -317,6 +414,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     fab: {
       backgroundColor: 'white',
+    },
+    btn: {
+      // color: 'black',
+      // marginLeft: theme.spacing(2),
     },
     nftImage: {
       height: 62,
@@ -334,7 +435,6 @@ const useStyles = makeStyles((theme: Theme) =>
       transform: 'translateZ(0)',
       width: '100%',
       maxWidth: '100%',
-      // height: 65,
       marginTop: 3,
       marginBottom: -5,
     },

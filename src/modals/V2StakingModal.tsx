@@ -24,9 +24,10 @@ import { useContracts } from '../contexts/contracts';
 import { useWallet } from '../contexts/wallet';
 import { useERC20Tokens } from '../contexts/erc20Tokens';
 import { useV2Staking } from '../hooks/useV2Staking';
+import { FARM, FARM_URL } from '../utils/types';
 
 interface Params {
-  farm: string;
+  farm: FARM_URL;
 }
 
 const SUBS = 'SUBS';
@@ -47,8 +48,13 @@ const V2StakingModal: FC = () => {
       ? 'https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x61CEAc48136d6782DBD83c09f51E23514D12470a'
       : 'https://app.honeyswap.org/#/add/0x71850b7E9Ee3f13Ab46d67167341E4bDc905Eef9/0x83FF60E2f93F8eDD0637Ef669C69D5Fb4f64cA8E';
 
-  const { stakingRewardsContract } = useContracts();
+  const { stakingRewardsContractHnyV1, stakingRewardsContractSubs } =
+    useContracts();
+
   const { walletAddress } = useWallet();
+
+  const stakingRewardsContract =
+    farm === 'subs' ? stakingRewardsContractSubs : stakingRewardsContractHnyV1;
 
   const [activeStep, setActiveStep] = useState<number>(0);
   const [inputValue, setInputValue] = useState<{
@@ -82,7 +88,9 @@ const V2StakingModal: FC = () => {
     } catch {}
   }
 
-  const { isWorking, approve, stake } = useV2Staking();
+  const { isWorking, approve, stake } = useV2Staking(
+    farm.toUpperCase() as FARM
+  );
 
   const handleClose = () => {
     history.push('/farms');

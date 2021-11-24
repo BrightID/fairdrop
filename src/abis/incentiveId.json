@@ -1,0 +1,28 @@
+[
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "rewardToken",
+            "type": "address"
+          },
+          { "internalType": "address", "name": "pool", "type": "address" },
+          { "internalType": "uint256", "name": "startTime", "type": "uint256" },
+          { "internalType": "uint256", "name": "endTime", "type": "uint256" },
+          { "internalType": "address", "name": "refundee", "type": "address" }
+        ],
+        "internalType": "struct IncentiveIdForMe.IncentiveKey",
+        "name": "key",
+        "type": "tuple"
+      }
+    ],
+    "name": "compute",
+    "outputs": [
+      { "internalType": "bytes32", "name": "incentiveId", "type": "bytes32" }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  }
+]

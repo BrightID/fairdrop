@@ -3,23 +3,35 @@ import { BigNumber } from 'ethers';
 import { useWallet } from '../contexts/wallet';
 import { useContracts } from '../contexts/contracts';
 import { useERC20Tokens } from '../contexts/erc20Tokens';
+import { FARM } from '../utils/types';
 
-const ETH = 1;
-const RINKEBY = 4;
-const XDAI = 100;
-
-export function useStakingRewardsInfo() {
+export function useStakingRewardsInfo(farm: FARM) {
   const [stakedBalance, setStakedBalance] = useState(BigNumber.from('0'));
   const [rewardsBalance, setRewardsBalance] = useState(BigNumber.from('0'));
   const [totalLiquidity, setTotalLiquidity] = useState(BigNumber.from('0'));
 
-  const { walletAddress, network } = useWallet();
-  const { stakingRewardsContract } = useContracts();
+  const { walletAddress } = useWallet();
+  const { stakingRewardsContractSubs, stakingRewardsContractHnyV1 } =
+    useContracts();
   const { honeyswapLpToken, subsToken } = useERC20Tokens();
 
   let token: any = null;
-  if (network === XDAI) token = honeyswapLpToken;
-  if (network === ETH || network === RINKEBY) token = subsToken;
+  let stakingRewardsContract: any = null;
+
+  switch (farm) {
+    case 'HONEY_V1':
+      token = honeyswapLpToken;
+      stakingRewardsContract = stakingRewardsContractHnyV1;
+      break;
+    case 'SUBS':
+      token = subsToken;
+      stakingRewardsContract = stakingRewardsContractSubs;
+      break;
+    default:
+      token = null;
+      stakingRewardsContract = null;
+  }
+
   // TODO check for different staking rewards contracts for subs vs honey
 
   useEffect(() => {
