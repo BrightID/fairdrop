@@ -7,20 +7,24 @@ import { abi as NonfungiblePositionManagerABI } from '@uniswap/v3-periphery/arti
 import {
   NFT_POSITIONS_MANAGER_ADDRESS,
   UNISWAP_V3_STAKER,
-  STAKING_REWARDS_CONTRACT,
+  STAKING_REWARDS_CONTRACT_HNY_V1,
+  STAKING_REWARDS_CONTRACT_SUBS,
   UNISWAP_V3_LP_POOL,
   UNISWAP_QUOTER,
 } from '../utils/constants';
 import { useWallet } from '../contexts/wallet';
 import UNISWAP_V3_STAKER_ABI from '../abis/uniswap_v3_staker.json';
 import STAKING_REWARDS_ABI from '../abis/staking_rewards.json';
+// import INCENTIVE_ID_ABI from '../abis/incentiveId.json';
 
 const ContractsContext = createContext<{
   uniswapV3StakerContract: Contract | null;
-  stakingRewardsContract: Contract | null;
+  stakingRewardsContractSubs: Contract | null;
+  stakingRewardsContractHnyV1: Contract | null;
   nftManagerPositionsContract: Contract | null;
   brightV3PoolContract: Contract | null;
   quoterContract: Contract | null;
+  // computeContract: Contract | null;
 } | null>(null);
 
 export const ContractsProvider: FC<{ children: ReactNode }> = ({
@@ -34,9 +38,13 @@ export const ContractsProvider: FC<{ children: ReactNode }> = ({
 
   const uniswapV3StakerAddress = !network ? null : UNISWAP_V3_STAKER[network];
 
-  const stakingRewardsAddress = !network
+  const stakingRewardsAddressSubs = !network
     ? null
-    : STAKING_REWARDS_CONTRACT[network];
+    : STAKING_REWARDS_CONTRACT_SUBS[network];
+
+  const stakingRewardsAddressHnyV1 = !network
+    ? null
+    : STAKING_REWARDS_CONTRACT_HNY_V1[network];
 
   const brightV3PoolAddress = !network ? null : UNISWAP_V3_LP_POOL[network];
 
@@ -62,12 +70,20 @@ export const ContractsProvider: FC<{ children: ReactNode }> = ({
     [uniswapV3StakerAddress, signer]
   );
 
-  const stakingRewardsContract = useMemo(
+  const stakingRewardsContractSubs = useMemo(
     () =>
-      !(stakingRewardsAddress && signer)
+      !(stakingRewardsAddressSubs && signer)
         ? null
-        : new Contract(stakingRewardsAddress, STAKING_REWARDS_ABI, signer),
-    [stakingRewardsAddress, signer]
+        : new Contract(stakingRewardsAddressSubs, STAKING_REWARDS_ABI, signer),
+    [stakingRewardsAddressSubs, signer]
+  );
+
+  const stakingRewardsContractHnyV1 = useMemo(
+    () =>
+      !(stakingRewardsAddressHnyV1 && signer)
+        ? null
+        : new Contract(stakingRewardsAddressHnyV1, STAKING_REWARDS_ABI, signer),
+    [stakingRewardsAddressHnyV1, signer]
   );
 
   const brightV3PoolContract = useMemo(
@@ -86,14 +102,31 @@ export const ContractsProvider: FC<{ children: ReactNode }> = ({
     [quoterAddress, signer]
   );
 
+  // compute contract to compute incentive ID 0xfd1f541215ca3eff29b342ec669a0aba580cd5bd
+  // rinkeby only
+
+  // const computeContract = useMemo(
+  //   () =>
+  //     !signer
+  //       ? null
+  //       : new Contract(
+  //           '0xfd1f541215ca3eff29b342ec669a0aba580cd5bd',
+  //           INCENTIVE_ID_ABI,
+  //           signer
+  //         ),
+  //   [signer]
+  // );
+
   return (
     <ContractsContext.Provider
       value={{
         uniswapV3StakerContract,
         nftManagerPositionsContract,
-        stakingRewardsContract,
+        stakingRewardsContractSubs,
+        stakingRewardsContractHnyV1,
         brightV3PoolContract,
         quoterContract,
+        // computeContract,
       }}
     >
       {children}
@@ -109,16 +142,20 @@ export function useContracts() {
   const {
     uniswapV3StakerContract,
     nftManagerPositionsContract,
-    stakingRewardsContract,
+    stakingRewardsContractSubs,
+    stakingRewardsContractHnyV1,
     brightV3PoolContract,
     quoterContract,
+    // computeContract,
   } = context;
 
   return {
     uniswapV3StakerContract,
     nftManagerPositionsContract,
-    stakingRewardsContract,
+    stakingRewardsContractSubs,
+    stakingRewardsContractHnyV1,
     brightV3PoolContract,
     quoterContract,
+    // computeContract,
   };
 }

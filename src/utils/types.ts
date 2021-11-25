@@ -15,7 +15,8 @@ export type Incentive = {
 
 export type LiquidityPosition = {
   owner: string;
-  staked: boolean;
+  stakedV1: boolean;
+  stakedV2: boolean;
   numberOfStakes: number;
   tokenId: BigNumber;
   uri: string;
@@ -30,6 +31,15 @@ export type ERC20Token = {
   symbol: string | null;
 };
 
-export const FARMS = ['UNISWAP', 'SUBS', 'HONEY'] as const;
+export const FARMS = ['UNISWAP_V1', 'UNISWAP_V2', 'SUBS', 'HONEY_V1'] as const;
 
 export type FARM = typeof FARMS[number];
+
+export const FARM_URLS = [
+  'uniswap_v1',
+  'uniswap_v2',
+  'subs',
+  'honey_v1',
+] as const;
+
+export type FARM_URL = typeof FARM_URLS[number];

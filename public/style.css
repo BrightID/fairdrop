@@ -2,3 +2,8 @@
   font-family: Roboto Mono;
   z-index: 10;
 }
+
+.MuiButtonBase-root.MuiToggleButton-root.MuiToggleButton-root.Mui-selected {
+  background-color: #ed7a5d;
+  color: #ffffff;
+}

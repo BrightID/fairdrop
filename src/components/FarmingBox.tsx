@@ -19,13 +19,13 @@ const FarmingBox = ({ farm }: FarmingBoxProps) => {
 
   let displayFade = false;
   if (
-    (farm === 'UNISWAP' || farm === 'SUBS') &&
+    (farm === 'UNISWAP_V1' || farm === 'UNISWAP_V2' || farm === 'SUBS') &&
     network !== 1 &&
     network !== 4
   ) {
     displayFade = true;
   }
-  if (farm === 'HONEY' && network !== 100) {
+  if (farm === 'HONEY_V1' && network !== 100) {
     displayFade = true;
   }
 

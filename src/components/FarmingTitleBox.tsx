@@ -75,29 +75,32 @@ export const SubsTitleBox: FC = () => {
 export const HoneyTitleBox: FC = () => {
   const classes = useStyles();
   const [apr, setApr] = useState('0');
-  const { xdaiLiquidity, brightPrice } = usePrices();
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const brightPerYearUSD = brightPrice.multipliedBy(univ3BrightPerYear);
+  // 0% for now
 
-        const APR = brightPerYearUSD.dividedBy(xdaiLiquidity).multipliedBy(100);
+  // const { xdaiLiquidity, brightPrice } = usePrices();
 
-        setApr(utils.commify(APR.toFixed(0)));
-      } catch {}
-    };
+  // useEffect(() => {
+  //   const load = async () => {
+  //     try {
+  //       const brightPerYearUSD = brightPrice.multipliedBy(univ3BrightPerYear);
 
-    load();
+  //       const APR = brightPerYearUSD.dividedBy(xdaiLiquidity).multipliedBy(100);
 
-    const interval = setInterval(() => {
-      load();
-    }, 1000 * 60 * 2);
+  //       setApr(utils.commify(APR.toFixed(0)));
+  //     } catch {}
+  //   };
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, [xdaiLiquidity, brightPrice]);
+  //   load();
+
+  //   const interval = setInterval(() => {
+  //     load();
+  //   }, 1000 * 60 * 2);
+
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, [xdaiLiquidity, brightPrice]);
 
   return (
     <Box width="100%">
@@ -137,7 +140,7 @@ export const HoneyTitleBox: FC = () => {
   );
 };
 
-export const UniswapV3TitleBox: FC = () => {
+export const UniswapV3TitleBoxV2: FC = () => {
   const classes = useStyles();
   const { v3Liquidity, brightPrice } = usePrices();
   const [apr, setApr] = useState('0');
@@ -194,20 +197,67 @@ export const UniswapV3TitleBox: FC = () => {
   );
 };
 
+export const UniswapV3TitleBoxV1: FC = () => {
+  const classes = useStyles();
+  const [apr, setApr] = useState('0');
+
+  // 0% APR
+
+  return (
+    <Box width="100%">
+      <Box display="flex" width="100%" border={1} borderColor="white">
+        <Box className={classes.chainBox} fontSize="small">
+          ETH
+        </Box>
+        <Box className={classes.dexBox} fontSize="small">
+          Uniswap V3 0.3%
+        </Box>
+      </Box>
+      <Box className={classes.title} mt={1}>
+        <Box className={classes.avatarBox}>
+          <Avatar className={classes.bright}>
+            <img className={classes.ethLogo} alt="BRIGHT" src={brightLogo} />
+          </Avatar>
+          <Avatar className={classes.eth}>
+            <img className={classes.ethLogo} alt="ETH" src={ethLogo} />
+          </Avatar>
+        </Box>
+        <Box display="flex" flexDirection="column">
+          <Typography variant={'h6'}>BRIGHT - ETH</Typography>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+            mt={0.5}
+          >
+            <Typography>
+              <b>APR: </b>
+              {apr}%
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  );
+};
+
 interface FarmingTitleboxProps {
   farm: FARM;
 }
 
 export const FarmingTitleBox = ({ farm }: FarmingTitleboxProps) => {
   switch (farm) {
-    case 'UNISWAP': {
-      return <UniswapV3TitleBox />;
-    }
     case 'SUBS': {
       return <SubsTitleBox />;
     }
-    case 'HONEY': {
+    case 'HONEY_V1': {
       return <HoneyTitleBox />;
+    }
+    case 'UNISWAP_V2': {
+      return <UniswapV3TitleBoxV2 />;
+    }
+    case 'UNISWAP_V1': {
+      return <UniswapV3TitleBoxV1 />;
     }
     default: {
       return null;

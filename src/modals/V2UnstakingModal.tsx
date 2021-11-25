@@ -23,9 +23,10 @@ import { useContracts } from '../contexts/contracts';
 import { useWallet } from '../contexts/wallet';
 import { useERC20Tokens } from '../contexts/erc20Tokens';
 import { useV2Staking } from '../hooks/useV2Staking';
+import { FARM, FARM_URL } from '../utils/types';
 
 interface Params {
-  farm: string;
+  farm: FARM_URL;
 }
 
 const SUBS = 'SUBS';
@@ -42,8 +43,13 @@ const V2UnstakingModal: FC = () => {
   const stakeTokenName = farm === 'subs' ? SUBS : HONEY;
   const stakeToken = farm === 'subs' ? subsToken : honeyswapLpToken;
 
-  const { stakingRewardsContract } = useContracts();
+  const { stakingRewardsContractHnyV1, stakingRewardsContractSubs } =
+    useContracts();
+
   const { walletAddress } = useWallet();
+
+  const stakingRewardsContract =
+    farm === 'subs' ? stakingRewardsContractSubs : stakingRewardsContractHnyV1;
 
   const [stakedBalance, setStakedBalance] = useState<BigNumber>(
     BigNumber.from(0)
@@ -64,7 +70,9 @@ const V2UnstakingModal: FC = () => {
       inputValue.bn.lte(BigNumber.from(0)) || inputValue.bn.gt(stakedBalance);
   } catch {}
 
-  const { isWorking, exit, withdraw } = useV2Staking();
+  const { isWorking, exit, withdraw } = useV2Staking(
+    farm.toUpperCase() as FARM
+  );
 
   useEffect(() => {
     if (!walletAddress || !stakingRewardsContract) return;

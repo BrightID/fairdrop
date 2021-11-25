@@ -11,10 +11,10 @@ import { ethPrice, hnyPrice } from '../utils/coingecko';
 /** HOOK NOT USED (replicated on backend) */
 
 export function useTotalLiquidity() {
-  const { totalLiquidity } = useStakingRewardsInfo();
+  const { totalLiquidity } = useStakingRewardsInfo('SUBS');
   const { totalNftPositions } = useV3Liquidity();
   const { network } = useWallet();
-  const { stakingRewardsContract, quoterContract } = useContracts();
+  const { stakingRewardsContractHnyV1, quoterContract } = useContracts();
 
   const { subsToken, honeyswapLpToken, hnyToken, brightToken, wethToken } =
     useERC20Tokens();
@@ -37,7 +37,7 @@ export function useTotalLiquidity() {
         if (
           !hnyToken.contract ||
           !honeyswapLpToken.contract ||
-          !stakingRewardsContract ||
+          !stakingRewardsContractHnyV1 ||
           network !== 100
         )
           return;
@@ -50,7 +50,7 @@ export function useTotalLiquidity() {
         const stakedLp = new BN(
           (
             await honeyswapLpToken.contract.balanceOf(
-              stakingRewardsContract.address
+              stakingRewardsContractHnyV1.address
             )
           ).toString()
         );
@@ -86,7 +86,7 @@ export function useTotalLiquidity() {
       }
     };
     load();
-  }, [hnyToken, stakingRewardsContract, honeyswapLpToken, network]);
+  }, [hnyToken, stakingRewardsContractHnyV1, honeyswapLpToken, network]);
 
   // get uniswap v3 liquidity
   useEffect(() => {

@@ -5,18 +5,46 @@ export const DRAWER_WIDTH = 240;
 export const NETWORK_MAINNET = chainName(1);
 export const NETWORK_RINKEBY = chainName(4);
 
-export const INCENTIVE_START_TIME: Record<number, number> = {
+export const INCENTIVE_START_TIME_V2: Record<number, number> = {
+  4: 1637634184,
+  // do not modify below this line (until rewards end)
+  1: 1631811600,
+  100: 0,
+};
+
+export const INCENTIVE_END_TIME_V2: Record<number, number> = {
+  4: 1668738184,
+  // do not modify below this line (until rewards end)
+  1: 1637085600,
+  100: 0,
+};
+
+// do not modify
+export const INCENTIVE_ID_V2: Record<string, string> = {
+  4: '0xec4ac373e1294fe646132e2a0ca014d983f40a458649d598a038385405f0c5e6',
+  1: '',
+  100: '',
+};
+
+export const INCENTIVE_START_TIME_V1: Record<number, number> = {
   4: 1634246877,
   // do not modify below this line (until rewards end)
   1: 1631811600,
   100: 0,
 };
 
-export const INCENTIVE_END_TIME: Record<number, number> = {
+export const INCENTIVE_END_TIME_V1: Record<number, number> = {
   4: 1665350877,
   // do not modify below this line (until rewards end)
   1: 1637085600,
   100: 0,
+};
+
+// do not modify
+export const INCENTIVE_ID_V1: Record<string, string> = {
+  4: '0x0465b7324c816f1ab7641dad2c9310c9c4dc83a11acf1c5fbf7e1ccd66b88e1f',
+  1: '0x1598e83b8ee78f84b12755d835b054dd6b6ca4eed83b0627d25ebe452fd187f6',
+  100: '',
 };
 
 export const NFT_POSITIONS_MANAGER_ADDRESS: Record<string, string> = {
@@ -31,10 +59,16 @@ export const UNISWAP_V3_STAKER: Record<string, string> = {
   100: '',
 };
 
-export const STAKING_REWARDS_CONTRACT: Record<string, string> = {
+export const STAKING_REWARDS_CONTRACT_HNY_V1: Record<string, string> = {
+  4: '',
+  1: '',
+  100: '0x79A7CAD3Ac4554C133dCaaa9Bc3319385Eb7FD5D',
+};
+
+export const STAKING_REWARDS_CONTRACT_SUBS: Record<string, string> = {
   4: '0x8eE36E719529Df01CA9F6098e4c637471F184D6D',
   1: '0x79A7CAD3Ac4554C133dCaaa9Bc3319385Eb7FD5D',
-  100: '0x79A7CAD3Ac4554C133dCaaa9Bc3319385Eb7FD5D',
+  100: '',
 };
 
 export const WETH: Record<string, string> = {

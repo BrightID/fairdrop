@@ -8,13 +8,10 @@ import {
 } from 'react';
 import BigNumber from 'bignumber.js';
 import {
-  getEthPrice,
   getBrightPrice,
-  getHnyPrice,
   getEthLiquidity,
   getXdaiLiquidity,
 } from '../utils/api';
-import { useV3Liquidity } from '../contexts/erc721Nfts';
 import { useERC20Tokens } from '../contexts/erc20Tokens';
 
 const PricesContext = createContext<{
@@ -35,7 +32,6 @@ export const PricesProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [xdaiLiquidity, setXdaiLiquidity] = useState(new BigNumber(0));
   const [firstLoad, setFirstLoad] = useState(true);
 
-  const { stakedPositions } = useV3Liquidity();
   const { subsToken, honeyswapLpToken } = useERC20Tokens();
 
   // get price from api, update every 5 minutes
@@ -108,7 +104,7 @@ export const PricesProvider: FC<{ children: ReactNode }> = ({ children }) => {
       clearInterval(interval);
     };
     // subscribe to events for nfts, subs, honeyswapLp
-  }, [stakedPositions, subsToken, honeyswapLpToken, firstLoad]);
+  }, [subsToken, honeyswapLpToken, firstLoad]);
 
   return (
     <PricesContext.Provider

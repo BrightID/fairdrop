@@ -125,10 +125,10 @@ const Routes = () => {
   const [cookies, _] = useCookies();
   return (
     <Switch>
-      <Route path="/stake/v3">
+      <Route path="/stake/v3/:farm">
         <V3StakingModal />
       </Route>
-      <Route path="/unstake/v3">
+      <Route path="/unstake/v3/:farm">
         <V3UnstakingModal />
       </Route>
       <Route path="/stake/v2/:farm">
