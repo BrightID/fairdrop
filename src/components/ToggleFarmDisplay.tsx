@@ -48,7 +48,7 @@ export default function ToggleFarmDisplay({
           Please migrate to the new uniswap farm
         </Typography>
       )}
-      {!stakedBalance.isZero() && onXdai && (
+      {onXdai && (
         <>
           <Typography className={classes.migrateText}>
             Bright / HNY rewards have concluded.
@@ -67,7 +67,19 @@ export default function ToggleFarmDisplay({
             on xdai.
           </Typography>
           <Typography className={classes.migrateText}>
-            Uniswap V3 staking is available on ethereum.
+            A Bright / Stake rewards program is coming soon!!
+          </Typography>
+          <Typography className={classes.migrateText}>
+            You can also farm Bright / Elk{' '}
+            <Link
+              underline="always"
+              href="https://app.elk.finance/#/elk/0x83FF60E2f93F8eDD0637Ef669C69D5Fb4f64cA8E/0xE1C110E1B1b4A1deD0cAf3E42BfBdbB7b5d7cE1C"
+              target="_blank"
+              rel="noopener"
+              className={classes.migrateLink}
+            >
+              here
+            </Link>
           </Typography>
         </>
       )}
