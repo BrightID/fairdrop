@@ -161,18 +161,10 @@ export const UniswapV3StakedBoxV2: FC = () => {
   const classes = useStyles();
   const { walletAddress, onboardApi } = useWallet();
   const history = useHistory();
-  const { stakedPositionsV2, currentIncentiveV2, unstakedPositionsInContract } =
-    useV3Liquidity();
+  const { stakedPositionsV2, currentIncentiveV2 } = useV3Liquidity();
   const [stakingEnabled, setStakingEnabled] = useState(false);
 
-  const positions = useMemo(
-    () =>
-      Array.isArray(stakedPositionsV2) &&
-      Array.isArray(unstakedPositionsInContract)
-        ? stakedPositionsV2.concat(unstakedPositionsInContract)
-        : [],
-    [stakedPositionsV2, unstakedPositionsInContract]
-  );
+  const positions = stakedPositionsV2;
 
   useEffect(() => {
     if (currentIncentiveV2?.key) {
@@ -240,7 +232,7 @@ export const UniswapV3StakedBoxV1: FC = () => {
   const { walletAddress, onboardApi } = useWallet();
   const history = useHistory();
   const { stakedPositionsV1, unstakedPositionsInContract } = useV3Liquidity();
-  const { isWorking, migrate } = useV3Staking(1, 'UNISWAP_V1');
+  const { isWorking, migrate, migrateV2 } = useV3Staking(1, 'UNISWAP_V1');
 
   const positions = useMemo(
     () =>
@@ -263,11 +255,24 @@ export const UniswapV3StakedBoxV1: FC = () => {
   };
 
   const handleMigrate = useCallback(() => {
-    return migrate(() => {
-      sleep(500);
-      window.location.reload();
-    });
-  }, [migrate]);
+    if (stakedPositionsV1.length > 0) {
+      return migrate(() => {
+        sleep(500);
+        window.location.reload();
+      });
+    }
+    if (unstakedPositionsInContract.length > 0) {
+      return migrateV2(() => {
+        sleep(500);
+        window.location.reload();
+      });
+    }
+  }, [
+    migrate,
+    migrateV2,
+    stakedPositionsV1.length,
+    unstakedPositionsInContract.length,
+  ]);
 
   return (
     <>
@@ -323,21 +328,15 @@ const DisplayNfts = ({ farm }: { farm: FARM }) => {
 
   let stakedPositions = useMemo(() => {
     if (farm === 'UNISWAP_V1') {
-      return stakedPositionsV1;
+      return stakedPositionsV1.concat(unstakedPositionsInContract);
     } else if (farm === 'UNISWAP_V2') {
       return stakedPositionsV2;
     } else {
       return [];
     }
-  }, [stakedPositionsV1, stakedPositionsV2, farm]);
+  }, [stakedPositionsV1, stakedPositionsV2, unstakedPositionsInContract, farm]);
 
-  const positions = useMemo(
-    () =>
-      Array.isArray(unstakedPositionsInContract)
-        ? stakedPositions.concat(unstakedPositionsInContract)
-        : [],
-    [stakedPositions, unstakedPositionsInContract]
-  );
+  let positions = stakedPositions;
 
   const parseUri = (tokenURI: string) => {
     if (!tokenURI) return {};

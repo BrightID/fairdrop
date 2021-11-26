@@ -18,6 +18,7 @@ export function useV3Staking(tokenId: number | undefined, farm: FARM) {
     currentIncentiveV2,
     stakedPositionsV1,
     stakedPositionsV2,
+    unstakedPositionsInContract,
   } = useV3Liquidity();
 
   const [isWorking, setIsWorking] = useState<string | null>(null);
@@ -349,6 +350,53 @@ export function useV3Staking(tokenId: number | undefined, farm: FARM) {
     ]
   );
 
+  const migrateV2 = useCallback(
+    async (next: () => void) => {
+      try {
+        if (
+          !unstakedPositionsInContract?.length ||
+          !walletAddress ||
+          !uniswapV3StakerContract ||
+          !currentIncentiveV2.key ||
+          unstakedPositionsInContract.length === 0
+        )
+          return;
+
+        setIsWorking('Migrating...');
+
+        const stakeCalldata = ({ tokenId: _tokenId }: LiquidityPosition) =>
+          uniswapV3StakerContract.interface.encodeFunctionData('stakeToken', [
+            currentIncentiveV2.key,
+            _tokenId.toNumber(),
+          ]);
+
+        const stakeMulticall = unstakedPositionsInContract.map(stakeCalldata);
+
+        let multicallData: string[];
+
+        // incentive ongoing. Unstake, claim and stake again.
+        multicallData = stakeMulticall;
+
+        await tx('Migrating...', 'Migrated!', () =>
+          uniswapV3StakerContract.multicall(multicallData)
+        );
+        next();
+      } catch (e) {
+        console.warn(e);
+        setIsWorking(null);
+      } finally {
+        setIsWorking(null);
+      }
+    },
+    [
+      currentIncentiveV2.key,
+      walletAddress,
+      uniswapV3StakerContract,
+      tx,
+      unstakedPositionsInContract,
+    ]
+  );
+
   return {
     isWorking,
     transfer,
@@ -359,5 +407,6 @@ export function useV3Staking(tokenId: number | undefined, farm: FARM) {
     exit,
     withdraw,
     migrate,
+    migrateV2,
   };
 }
