@@ -8,21 +8,21 @@ export const NETWORK_RINKEBY = chainName(4);
 export const INCENTIVE_START_TIME_V2: Record<number, number> = {
   4: 1637634184,
   // do not modify below this line (until rewards end)
-  1: 0,
+  1: 1637913600,
   100: 0,
 };
 
 export const INCENTIVE_END_TIME_V2: Record<number, number> = {
   4: 1668738184,
   // do not modify below this line (until rewards end)
-  1: 0,
+  1: 1643184000,
   100: 0,
 };
 
 // do not modify
 export const INCENTIVE_ID_V2: Record<string, string> = {
   4: '0xec4ac373e1294fe646132e2a0ca014d983f40a458649d598a038385405f0c5e6',
-  1: '',
+  1: '0x6031ad648c4af3af25a5f1854a623811f84d13ce4c124116ea97a987a1741b0d',
   100: '',
 };
 
