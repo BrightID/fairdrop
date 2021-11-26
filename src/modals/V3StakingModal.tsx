@@ -45,21 +45,10 @@ const V3StakingModal: FC = () => {
     useState<LiquidityPosition | null>(null);
   const [initialSelected, setInitialSelected] = useState(false);
 
-  const {
-    loadPositions,
-    loadingNftPositions,
-    unstakedPositions,
-    unstakedPositionsInContract,
-  } = useV3Liquidity();
+  const { loadPositions, loadingNftPositions, unstakedPositions } =
+    useV3Liquidity();
 
-  const positions = useMemo(
-    () =>
-      Array.isArray(unstakedPositions) &&
-      Array.isArray(unstakedPositionsInContract)
-        ? unstakedPositions.concat(unstakedPositionsInContract)
-        : [],
-    [unstakedPositions, unstakedPositionsInContract]
-  );
+  const positions = unstakedPositions;
 
   const { owner, stakedV1, stakedV2, tokenId } = positionSelected || {};
 

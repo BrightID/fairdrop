@@ -48,7 +48,6 @@ const V3UnstakingModal: FC = () => {
     loadingNftPositions,
     stakedPositionsV1,
     stakedPositionsV2,
-    unstakedPositionsInContract,
   } = useV3Liquidity();
 
   // assume live farm
@@ -57,14 +56,7 @@ const V3UnstakingModal: FC = () => {
     stakedPositions = stakedPositionsV1;
   }
 
-  const positions = useMemo(
-    () =>
-      Array.isArray(stakedPositions) &&
-      Array.isArray(unstakedPositionsInContract)
-        ? stakedPositions.concat(unstakedPositionsInContract)
-        : [],
-    [stakedPositions, unstakedPositionsInContract]
-  );
+  const positions = stakedPositions;
 
   const { tokenId } = positionSelected || {};
 
