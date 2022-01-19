@@ -150,7 +150,6 @@ export const WalletContext: React.FC<WalletContextProps> = ({ children }) => {
               walletName: 'walletConnect',
               infuraKey: infuraApiKey,
             },
-
             {
               walletName: 'ledger',
               rpcUrl: `${hwRpcUrl}`,
