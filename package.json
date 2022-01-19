@@ -18,7 +18,7 @@
     "@uniswap/sdk-core": "^3.0.1",
     "@uniswap/v3-sdk": "^3.3.2",
     "bignumber.js": "^9.0.1",
-    "bnc-onboard": "^1.25.0",
+    "bnc-onboard": "^1.36.0",
     "brightid_sdk": "^1.0.1",
     "date-fns": "^2.21.3",
     "ethers": "^5.1.4",

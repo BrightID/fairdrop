@@ -145,10 +145,12 @@ export const WalletContext: React.FC<WalletContextProps> = ({ children }) => {
           wallets: [
             { walletName: 'metamask' },
             { walletName: 'coinbase' },
+            { walletName: 'tally' },
             {
               walletName: 'walletConnect',
               infuraKey: infuraApiKey,
             },
+
             {
               walletName: 'ledger',
               rpcUrl: `${hwRpcUrl}`,
