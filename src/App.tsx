@@ -39,6 +39,7 @@ import V2StakingModal from './modals/V2StakingModal';
 import V2UnstakingModal from './modals/V2UnstakingModal';
 import VideoPage from './components/VideoPage';
 import { CookiesProvider, useCookies } from 'react-cookie';
+import NoFairdrop from './components/NoFairdrop';
 
 const BackgroundController: FC = ({ children }) => {
   const classes = useStyles();
@@ -141,10 +142,10 @@ const Routes = () => {
         <FarmsContainer />
       </Route>
       <Route path="/airdrop/:address">
-        <AddressRegistrationController />
+        <NoFairdrop />
       </Route>
       <Route exact path="/airdrop">
-        <AddressEntryPage />
+        <NoFairdrop />
       </Route>
       <Route path="/">
         <VideoPage />
