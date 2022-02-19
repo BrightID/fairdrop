@@ -80,7 +80,20 @@ const FarmsContainer = () => {
               <FarmingBox farm={'SUBS'} />
             </Grid>
           )}
-          {/* uniswap v2 is live */}
+          {/* uniswap v3 is pending */}
+          {displayFarms === 'live' && (
+            <Grid
+              item
+              sm={12}
+              md={6}
+              lg={4}
+              className={classes.farmContainer}
+              container
+            >
+              <FarmingBox farm={'UNISWAP_V3'} />
+            </Grid>
+          )}
+          {/* uniswap v2 is dead */}
           {displayFarms === 'live' && (
             <Grid
               item
@@ -93,6 +106,7 @@ const FarmsContainer = () => {
               <FarmingBox farm={'UNISWAP_V2'} />
             </Grid>
           )}
+
           {/* bright / hny is finished */}
           {displayFarms === 'finished' && (
             <Grid

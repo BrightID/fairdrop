@@ -140,6 +140,63 @@ export const HoneyTitleBox: FC = () => {
   );
 };
 
+export const UniswapV3TitleBoxV3: FC = () => {
+  const classes = useStyles();
+  const { v3Liquidity, brightPrice } = usePrices();
+  const [apr, setApr] = useState('0');
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const brightPerYearUSD = brightPrice.multipliedBy(xdaiBrightPerYear);
+
+        const APR = brightPerYearUSD.dividedBy(v3Liquidity).multipliedBy(100);
+
+        setApr(utils.commify(APR.toFixed(0)));
+      } catch {}
+    };
+
+    load();
+  }, [v3Liquidity, brightPrice]);
+
+  return (
+    <Box width="100%">
+      <Box display="flex" width="100%" border={1} borderColor="white">
+        <Box className={classes.chainBox} fontSize="small">
+          ETH
+        </Box>
+        <Box className={classes.dexBox} fontSize="small">
+          Uniswap V3 0.3%
+        </Box>
+      </Box>
+      <Box className={classes.title} mt={1}>
+        <Box className={classes.avatarBox}>
+          <Avatar className={classes.bright}>
+            <img className={classes.ethLogo} alt="BRIGHT" src={brightLogo} />
+          </Avatar>
+          <Avatar className={classes.eth}>
+            <img className={classes.ethLogo} alt="ETH" src={ethLogo} />
+          </Avatar>
+        </Box>
+        <Box display="flex" flexDirection="column">
+          <Typography variant={'h6'}>BRIGHT - ETH</Typography>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+            mt={0.5}
+          >
+            <Typography>
+              <b>APR: </b>
+              {apr}% COMING SOON
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  );
+};
+
 export const UniswapV3TitleBoxV2: FC = () => {
   const classes = useStyles();
   const { v3Liquidity, brightPrice } = usePrices();
@@ -188,7 +245,7 @@ export const UniswapV3TitleBoxV2: FC = () => {
           >
             <Typography>
               <b>APR: </b>
-              {apr}%
+              0%
             </Typography>
           </Box>
         </Box>
@@ -252,6 +309,9 @@ export const FarmingTitleBox = ({ farm }: FarmingTitleboxProps) => {
     }
     case 'HONEY_V1': {
       return <HoneyTitleBox />;
+    }
+    case 'UNISWAP_V3': {
+      return <UniswapV3TitleBoxV3 />;
     }
     case 'UNISWAP_V2': {
       return <UniswapV3TitleBoxV2 />;

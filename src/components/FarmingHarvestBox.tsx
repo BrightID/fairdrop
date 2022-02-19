@@ -304,7 +304,6 @@ export const UniswapV3HarvestBox: FC<{ version: FARM }> = ({ version }) => {
       !currentIncentive.key
     )
       return;
-
     // claim rewards with unstaking, might be gas intensive
     if (positions.length > 0) {
       return claimUnstakeStake(() => {
@@ -408,20 +407,13 @@ export const UniswapV3HarvestBox: FC<{ version: FARM }> = ({ version }) => {
         <Typography>{rewardBalance.display}</Typography>
       </Box>
       <Box alignItems="center" justifyContent="center">
-        {version === 'UNISWAP_V2' && (
-          <Button
-            variant={'contained'}
-            onClick={handleHarvest}
-            disabled={isWorking !== null}
-          >
-            {isWorking ? isWorking : 'Harvest'}
-          </Button>
-        )}
-        {version === 'UNISWAP_V1' && (
-          <Typography className={classes.info}>
-            (Please unstake or migrate)
-          </Typography>
-        )}
+        <Button
+          variant={'contained'}
+          onClick={handleHarvest}
+          disabled={isWorking !== null}
+        >
+          {isWorking ? isWorking : 'Harvest'}
+        </Button>
       </Box>
     </>
   );
@@ -438,6 +430,9 @@ export const FarmingHarvestBox = ({ farm }: FarmingHarvestBoxProps) => {
     }
     case 'HONEY_V1': {
       return <HoneyHarvestBoxV1 />;
+    }
+    case 'UNISWAP_V3': {
+      return <UniswapV3HarvestBox version="UNISWAP_V3" />;
     }
     case 'UNISWAP_V2': {
       return <UniswapV3HarvestBox version="UNISWAP_V2" />;

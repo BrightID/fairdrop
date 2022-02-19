@@ -31,13 +31,20 @@ export type ERC20Token = {
   symbol: string | null;
 };
 
-export const FARMS = ['UNISWAP_V1', 'UNISWAP_V2', 'SUBS', 'HONEY_V1'] as const;
+export const FARMS = [
+  'UNISWAP_V1',
+  'UNISWAP_V2',
+  'UNISWAP_V3',
+  'SUBS',
+  'HONEY_V1',
+] as const;
 
 export type FARM = typeof FARMS[number];
 
 export const FARM_URLS = [
   'uniswap_v1',
   'uniswap_v2',
+  'uniswap_v3',
   'subs',
   'honey_v1',
 ] as const;

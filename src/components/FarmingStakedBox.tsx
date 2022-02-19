@@ -157,6 +157,76 @@ export const HoneyStakedBox: FC = () => {
   );
 };
 
+export const UniswapV3StakedBoxV3: FC = () => {
+  const classes = useStyles();
+  const { walletAddress, onboardApi } = useWallet();
+  const history = useHistory();
+  const { stakedPositionsV2, currentIncentiveV2 } = useV3Liquidity();
+  const [stakingEnabled, setStakingEnabled] = useState(false);
+
+  const positions = stakedPositionsV2;
+
+  useEffect(() => {
+    if (currentIncentiveV2?.key) {
+      const unixNow = Math.floor(Date.now() / 1000);
+      const incentiveEnd = currentIncentiveV2.key[3];
+      setStakingEnabled(incentiveEnd > unixNow);
+    }
+  }, [currentIncentiveV2.key]);
+
+  const navToStake = () => {
+    history.push('/stake/v3/uniswap_v3');
+  };
+
+  const navToUnstake = () => {
+    history.push('/unstake/v3/uniswap_v3');
+  };
+  const switchWallet = async () => {
+    const selected = await onboardApi?.walletSelect();
+    if (selected) {
+      await onboardApi?.walletCheck();
+    }
+  };
+
+  return (
+    <>
+      <Box width="50%" maxWidth="50%">
+        <Typography className={classes.subheader}>Staked NFT's</Typography>
+        {walletAddress ? (
+          <DisplayNfts farm="UNISWAP_V3" />
+        ) : (
+          <Button variant={'outlined'} size={'small'} onClick={switchWallet}>
+            Connect Wallet
+          </Button>
+        )}
+      </Box>
+      {walletAddress && (
+        <Box>
+          <Fab
+            onClick={navToUnstake}
+            size="small"
+            className={classes.fab}
+            aria-label="remove"
+            disabled={positions?.length === 0}
+          >
+            <RemoveRoundedIcon />
+          </Fab>
+          <Fab
+            onClick={navToStake}
+            size="small"
+            className={classes.fab}
+            aria-label="add"
+            style={{ marginLeft: '10px' }}
+            disabled={!stakingEnabled}
+          >
+            <AddRoundedIcon />
+          </Fab>
+        </Box>
+      )}
+    </>
+  );
+};
+
 export const UniswapV3StakedBoxV2: FC = () => {
   const classes = useStyles();
   const { walletAddress, onboardApi } = useWallet();
@@ -330,6 +400,8 @@ const DisplayNfts = ({ farm }: { farm: FARM }) => {
     if (farm === 'UNISWAP_V1') {
       return stakedPositionsV1.concat(unstakedPositionsInContract);
     } else if (farm === 'UNISWAP_V2') {
+      return stakedPositionsV2.concat(unstakedPositionsInContract);
+    } else if (farm === 'UNISWAP_V3') {
       return stakedPositionsV2;
     } else {
       return [];
@@ -391,6 +463,9 @@ export const FarmingStakedBox = ({ farm }: FarmingStakedBoxProps) => {
     }
     case 'HONEY_V1': {
       return <HoneyStakedBox />;
+    }
+    case 'UNISWAP_V3': {
+      return <UniswapV3StakedBoxV3 />;
     }
     case 'UNISWAP_V2': {
       return <UniswapV3StakedBoxV2 />;

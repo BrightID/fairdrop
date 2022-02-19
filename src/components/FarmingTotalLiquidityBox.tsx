@@ -131,6 +131,9 @@ export const FarmingTotalLiquidityBox = ({
   farm,
 }: FarmingTotalLiquidityBoxProps) => {
   switch (farm) {
+    case 'UNISWAP_V3': {
+      return <UniswapV3LpBox />;
+    }
     case 'UNISWAP_V2': {
       return <UniswapV3LpBox />;
     }
