@@ -161,18 +161,18 @@ export const UniswapV3StakedBoxV3: FC = () => {
   const classes = useStyles();
   const { walletAddress, onboardApi } = useWallet();
   const history = useHistory();
-  const { stakedPositionsV2, currentIncentiveV2 } = useV3Liquidity();
+  const { stakedPositionsV3, currentIncentiveV3 } = useV3Liquidity();
   const [stakingEnabled, setStakingEnabled] = useState(false);
 
-  const positions = stakedPositionsV2;
+  const positions = stakedPositionsV3;
 
   useEffect(() => {
-    if (currentIncentiveV2?.key) {
+    if (currentIncentiveV3?.key) {
       const unixNow = Math.floor(Date.now() / 1000);
-      const incentiveEnd = currentIncentiveV2.key[3];
+      const incentiveEnd = currentIncentiveV3.key[3];
       setStakingEnabled(incentiveEnd > unixNow);
     }
-  }, [currentIncentiveV2.key]);
+  }, [currentIncentiveV3.key]);
 
   const navToStake = () => {
     history.push('/stake/v3/uniswap_v3');
@@ -231,10 +231,18 @@ export const UniswapV3StakedBoxV2: FC = () => {
   const classes = useStyles();
   const { walletAddress, onboardApi } = useWallet();
   const history = useHistory();
-  const { stakedPositionsV2, currentIncentiveV2 } = useV3Liquidity();
+  const { stakedPositionsV2, unstakedPositionsInContract, currentIncentiveV2 } =
+    useV3Liquidity();
   const [stakingEnabled, setStakingEnabled] = useState(false);
 
-  const positions = stakedPositionsV2;
+  const positions = useMemo(
+    () =>
+      Array.isArray(stakedPositionsV2) &&
+      Array.isArray(unstakedPositionsInContract)
+        ? stakedPositionsV2.concat(unstakedPositionsInContract)
+        : [],
+    [stakedPositionsV2, unstakedPositionsInContract]
+  );
 
   useEffect(() => {
     if (currentIncentiveV2?.key) {
@@ -393,8 +401,12 @@ export const UniswapV3StakedBoxV1: FC = () => {
 const DisplayNfts = ({ farm }: { farm: FARM }) => {
   const classes = useStyles();
 
-  const { stakedPositionsV1, stakedPositionsV2, unstakedPositionsInContract } =
-    useV3Liquidity();
+  const {
+    stakedPositionsV1,
+    stakedPositionsV2,
+    stakedPositionsV3,
+    unstakedPositionsInContract,
+  } = useV3Liquidity();
 
   let stakedPositions = useMemo(() => {
     if (farm === 'UNISWAP_V1') {
@@ -402,11 +414,17 @@ const DisplayNfts = ({ farm }: { farm: FARM }) => {
     } else if (farm === 'UNISWAP_V2') {
       return stakedPositionsV2.concat(unstakedPositionsInContract);
     } else if (farm === 'UNISWAP_V3') {
-      return stakedPositionsV2;
+      return stakedPositionsV3;
     } else {
       return [];
     }
-  }, [stakedPositionsV1, stakedPositionsV2, unstakedPositionsInContract, farm]);
+  }, [
+    stakedPositionsV1,
+    stakedPositionsV2,
+    stakedPositionsV3,
+    unstakedPositionsInContract,
+    farm,
+  ]);
 
   let positions = stakedPositions;
 

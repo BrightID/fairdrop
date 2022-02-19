@@ -50,9 +50,10 @@ const V3StakingModal: FC = () => {
 
   const positions = unstakedPositions;
 
-  const { owner, stakedV1, stakedV2, tokenId } = positionSelected || {};
+  const { owner, stakedV1, stakedV2, stakedV3, tokenId } =
+    positionSelected || {};
 
-  const staked = stakedV1 || stakedV2;
+  const staked = stakedV1 || stakedV2 || stakedV3;
 
   const { isWorking, transfer, stake } = useV3Staking(
     tokenId?.toNumber(),

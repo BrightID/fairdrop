@@ -17,6 +17,7 @@ export type LiquidityPosition = {
   owner: string;
   stakedV1: boolean;
   stakedV2: boolean;
+  stakedV3: boolean;
   numberOfStakes: number;
   tokenId: BigNumber;
   uri: string;

@@ -5,6 +5,27 @@ export const DRAWER_WIDTH = 240;
 export const NETWORK_MAINNET = chainName(1);
 export const NETWORK_RINKEBY = chainName(4);
 
+export const INCENTIVE_START_TIME_V3: Record<number, number> = {
+  4: 0,
+  // do not modify below this line (until rewards end)
+  1: 0,
+  100: 0,
+};
+
+export const INCENTIVE_END_TIME_V3: Record<number, number> = {
+  4: 0,
+  // do not modify below this line (until rewards end)
+  1: 0,
+  100: 0,
+};
+
+// do not modify
+export const INCENTIVE_ID_V3: Record<string, string> = {
+  4: '',
+  1: '',
+  100: '',
+};
+
 export const INCENTIVE_START_TIME_V2: Record<number, number> = {
   4: 1637634184,
   // do not modify below this line (until rewards end)

@@ -16,16 +16,23 @@ export function useV3Staking(tokenId: number | undefined, farm: FARM) {
   const {
     currentIncentiveV1,
     currentIncentiveV2,
+    currentIncentiveV3,
     stakedPositionsV1,
     stakedPositionsV2,
+    stakedPositionsV3,
     unstakedPositionsInContract,
   } = useV3Liquidity();
 
   const [isWorking, setIsWorking] = useState<string | null>(null);
 
   // assume live farm unless we are inside finished farm
-  let currentIncentive = currentIncentiveV2;
-  let stakedPositions = stakedPositionsV2;
+  let currentIncentive = currentIncentiveV3;
+  let stakedPositions = stakedPositionsV3;
+
+  if (farm === 'UNISWAP_V2') {
+    currentIncentive = currentIncentiveV2;
+    stakedPositions = stakedPositionsV2;
+  }
 
   if (farm === 'UNISWAP_V1') {
     currentIncentive = currentIncentiveV1;

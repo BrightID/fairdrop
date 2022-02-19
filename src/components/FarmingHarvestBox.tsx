@@ -229,15 +229,23 @@ export const UniswapV3HarvestBox: FC<{ version: FARM }> = ({ version }) => {
   const {
     stakedPositionsV1,
     stakedPositionsV2,
+    stakedPositionsV3,
     currentIncentiveV1,
     currentIncentiveV2,
+    currentIncentiveV3,
   } = useV3Liquidity();
   const { uniswapV3StakerContract } = useContracts();
   const { isWorking, claim, claimUnstakeStake } = useV3Staking(1, version);
 
   // assume live farm
-  let currentIncentive = currentIncentiveV2;
-  let positions = stakedPositionsV2;
+
+  let currentIncentive = currentIncentiveV3;
+  let positions = stakedPositionsV3;
+
+  if (version === 'UNISWAP_V2') {
+    currentIncentive = currentIncentiveV2;
+    positions = stakedPositionsV2;
+  }
   // update to finished farm
   if (version === 'UNISWAP_V1') {
     currentIncentive = currentIncentiveV1;
@@ -269,13 +277,6 @@ export const UniswapV3HarvestBox: FC<{ version: FARM }> = ({ version }) => {
           currentIncentive.key[0],
           walletAddress
         );
-        // const incentiveId = await computeContract?.compute(
-        //   currentIncentive.key
-        // );
-
-        // console.log('incentiveId', incentiveId);
-
-        // console.log('otherRewards', otherRewards.toString());
 
         const allRewards = rewards.reduce(
           (acc: BigNumber, [reward]) => acc.add(reward),

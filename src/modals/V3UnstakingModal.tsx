@@ -48,10 +48,15 @@ const V3UnstakingModal: FC = () => {
     loadingNftPositions,
     stakedPositionsV1,
     stakedPositionsV2,
+    stakedPositionsV3,
   } = useV3Liquidity();
 
   // assume live farm
-  let stakedPositions = stakedPositionsV2;
+  let stakedPositions = stakedPositionsV3;
+
+  if (farm === 'uniswap_v2') {
+    stakedPositions = stakedPositionsV2;
+  }
   if (farm === 'uniswap_v1') {
     stakedPositions = stakedPositionsV1;
   }
@@ -85,7 +90,11 @@ const V3UnstakingModal: FC = () => {
   }, [network, walletAddress, loadPositions]);
 
   const approveOrTransferOrStake = () => {
-    if (positionSelected?.stakedV1 || positionSelected?.stakedV2) {
+    if (
+      positionSelected?.stakedV1 ||
+      positionSelected?.stakedV2 ||
+      positionSelected?.stakedV3
+    ) {
       return exit(() => {
         history.push('/farms');
       });

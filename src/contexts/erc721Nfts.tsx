@@ -13,7 +13,6 @@ import { Token } from '@uniswap/sdk-core';
 
 import { useWallet } from './wallet';
 import { useContracts } from './contracts';
-// import useTokenInfo from 'hooks/useTokenInfo';
 import { LiquidityPosition } from '../utils/types';
 import {
   WETH,
@@ -22,8 +21,11 @@ import {
   INCENTIVE_END_TIME_V1,
   INCENTIVE_START_TIME_V2,
   INCENTIVE_END_TIME_V2,
+  INCENTIVE_START_TIME_V3,
+  INCENTIVE_END_TIME_V3,
   INCENTIVE_ID_V1,
   INCENTIVE_ID_V2,
+  INCENTIVE_ID_V3,
   UNISWAP_V3_LP_POOL,
   INCENTIVE_REFUNDEE_ADDRESS,
 } from '../utils/constants';
@@ -32,10 +34,12 @@ const ERC721NftContext = createContext<{
   totalNftPositions: LiquidityPosition[];
   stakedPositionsV1: LiquidityPosition[];
   stakedPositionsV2: LiquidityPosition[];
+  stakedPositionsV3: LiquidityPosition[];
   unstakedPositions: LiquidityPosition[];
   unstakedPositionsInContract: LiquidityPosition[];
   currentIncentiveV1: { incentiveId?: any; key?: (string | number)[] | null };
   currentIncentiveV2: { incentiveId?: any; key?: (string | number)[] | null };
+  currentIncentiveV3: { incentiveId?: any; key?: (string | number)[] | null };
   loadingNftPositions: boolean;
   loadPositions: () => any;
 } | null>(null);
@@ -61,6 +65,9 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
     LiquidityPosition[]
   >([]);
 
+  const [stakedPositionsV3, setStakedPositionsV3] = useState<
+    LiquidityPosition[]
+  >([]);
   const [unstakedPositions, setUnstakedPositions] = useState<
     LiquidityPosition[]
   >([]);
@@ -117,6 +124,31 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
     const incentiveStartTime = INCENTIVE_START_TIME_V2[network];
     const incentiveEndTime = INCENTIVE_END_TIME_V2[network];
     const incentiveId = INCENTIVE_ID_V2[network];
+
+    return {
+      incentiveId,
+      key: [
+        brightAddress,
+        poolAddress,
+        incentiveStartTime,
+        incentiveEndTime,
+        incentiveRefundeeAddress,
+      ],
+    };
+  }, [brightAddress, poolAddress, incentiveRefundeeAddress, network]);
+
+  const currentIncentiveV3 = useMemo(() => {
+    if (
+      !brightAddress ||
+      !poolAddress ||
+      !incentiveRefundeeAddress ||
+      (network !== 1 && network !== 4)
+    )
+      return { key: null, incentiveId: null };
+
+    const incentiveStartTime = INCENTIVE_START_TIME_V3[network];
+    const incentiveEndTime = INCENTIVE_END_TIME_V3[network];
+    const incentiveId = INCENTIVE_ID_V3[network];
 
     return {
       incentiveId,
@@ -300,23 +332,39 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
 
         let stakedV1 = false;
         let stakedV2 = false;
+        let stakedV3 = false;
         if (stakedPosition.numberOfStakes > 0) {
-          const stakedLiquidityV1 = await uniswapV3StakerContract.stakes(
-            tokenId,
-            currentIncentiveV1.incentiveId
-          );
+          if (currentIncentiveV1.incentiveId) {
+            const stakedLiquidityV1 = await uniswapV3StakerContract.stakes(
+              tokenId,
+              currentIncentiveV1.incentiveId
+            );
 
-          if (stakedLiquidityV1) {
-            stakedV1 = !stakedLiquidityV1.liquidity.isZero();
+            if (stakedLiquidityV1) {
+              stakedV1 = !stakedLiquidityV1.liquidity.isZero();
+            }
           }
 
-          const stakedLiquidityV2 = await uniswapV3StakerContract.stakes(
-            tokenId,
-            currentIncentiveV2.incentiveId
-          );
+          if (currentIncentiveV2.incentiveId) {
+            const stakedLiquidityV2 = await uniswapV3StakerContract.stakes(
+              tokenId,
+              currentIncentiveV2.incentiveId
+            );
 
-          if (stakedLiquidityV2) {
-            stakedV2 = !stakedLiquidityV2.liquidity.isZero();
+            if (stakedLiquidityV2) {
+              stakedV2 = !stakedLiquidityV2.liquidity.isZero();
+            }
+          }
+
+          if (currentIncentiveV3.incentiveId) {
+            const stakedLiquidityV3 = await uniswapV3StakerContract.stakes(
+              tokenId,
+              currentIncentiveV3.incentiveId
+            );
+
+            if (stakedLiquidityV3) {
+              stakedV3 = !stakedLiquidityV3.liquidity.isZero();
+            }
           }
         }
 
@@ -330,6 +378,7 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
           owner,
           stakedV1,
           stakedV2,
+          stakedV3,
           numberOfStakes: stakedPosition.numberOfStakes,
           tokenId,
           forTotalLiquidity,
@@ -381,12 +430,23 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
           stakedPositionsV2.map(downloadURI)
         );
 
+        const stakedPositionsV3 = allPositions
+          .flat()
+          .filter(
+            (position) => position.stakedV3 && !position.forTotalLiquidity
+          );
+
+        const stakedPositionsV3WithURI = await Promise.all(
+          stakedPositionsV3.map(downloadURI)
+        );
+
         const unstakedPositions = allPositions
           .flat()
           .filter(
             (position) =>
               !position.stakedV1 &&
               !position.stakedV2 &&
+              !position.stakedV3 &&
               !position.forTotalLiquidity &&
               position.owner === walletAddress
           );
@@ -401,6 +461,7 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
             (position) =>
               !position.stakedV1 &&
               !position.stakedV2 &&
+              !position.stakedV3 &&
               !position.forTotalLiquidity &&
               position.owner !== walletAddress
           );
@@ -412,6 +473,7 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
         setTotalNftPositions(allPositions.flat());
         setStakedPositionsV1(stakedPositionsV1WithURI);
         setStakedPositionsV2(stakedPositionsV2WithURI);
+        setStakedPositionsV3(stakedPositionsV3WithURI);
         setUnstakedPositions(unstakedPositionsWithURI);
         setUnstakedPositionsInContract(unstakedPositionsInContractWithURI);
 
@@ -434,6 +496,7 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
     brightAddress,
     currentIncentiveV1.incentiveId,
     currentIncentiveV2.incentiveId,
+    currentIncentiveV3.incentiveId,
   ]);
 
   //initial load of positions
@@ -505,10 +568,12 @@ export const ERC721NftsProvider: FC<{ children: ReactNode }> = ({
         totalNftPositions,
         stakedPositionsV1,
         stakedPositionsV2,
+        stakedPositionsV3,
         unstakedPositions,
         unstakedPositionsInContract,
         currentIncentiveV1,
         currentIncentiveV2,
+        currentIncentiveV3,
         loadingNftPositions,
         loadPositions,
       }}
@@ -527,10 +592,12 @@ export function useV3Liquidity() {
     totalNftPositions,
     stakedPositionsV1,
     stakedPositionsV2,
+    stakedPositionsV3,
     unstakedPositions,
     unstakedPositionsInContract,
     currentIncentiveV1,
     currentIncentiveV2,
+    currentIncentiveV3,
     loadingNftPositions,
     loadPositions,
   } = context;
@@ -539,10 +606,12 @@ export function useV3Liquidity() {
     totalNftPositions,
     stakedPositionsV1,
     stakedPositionsV2,
+    stakedPositionsV3,
     unstakedPositions,
     unstakedPositionsInContract,
     currentIncentiveV1,
     currentIncentiveV2,
+    currentIncentiveV3,
     loadingNftPositions,
     loadPositions,
   };
