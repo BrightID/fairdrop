@@ -235,7 +235,6 @@ export const UniswapV3StakedBoxV2: FC = () => {
     useV3Liquidity();
   const [stakingEnabled, setStakingEnabled] = useState(false);
   const { isWorking, migrate, migrateV2 } = useV3Staking(1, 'UNISWAP_V2');
-
   const positions = useMemo(
     () =>
       Array.isArray(stakedPositionsV2) &&
@@ -333,17 +332,9 @@ export const UniswapV3StakedBoxV1: FC = () => {
   const classes = useStyles();
   const { walletAddress, onboardApi } = useWallet();
   const history = useHistory();
-  const { stakedPositionsV1, unstakedPositionsInContract } = useV3Liquidity();
-  const { isWorking, migrate, migrateV2 } = useV3Staking(1, 'UNISWAP_V1');
-
-  const positions = useMemo(
-    () =>
-      Array.isArray(stakedPositionsV1) &&
-      Array.isArray(unstakedPositionsInContract)
-        ? stakedPositionsV1.concat(unstakedPositionsInContract)
-        : [],
-    [stakedPositionsV1, unstakedPositionsInContract]
-  );
+  const { stakedPositionsV1 } = useV3Liquidity();
+  const { isWorking, migrate } = useV3Staking(1, 'UNISWAP_V1');
+  const positions = stakedPositionsV1;
 
   const navToUnstake = () => {
     history.push('/unstake/v3/uniswap_v1');
@@ -363,18 +354,7 @@ export const UniswapV3StakedBoxV1: FC = () => {
         window.location.reload();
       });
     }
-    if (unstakedPositionsInContract.length > 0) {
-      return migrateV2(() => {
-        sleep(500);
-        window.location.reload();
-      });
-    }
-  }, [
-    migrate,
-    migrateV2,
-    stakedPositionsV1.length,
-    unstakedPositionsInContract.length,
-  ]);
+  }, [migrate, stakedPositionsV1.length]);
 
   return (
     <>
@@ -434,7 +414,7 @@ const DisplayNfts = ({ farm }: { farm: FARM }) => {
 
   let stakedPositions = useMemo(() => {
     if (farm === 'UNISWAP_V1') {
-      return stakedPositionsV1.concat(unstakedPositionsInContract);
+      return stakedPositionsV1;
     } else if (farm === 'UNISWAP_V2') {
       return stakedPositionsV2.concat(unstakedPositionsInContract);
     } else if (farm === 'UNISWAP_V3') {
