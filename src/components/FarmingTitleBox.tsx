@@ -188,7 +188,7 @@ export const UniswapV3TitleBoxV3: FC = () => {
           >
             <Typography>
               <b>APR: </b>
-              {apr}% COMING SOON
+              {apr}%
             </Typography>
           </Box>
         </Box>
@@ -236,7 +236,7 @@ export const UniswapV3TitleBoxV2: FC = () => {
           </Avatar>
         </Box>
         <Box display="flex" flexDirection="column">
-          <Typography variant={'h6'}>BRIGHT - ETH</Typography>
+          <Typography variant={'h6'}>BRIGHT - ETH V2</Typography>
           <Box
             display="flex"
             alignItems="center"
@@ -280,7 +280,7 @@ export const UniswapV3TitleBoxV1: FC = () => {
           </Avatar>
         </Box>
         <Box display="flex" flexDirection="column">
-          <Typography variant={'h6'}>BRIGHT - ETH</Typography>
+          <Typography variant={'h6'}>BRIGHT - ETH V1</Typography>
           <Box
             display="flex"
             alignItems="center"

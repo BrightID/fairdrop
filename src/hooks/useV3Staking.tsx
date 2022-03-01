@@ -310,21 +310,26 @@ export function useV3Staking(tokenId: number | undefined, farm: FARM) {
           !uniswapV3StakerContract ||
           !currentIncentiveV1.key ||
           !currentIncentiveV2.key ||
+          !currentIncentiveV3.key ||
           stakedPositions.length === 0
         )
           return;
 
         setIsWorking('Migrating...');
+        let unstakeKey = currentIncentiveV2.key;
+        if (farm === 'UNISWAP_V1') {
+          unstakeKey = currentIncentiveV1.key;
+        }
 
         const unstakeCalldata = ({ tokenId: _tokenId }: LiquidityPosition) =>
           uniswapV3StakerContract.interface.encodeFunctionData('unstakeToken', [
-            currentIncentiveV1.key,
+            unstakeKey,
             _tokenId.toNumber(),
           ]);
 
         const stakeCalldata = ({ tokenId: _tokenId }: LiquidityPosition) =>
           uniswapV3StakerContract.interface.encodeFunctionData('stakeToken', [
-            currentIncentiveV2.key,
+            currentIncentiveV3.key,
             _tokenId.toNumber(),
           ]);
 
@@ -350,10 +355,12 @@ export function useV3Staking(tokenId: number | undefined, farm: FARM) {
     [
       currentIncentiveV1.key,
       currentIncentiveV2.key,
+      currentIncentiveV3.key,
       walletAddress,
       uniswapV3StakerContract,
       tx,
       stakedPositions,
+      farm,
     ]
   );
 
@@ -364,7 +371,7 @@ export function useV3Staking(tokenId: number | undefined, farm: FARM) {
           !unstakedPositionsInContract?.length ||
           !walletAddress ||
           !uniswapV3StakerContract ||
-          !currentIncentiveV2.key ||
+          !currentIncentiveV3.key ||
           unstakedPositionsInContract.length === 0
         )
           return;
@@ -373,7 +380,7 @@ export function useV3Staking(tokenId: number | undefined, farm: FARM) {
 
         const stakeCalldata = ({ tokenId: _tokenId }: LiquidityPosition) =>
           uniswapV3StakerContract.interface.encodeFunctionData('stakeToken', [
-            currentIncentiveV2.key,
+            currentIncentiveV3.key,
             _tokenId.toNumber(),
           ]);
 
@@ -396,7 +403,7 @@ export function useV3Staking(tokenId: number | undefined, farm: FARM) {
       }
     },
     [
-      currentIncentiveV2.key,
+      currentIncentiveV3.key,
       walletAddress,
       uniswapV3StakerContract,
       tx,

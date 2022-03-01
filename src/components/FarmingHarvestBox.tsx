@@ -272,12 +272,15 @@ export const UniswapV3HarvestBox: FC<{ version: FARM }> = ({ version }) => {
 
         const rewards = await Promise.all(positions.map(getRewardInfo));
 
-        const prevRewards = await uniswapV3StakerContract.rewards(
-          // @ts-ignore: we check for this above
-          currentIncentive.key[0],
-          walletAddress
-        );
-
+        // only calc prevRewards for latest farm
+        let prevRewards = BigNumber.from(0);
+        if (version === 'UNISWAP_V3') {
+          prevRewards = await uniswapV3StakerContract.rewards(
+            // @ts-ignore: we check for this above
+            currentIncentive.key[0],
+            walletAddress
+          );
+        }
         const allRewards = rewards.reduce(
           (acc: BigNumber, [reward]) => acc.add(reward),
           prevRewards
@@ -295,6 +298,7 @@ export const UniswapV3HarvestBox: FC<{ version: FARM }> = ({ version }) => {
     network,
     currentIncentive.key,
     positions,
+    version,
   ]);
 
   const handleHarvest = useCallback(() => {

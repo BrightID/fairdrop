@@ -20,13 +20,15 @@ export default function ToggleFarmDisplay({
   // for toggling to old farms
   const [firstToggle, setFirstToggle] = useState(false);
   const { network } = useWallet();
-  const { stakedPositionsV1, unstakedPositionsInContract } = useV3Liquidity();
+  const { stakedPositionsV1, stakedPositionsV2, unstakedPositionsInContract } =
+    useV3Liquidity();
   const { stakedBalance } = useStakingRewardsInfo('HONEY_V1');
 
   useEffect(() => {
     if (
       !firstToggle &&
       (stakedPositionsV1.length > 0 ||
+        stakedPositionsV2.length > 0 ||
         unstakedPositionsInContract.length > 0 ||
         !stakedBalance.isZero())
     ) {
@@ -34,11 +36,12 @@ export default function ToggleFarmDisplay({
       handleDisplayFarms(null, 'finished');
     }
   }, [
-    stakedPositionsV1,
+    stakedPositionsV1.length,
+    stakedPositionsV2.length,
     firstToggle,
     handleDisplayFarms,
     stakedBalance,
-    unstakedPositionsInContract,
+    unstakedPositionsInContract.length,
   ]);
 
   const onMainnet = network === 1 || network === 4;
@@ -52,6 +55,7 @@ export default function ToggleFarmDisplay({
       flexDirection="column"
     >
       {(stakedPositionsV1.length > 0 ||
+        stakedPositionsV2.length > 0 ||
         unstakedPositionsInContract.length > 0) &&
         onMainnet && (
           <Typography className={classes.migrateText}>

@@ -234,6 +234,7 @@ export const UniswapV3StakedBoxV2: FC = () => {
   const { stakedPositionsV2, unstakedPositionsInContract, currentIncentiveV2 } =
     useV3Liquidity();
   const [stakingEnabled, setStakingEnabled] = useState(false);
+  const { isWorking, migrate, migrateV2 } = useV3Staking(1, 'UNISWAP_V2');
 
   const positions = useMemo(
     () =>
@@ -252,10 +253,6 @@ export const UniswapV3StakedBoxV2: FC = () => {
     }
   }, [currentIncentiveV2.key]);
 
-  const navToStake = () => {
-    history.push('/stake/v3/uniswap_v2');
-  };
-
   const navToUnstake = () => {
     history.push('/unstake/v3/uniswap_v2');
   };
@@ -265,6 +262,26 @@ export const UniswapV3StakedBoxV2: FC = () => {
       await onboardApi?.walletCheck();
     }
   };
+
+  const handleMigrate = useCallback(() => {
+    if (stakedPositionsV2.length > 0) {
+      return migrate(() => {
+        sleep(500);
+        window.location.reload();
+      });
+    }
+    if (unstakedPositionsInContract.length > 0) {
+      return migrateV2(() => {
+        sleep(500);
+        window.location.reload();
+      });
+    }
+  }, [
+    migrate,
+    migrateV2,
+    stakedPositionsV2.length,
+    unstakedPositionsInContract.length,
+  ]);
 
   return (
     <>
@@ -279,26 +296,33 @@ export const UniswapV3StakedBoxV2: FC = () => {
         )}
       </Box>
       {walletAddress && (
-        <Box>
-          <Fab
+        <Box
+          width="100%"
+          display="flex"
+          alignItems="center"
+          justifyContent="space-evenly"
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleMigrate}
+            size="medium"
+            className={classes.btn}
+            aria-label="migrate"
+            disabled={positions?.length === 0 || isWorking !== null}
+          >
+            {isWorking ? isWorking : 'Migrate'}
+          </Button>
+          <Button
+            variant="contained"
             onClick={navToUnstake}
-            size="small"
-            className={classes.fab}
-            aria-label="remove"
+            size="medium"
+            className={classes.btn}
+            aria-label="unstake"
             disabled={positions?.length === 0}
           >
-            <RemoveRoundedIcon />
-          </Fab>
-          <Fab
-            onClick={navToStake}
-            size="small"
-            className={classes.fab}
-            aria-label="add"
-            style={{ marginLeft: '10px' }}
-            disabled={!stakingEnabled}
-          >
-            <AddRoundedIcon />
-          </Fab>
+            Unstake
+          </Button>
         </Box>
       )}
     </>
