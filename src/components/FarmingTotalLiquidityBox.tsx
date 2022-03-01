@@ -103,7 +103,7 @@ export const UniswapV3LpBox: FC = () => {
       >
         <Box>
           <Box fontSize={12} fontWeight="bold">
-            Total Liquidity
+            Total Liquidity UniswapV3
           </Box>
           <Box fontSize={12}>${totalValueUsd}</Box>
         </Box>
