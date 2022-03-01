@@ -65,75 +65,74 @@ const FarmsContainer = () => {
           />
         </Grid>
       </Grid>
-      <Grid container alignItems={'flex-start'}>
-        <Grid item xs={12} container>
-          {/* subs is live */}
-          {displayFarms === 'live' && (
-            <Grid
-              item
-              sm={12}
-              md={6}
-              lg={4}
-              className={classes.farmContainer}
-              container
-            >
-              <FarmingBox farm={'SUBS'} />
-            </Grid>
-          )}
-          {/* uniswap v3 is pending */}
-          {displayFarms === 'live' && (
-            <Grid
-              item
-              sm={12}
-              md={6}
-              lg={4}
-              className={classes.farmContainer}
-              container
-            >
-              <FarmingBox farm={'UNISWAP_V3'} />
-            </Grid>
-          )}
-          {/* uniswap v2 is dead */}
-          {displayFarms === 'live' && (
-            <Grid
-              item
-              sm={12}
-              md={6}
-              lg={4}
-              className={classes.farmContainer}
-              container
-            >
-              <FarmingBox farm={'UNISWAP_V2'} />
-            </Grid>
-          )}
+      <Grid container item alignItems={'flex-start'} spacing={1}>
+        {/* subs is live */}
+        {displayFarms === 'live' && (
+          <Grid
+            item
+            xs={12}
+            md={6}
+            lg={4}
+            className={classes.farmContainer}
+            container
+          >
+            <FarmingBox farm={'SUBS'} />
+          </Grid>
+        )}
+        {/* uniswap v3 is pending */}
+        {displayFarms === 'live' && (
+          <Grid
+            item
+            xs={12}
+            md={6}
+            lg={4}
+            className={classes.farmContainer}
+            container
+          >
+            <FarmingBox farm={'UNISWAP_V3'} />
+          </Grid>
+        )}
+        {/* uniswap v2 is finished */}
+        {displayFarms === 'finished' && (
+          <Grid
+            item
+            xs={12}
+            md={6}
+            lg={4}
+            className={classes.farmContainer}
+            container
+          >
+            <FarmingBox farm={'UNISWAP_V2'} />
+          </Grid>
+        )}
 
-          {/* bright / hny is finished */}
-          {displayFarms === 'finished' && (
-            <Grid
-              item
-              sm={12}
-              md={6}
-              lg={4}
-              className={classes.farmContainer}
-              container
-            >
-              <FarmingBox farm={'HONEY_V1'} />
-            </Grid>
-          )}
-          {/* uniswap v1 is finished */}
-          {displayFarms === 'finished' && (
-            <Grid
-              item
-              sm={12}
-              md={6}
-              lg={4}
-              className={classes.farmContainer}
-              container
-            >
-              <FarmingBox farm={'UNISWAP_V1'} />
-            </Grid>
-          )}
-        </Grid>
+        {/* uniswap v1 is finished */}
+        {displayFarms === 'finished' && (
+          <Grid
+            item
+            xs={12}
+            md={6}
+            lg={4}
+            className={classes.farmContainer}
+            container
+          >
+            <FarmingBox farm={'UNISWAP_V1'} />
+          </Grid>
+        )}
+
+        {/* bright / hny is finished */}
+        {displayFarms === 'finished' && (
+          <Grid
+            item
+            xs={12}
+            md={6}
+            lg={4}
+            className={classes.farmContainer}
+            container
+          >
+            <FarmingBox farm={'HONEY_V1'} />
+          </Grid>
+        )}
       </Grid>
     </Container>
   );

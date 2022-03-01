@@ -6,23 +6,23 @@ export const NETWORK_MAINNET = chainName(1);
 export const NETWORK_RINKEBY = chainName(4);
 
 export const INCENTIVE_START_TIME_V3: Record<number, number> = {
-  4: 0,
+  4: 1646106447,
   // do not modify below this line (until rewards end)
-  1: 0,
+  1: 1645551000,
   100: 0,
 };
 
 export const INCENTIVE_END_TIME_V3: Record<number, number> = {
-  4: 0,
+  4: 1661658447,
   // do not modify below this line (until rewards end)
-  1: 0,
+  1: 1661185800,
   100: 0,
 };
 
 // do not modify
 export const INCENTIVE_ID_V3: Record<string, string> = {
-  4: '',
-  1: '',
+  4: '0x867cd8d4467b888b5e6ad5164b36eaaeab0ffb906bc53f14e2b46b40d1d434f8',
+  1: '0x93e86fed9e463fdeb591df80552fe15a8a1ff4d6943172989ef84b3b730c080d',
   100: '',
 };
 
