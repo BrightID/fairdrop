@@ -316,12 +316,11 @@ const Header = () => {
             onClose={handleCloseMenu}
           >
             <MenuItem onClick={handleHome}>Home</MenuItem>
-            <MenuItem onClick={handleNavAirdrop}>$BRIGHT Airdrop</MenuItem>
             <MenuItem onClick={handleNavFarms}>$BRIGHT Farm</MenuItem>
             <MenuItem
               component={'a'}
               href={
-                'https://gardens-xdai.1hive.org/#/garden/0x1e2d5fb385e2eae45bd42357e426507a63597397'
+                'https://dao.brightid.org'
               }
               target={'_blank'}
               rel={'noopener, noreferrer'}
@@ -354,14 +353,6 @@ const Header = () => {
               width="100%"
             />
           </Button>
-          <Button className={classes.navLink} onClick={handleNavAirdrop}>
-            <img
-              src={header_fairdrop}
-              alt="airdrop"
-              style={{ objectFit: 'contain' }}
-              width="100%"
-            />
-          </Button>
           <Button className={classes.navLink} onClick={handleNavFarms}>
             <img
               src={header_farm}
@@ -373,7 +364,7 @@ const Header = () => {
           <Button
             className={classes.navLink}
             href={
-              'https://gardens-xdai.1hive.org/#/garden/0x1e2d5fb385e2eae45bd42357e426507a63597397'
+              'https://dao.brightid.org'
             }
             target={'_blank'}
             rel={'noopener, noreferrer'}

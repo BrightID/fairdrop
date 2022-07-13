@@ -10,7 +10,7 @@ const VideoPage = () => {
 
   const videoWatched = () => {
     setCookie('videoWatched', 1);
-    history.push(`/airdrop`);
+    history.push(`/farms`);
   };
 
   const brightToken = (
@@ -73,7 +73,7 @@ const VideoPage = () => {
           <Typography variant={'h6'} className={classNames.centered}>
             I've seen the video. Now take me to the{' '}
             <Link href={'#'} onClick={videoWatched}>
-              Fairdrop
+              Farm
             </Link>
             !
           </Typography>
