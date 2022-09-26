@@ -49,6 +49,7 @@ const V3UnstakingModal: FC = () => {
     stakedPositionsV1,
     stakedPositionsV2,
     stakedPositionsV3,
+    unstakedPositionsInContract
   } = useV3Liquidity();
 
   // assume live farm
@@ -61,7 +62,8 @@ const V3UnstakingModal: FC = () => {
     stakedPositions = stakedPositionsV1;
   }
 
-  const positions = stakedPositions;
+  /* Include unstaked positions that are still owned by staking contract so they can be withdrawn */
+  const positions = stakedPositions.concat(unstakedPositionsInContract);
 
   const { tokenId } = positionSelected || {};
 
