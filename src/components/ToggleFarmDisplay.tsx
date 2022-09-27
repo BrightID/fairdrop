@@ -71,7 +71,7 @@ export default function ToggleFarmDisplay({
             Single staking Bright is available through the{' '}
             <Link
               underline="always"
-              href="https://gardens-xdai.1hive.org/#/garden/0x1e2d5fb385e2eae45bd42357e426507a63597397"
+              href="https://gardens.1hive.org/#/xdai/garden/0x1e2d5fb385e2eae45bd42357e426507a63597397"
               target="_blank"
               rel="noopener"
               className={classes.migrateLink}
@@ -79,21 +79,6 @@ export default function ToggleFarmDisplay({
               Bright DAO
             </Link>{' '}
             on xdai.
-          </Typography>
-          <Typography className={classes.migrateText}>
-            A Bright / Stake rewards program is coming soon!!
-          </Typography>
-          <Typography className={classes.migrateText}>
-            You can also farm Bright / Elk{' '}
-            <Link
-              underline="always"
-              href="https://app.elk.finance/#/elk/0x83FF60E2f93F8eDD0637Ef669C69D5Fb4f64cA8E/0xE1C110E1B1b4A1deD0cAf3E42BfBdbB7b5d7cE1C"
-              target="_blank"
-              rel="noopener"
-              className={classes.migrateLink}
-            >
-              here
-            </Link>
           </Typography>
         </>
       )}
