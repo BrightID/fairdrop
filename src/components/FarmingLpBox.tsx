@@ -8,6 +8,45 @@ import { useERC20Tokens } from '../contexts/erc20Tokens';
 
 import { FARM } from '../utils/types';
 
+export const BrightLpBox: FC = () => {
+  const classes = useStyles();
+
+  // put subs token here
+  const { subsToken } = useERC20Tokens();
+
+  const uniV2LpBalance = subsToken?.balance;
+
+  let displayBalance = '0';
+
+  try {
+    if (uniV2LpBalance && subsToken) {
+      // manually remove trailing ".0". This is fixed with ethers 5.2.x, but we are on 5.1
+      displayBalance = utils
+        .formatUnits(uniV2LpBalance, subsToken.decimals)
+        .split('.')[0];
+      displayBalance = utils.commify(displayBalance);
+    }
+  } catch {}
+
+  return (
+    <>
+      <Box>
+        <Typography className={classes.subheader}>BRIGHT in wallet</Typography>
+        <Typography>{displayBalance}</Typography>
+      </Box>
+      <Link
+        underline="always"
+        className={classes.lpLink}
+        href="https://etherscan.io/address/0x79A7CAD3Ac4554C133dCaaa9Bc3319385Eb7FD5D"
+        target="_blank"
+        rel="noopener"
+      >
+        Staking Contract
+      </Link>
+    </>
+  );
+};
+
 export const SubsLpBox: FC = () => {
   const classes = useStyles();
 
@@ -123,6 +162,9 @@ export const FarmingLpBox = ({ farm }: FarmingLpBoxProps) => {
     }
     case 'UNISWAP_V1': {
       return <UniswapV3LpBox />;
+    }
+    case 'BRIGHT': {
+      return <BrightLpBox />;
     }
     case 'SUBS': {
       return <SubsLpBox />;

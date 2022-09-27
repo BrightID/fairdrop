@@ -6,6 +6,47 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { usePrices } from '../contexts/prices';
 import { FARM } from '../utils/types';
 
+export const BrightLpBox: FC = () => {
+  const classes = useStyles();
+
+  const { subsLiquidity } = usePrices();
+
+  let displayPrice = '0';
+
+  try {
+    displayPrice = utils.commify(subsLiquidity.toFixed(0));
+  } catch {}
+
+  return (
+    <>
+      <Box
+        className={classes.totalLiquidityBox}
+        width="50%"
+        borderColor={'rgba(0, 0, 0, 0.12)'}
+        py={1}
+      >
+        <Box>
+          <Box fontSize={12} fontWeight="bold">
+            Total staked
+          </Box>
+          <Box fontSize={12}>{displayPrice} BRIGHT</Box>
+        </Box>
+      </Box>
+      <Box className={classes.lpLinkBox} py={1}>
+        <Link
+          underline="always"
+          className={classes.lpLink}
+          href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x61CEAc48136d6782DBD83c09f51E23514D12470a"
+          target="_blank"
+          rel="noopener"
+        >
+          Get BRIGHT
+        </Link>
+      </Box>
+    </>
+  );
+};
+
 export const SubsLpBox: FC = () => {
   const classes = useStyles();
 
@@ -139,6 +180,9 @@ export const FarmingTotalLiquidityBox = ({
     }
     case 'UNISWAP_V1': {
       return <UniswapV3LpBox />;
+    }
+    case 'BRIGHT': {
+      return <BrightLpBox />;
     }
     case 'SUBS': {
       return <SubsLpBox />;

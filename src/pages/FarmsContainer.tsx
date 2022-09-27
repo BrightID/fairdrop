@@ -66,6 +66,19 @@ const FarmsContainer = () => {
         </Grid>
       </Grid>
       <Grid container item alignItems={'flex-start'} spacing={1}>
+        {/* bright gardens is live on gnosis */}
+        {displayFarms === 'live' && (
+          <Grid
+            item
+            xs={12}
+            md={6}
+            lg={4}
+            className={classes.farmContainer}
+            container
+          >
+            <FarmingBox farm={'BRIGHT'} />
+          </Grid>
+        )}
         {/* subs is live */}
         {displayFarms === 'live' && (
           <Grid

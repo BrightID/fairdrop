@@ -18,6 +18,109 @@ const ETH = 1;
 const RINKEBY = 4;
 const XDAI = 100;
 
+export const BrightHarvestBox: FC = () => {
+  const classes = useStyles();
+  const { walletAddress, network } = useWallet();
+  const { stakingRewardsContractSubs } = useContracts();
+  const { isWorking, harvest } = useV2Staking('SUBS');
+  const [rewardBalance, setRewardBalance] = useState<string>('0.0');
+
+  const checkForRewards = useCallback(() => {
+    if (
+      !walletAddress ||
+      !stakingRewardsContractSubs ||
+      (network !== ETH && network !== RINKEBY)
+    )
+      return;
+
+    const load = async () => {
+      try {
+        const balance = await stakingRewardsContractSubs.earned(walletAddress);
+        setRewardBalance(utils.formatUnits(balance, 18).slice(0, 12));
+      } catch {}
+    };
+    load();
+  }, [walletAddress, stakingRewardsContractSubs, network]);
+
+  const handleHarvest = useCallback(() => {
+    // extra check
+    if (
+      !walletAddress ||
+      !stakingRewardsContractSubs ||
+      (network !== ETH && network !== RINKEBY)
+    )
+      return;
+    return harvest(() => {
+      checkForRewards();
+    });
+  }, [
+    checkForRewards,
+    harvest,
+    walletAddress,
+    stakingRewardsContractSubs,
+    network,
+  ]);
+
+  useEffect(() => {
+    // extra check
+    if (
+      !walletAddress ||
+      !stakingRewardsContractSubs ||
+      (network !== ETH && network !== RINKEBY)
+    )
+      return;
+    const interval = setInterval(() => {
+      checkForRewards();
+    }, INTERVAL);
+    checkForRewards();
+    return () => {
+      clearInterval(interval);
+    };
+  }, [checkForRewards, network, stakingRewardsContractSubs, walletAddress]);
+
+  useEffect(() => {
+    if (!walletAddress || !stakingRewardsContractSubs) return;
+
+    const updateEvent = (address: string) => {
+      checkForRewards();
+    };
+
+    const subscribe = () => {
+      if (!stakingRewardsContractSubs) return () => {};
+      const stakeEvent =
+        stakingRewardsContractSubs.filters.Staked(walletAddress);
+      const withdrawnEvent =
+        stakingRewardsContractSubs.filters.Withdrawn(walletAddress);
+      stakingRewardsContractSubs.on(stakeEvent, updateEvent);
+      stakingRewardsContractSubs.on(withdrawnEvent, updateEvent);
+
+      return () => {
+        stakingRewardsContractSubs.off(stakeEvent, updateEvent);
+        stakingRewardsContractSubs.off(withdrawnEvent, updateEvent);
+      };
+    };
+    return subscribe();
+  }, [walletAddress, stakingRewardsContractSubs, checkForRewards]);
+
+  return (
+    <>
+      <Box>
+        <Typography className={classes.subheader}>$BRIGHT Earned:</Typography>
+        <Typography>{rewardBalance}</Typography>
+      </Box>
+      <Box>
+        <Button
+          variant={'contained'}
+          onClick={handleHarvest}
+          disabled={isWorking !== null}
+        >
+          {isWorking ? isWorking : 'Harvest'}
+        </Button>
+      </Box>
+    </>
+  );
+};
+
 export const SubsHarvestBox: FC = () => {
   const classes = useStyles();
   const { walletAddress, network } = useWallet();
@@ -430,6 +533,9 @@ interface FarmingHarvestBoxProps {
 
 export const FarmingHarvestBox = ({ farm }: FarmingHarvestBoxProps) => {
   switch (farm) {
+    case 'BRIGHT': {
+      return <BrightHarvestBox />;
+    }
     case 'SUBS': {
       return <SubsHarvestBox />;
     }

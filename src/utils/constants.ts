@@ -139,3 +139,9 @@ export const INCENTIVE_REFUNDEE_ADDRESS: Record<string, string> = {
   1: '0x693FB04d603D800fA9456a02564bA060dA8939fc',
   100: '',
 };
+
+export const UNIPOOL_ADDRESS: Record<string, string> = {
+  4: '',
+  1: '',
+  100: '0x741a9d65275Df3aF04cBE99959435195e4Faa424',
+};

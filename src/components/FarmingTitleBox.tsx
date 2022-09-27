@@ -9,6 +9,7 @@ import ethLogo from '../images/ethereum_logo.png';
 import brightLogo from '../images/bright_logo.png';
 import hnysLogo from '../images/hnys.png';
 import subsLogo from '../images/subs_logo.png';
+import { useUnipoolRewards } from '../hooks/useUnipoolRewards';
 
 // SUBs staking runs for 2 years, with 6,000,000 BRIGHT total reward
 const subsBrightPerYear = new BN('3000000');
@@ -17,6 +18,62 @@ const univ3BrightPerYear = new BN('2100000');
 // Bright-Hny on xDai rund also 2 months with 350,000 total reward
 const xdaiBrightPerYear = new BN('2100000');
 
+export const BrightTitleBox: FC = () => {
+  const classes = useStyles();
+  const { subsLiquidity, brightPrice } = usePrices();
+  const [apr, setApr] = useState('0');
+  const [earned, rewardAPR] = useUnipoolRewards();
+  console.log('earned', earned);
+  console.log('rewardAPR', rewardAPR);
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const brightPerYearUSD = brightPrice.multipliedBy(subsBrightPerYear);
+        const APR = brightPerYearUSD.dividedBy(subsLiquidity);
+        setApr(utils.commify(APR.toFixed(2)));
+      } catch {}
+    };
+
+    load();
+  }, [subsLiquidity, brightPrice]);
+
+  return (
+    <Box width="100%">
+      <Box display="flex" width="100%" border={1} borderColor="white">
+        <Box className={classes.chainBox} fontSize="small">
+          GNOSIS
+        </Box>
+        <Box className={classes.dexBox} fontSize="small">
+          Staking
+        </Box>
+      </Box>
+      <Box className={classes.title} mt={1}>
+        <Avatar className={classes.subs}>
+          <img className={classes.ethLogo} alt="BRIGHT" src={subsLogo} />
+        </Avatar>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Typography variant={'h6'}>BRIGHT</Typography>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+            mt={0.5}
+          >
+            <Typography>
+              <b>APR: </b>
+              {apr}%
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  );
+};
 export const SubsTitleBox: FC = () => {
   const classes = useStyles();
   const { subsLiquidity, brightPrice } = usePrices();
@@ -304,6 +361,9 @@ interface FarmingTitleboxProps {
 
 export const FarmingTitleBox = ({ farm }: FarmingTitleboxProps) => {
   switch (farm) {
+    case 'BRIGHT': {
+      return <BrightTitleBox />;
+    }
     case 'SUBS': {
       return <SubsTitleBox />;
     }

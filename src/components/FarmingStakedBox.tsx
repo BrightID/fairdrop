@@ -9,6 +9,7 @@ import { useWallet } from '../contexts/wallet';
 import { useV3Liquidity } from '../contexts/erc721Nfts';
 import { useV3Staking } from '../hooks/useV3Staking';
 import { useStakingRewardsInfo } from '../hooks/useStakingRewardsInfo';
+import { useUnipoolRewards } from '../hooks/useUnipoolRewards';
 import { FARM } from '../utils/types';
 import { useERC20Tokens } from '../contexts/erc20Tokens';
 import { sleep } from '../utils/promise';
@@ -19,6 +20,79 @@ const XDAI = 100;
 
 const STARTS_WITH = 'data:application/json;base64,';
 
+export const BrightStakedBox: FC = () => {
+  const classes = useStyles();
+  const { walletAddress, onboardApi, network } = useWallet();
+  const history = useHistory();
+
+  // put subs token here
+  const { stakedBalance } = useStakingRewardsInfo('SUBS');
+  const { subsToken } = useERC20Tokens();
+
+  let displayBalance = '0';
+
+  try {
+    if (
+      stakedBalance &&
+      subsToken &&
+      (network === ETH || network === RINKEBY)
+    ) {
+      displayBalance = utils
+        .formatUnits(stakedBalance, subsToken.decimals)
+        .split('.')[0];
+    }
+  } catch {}
+
+  const navToStake = () => {
+    history.push('/stake/v2/subs');
+  };
+  const navToUnstake = () => {
+    history.push('/unstake/v2/subs');
+  };
+  const switchWallet = async () => {
+    const selected = await onboardApi?.walletSelect();
+    if (selected) {
+      await onboardApi?.walletCheck();
+    }
+  };
+
+  return (
+    <>
+      <Box>
+        <Typography className={classes.subheader}>Staked SUBS</Typography>
+        {walletAddress ? (
+          <Typography>{displayBalance}</Typography>
+        ) : (
+          <Button variant={'outlined'} size={'small'} onClick={switchWallet}>
+            Connect Wallet
+          </Button>
+        )}
+      </Box>
+      {walletAddress && (
+        <Box>
+          <Fab
+            onClick={navToUnstake}
+            size="small"
+            className={classes.fab}
+            aria-label="remove"
+            disabled={displayBalance === '0.0'}
+          >
+            <RemoveRoundedIcon />
+          </Fab>
+          <Fab
+            onClick={navToStake}
+            size="small"
+            className={classes.fab}
+            aria-label="add"
+            style={{ marginLeft: '10px' }}
+          >
+            <AddRoundedIcon />
+          </Fab>
+        </Box>
+      )}
+    </>
+  );
+};
 export const SubsStakedBox: FC = () => {
   const classes = useStyles();
   const { walletAddress, onboardApi, network } = useWallet();
@@ -480,6 +554,9 @@ interface FarmingStakedBoxProps {
 
 export const FarmingStakedBox = ({ farm }: FarmingStakedBoxProps) => {
   switch (farm) {
+    case 'BRIGHT': {
+      return <BrightStakedBox />;
+    }
     case 'SUBS': {
       return <SubsStakedBox />;
     }

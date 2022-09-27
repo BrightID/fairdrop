@@ -38,6 +38,7 @@ export const FARMS = [
   'UNISWAP_V3',
   'SUBS',
   'HONEY_V1',
+  'BRIGHT',
 ] as const;
 
 export type FARM = typeof FARMS[number];
@@ -48,6 +49,7 @@ export const FARM_URLS = [
   'uniswap_v3',
   'subs',
   'honey_v1',
+  'bright',
 ] as const;
 
 export type FARM_URL = typeof FARM_URLS[number];

@@ -11,10 +11,13 @@ import {
   STAKING_REWARDS_CONTRACT_SUBS,
   UNISWAP_V3_LP_POOL,
   UNISWAP_QUOTER,
+  UNIPOOL_ADDRESS,
 } from '../utils/constants';
 import { useWallet } from '../contexts/wallet';
 import UNISWAP_V3_STAKER_ABI from '../abis/uniswap_v3_staker.json';
 import STAKING_REWARDS_ABI from '../abis/staking_rewards.json';
+import UNIPOOL_ABI from '../abis/unipool.json';
+
 // import INCENTIVE_ID_ABI from '../abis/incentiveId.json';
 
 const ContractsContext = createContext<{
@@ -24,6 +27,7 @@ const ContractsContext = createContext<{
   nftManagerPositionsContract: Contract | null;
   brightV3PoolContract: Contract | null;
   quoterContract: Contract | null;
+  unipoolContract: Contract | null;
   // computeContract: Contract | null;
 } | null>(null);
 
@@ -47,6 +51,8 @@ export const ContractsProvider: FC<{ children: ReactNode }> = ({
     : STAKING_REWARDS_CONTRACT_HNY_V1[network];
 
   const brightV3PoolAddress = !network ? null : UNISWAP_V3_LP_POOL[network];
+
+  const unipoolAddress = !network ? null : UNIPOOL_ADDRESS[network];
 
   const quoterAddress = !network ? null : UNISWAP_QUOTER[network];
 
@@ -94,6 +100,14 @@ export const ContractsProvider: FC<{ children: ReactNode }> = ({
     [brightV3PoolAddress, signer]
   );
 
+  const unipoolContract = useMemo(
+    () =>
+      !(unipoolAddress && signer)
+        ? null
+        : new Contract(unipoolAddress, UNIPOOL_ABI, signer),
+    [unipoolAddress, signer]
+  );
+
   const quoterContract = useMemo(
     () =>
       !(quoterAddress && signer)
@@ -126,6 +140,7 @@ export const ContractsProvider: FC<{ children: ReactNode }> = ({
         stakingRewardsContractHnyV1,
         brightV3PoolContract,
         quoterContract,
+        unipoolContract,
         // computeContract,
       }}
     >
@@ -146,6 +161,7 @@ export function useContracts() {
     stakingRewardsContractHnyV1,
     brightV3PoolContract,
     quoterContract,
+    unipoolContract,
     // computeContract,
   } = context;
 
@@ -156,6 +172,7 @@ export function useContracts() {
     stakingRewardsContractHnyV1,
     brightV3PoolContract,
     quoterContract,
+    unipoolContract,
     // computeContract,
   };
 }
